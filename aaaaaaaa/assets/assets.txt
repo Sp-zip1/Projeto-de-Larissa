@@ -1,0 +1,4 @@
+burst.png
+libgdx.png
+slice.png
+wraith.png
