@@ -46,19 +46,42 @@ public class Main extends ApplicationAdapter {
         mãoPlayer = new ArrayList<>(deckPlayer.subList(0, 6));
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+        puxarNovasCartas();
+    }
+    private void puxarNovasCartas() {
+        //LIMPA MÃO ATUAL
+        mãoPlayer.clear();
+        for (ImageButton b : botoesCartas) {
+            b.remove();
+        }
+        botoesCartas.clear();
 
-        // Criar botões clicáveis para cada carta na mão
+        //CAVE
+        int cartasParaPuxar = Math.min(6, deckPlayer.size());
+        if (cartasParaPuxar == 0) return; // Deck vazio
+
+        mãoPlayer.addAll(deckPlayer.subList(0, cartasParaPuxar));
+        deckPlayer.subList(0, cartasParaPuxar).clear(); // Remove do deck
+
+        //LOOP QUE CRIA OS BOTÕES
         for (int i = 0; i < mãoPlayer.size(); i++) {
-            Carta carta = mãoPlayer.get(i);
+            final Carta carta = mãoPlayer.get(i);
             TextureRegionDrawable drawable = new TextureRegionDrawable(carta.getImagem());
             ImageButton button = new ImageButton(drawable);
-            button.setPosition(50 + i * 150, 20);
+            button.setPosition(350 + i * 100, 20);
             button.setSize(100, 150);
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     button.remove();
-                    mana = mana - carta.custo;
+                    mana -= carta.custo;
+                    mãoPlayer.remove(carta);
+                    botoesCartas.remove(button);
+
+                    // Se a mão estiver vazia, puxar novas cartas
+                    if (mãoPlayer.isEmpty()) {
+                        puxarNovasCartas();
+                    }
                 }
             });
             botoesCartas.add(button);
@@ -66,9 +89,11 @@ public class Main extends ApplicationAdapter {
         }
     }
 
+
     @Override
     public void render() {
         batch.begin();
+        System.out.println(deckPlayer);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Gdx.graphics.getDeltaTime());
