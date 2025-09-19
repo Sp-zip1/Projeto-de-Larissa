@@ -1,13 +1,16 @@
 package io.github.some_example_name;
 
 import Entidades.*;
+import Flyweight.CartaFactory;
+import Flyweight.FactoryCartaAtq;
+import Flyweight.FactoryCartaHab;
+import Flyweight.FactoryCartaPod;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -22,22 +25,28 @@ import java.util.Random;
 public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private Stage stage;
-    private Random rand;
-    private  ArrayList<Carta> descarte = new ArrayList<>();
-    Inimigo inimigoTeste = new Inimigo(20, 2);
+    private ArrayList<Carta> descarte = new ArrayList<>();
     private ArrayList<ImageButton> botoesCartas = new ArrayList<>();
     private ArrayList<Carta> deckPlayer = new ArrayList<>();
     private ArrayList<Carta> mãoPlayer = new ArrayList<>();
     private Texture slice, burst, wraith;
     private int mana = 3;
+
+    Inimigo inimigoTeste = new Inimigo(20, 2);
+
     void criardeck() {
         batch = new SpriteBatch();
         slice = new Texture(Gdx.files.internal("slice.png"));
         burst = new Texture(Gdx.files.internal("burst.png"));
         wraith = new Texture(Gdx.files.internal("wraith.png"));
-        for (int i = 0; i < 6; i++) deckPlayer.add(new CartaAtq(0, "Slice", slice, 1));
-        for (int i = 0; i < 6; i++) deckPlayer.add(new CartaHab(1, "Burst", burst, 1));
-        for (int i = 0; i < 2; i++) deckPlayer.add(new CartaPoder(3, "Wraith", wraith, 3));
+
+        CartaFactory fabAtq = new FactoryCartaAtq(slice, "slice", 0);
+        CartaFactory fabHab = new FactoryCartaHab(burst, "burst", 1);
+        CartaFactory fabPoder = new FactoryCartaPod("wraith", wraith, 3);
+
+        for (int i = 0; i < 6; i++) deckPlayer.add(fabAtq.criarCarta());
+        for (int i = 0; i < 6; i++) deckPlayer.add(fabHab.criarCarta());
+        for (int i = 0; i < 2; i++) deckPlayer.add(fabPoder.criarCarta());
     }
 
     @Override
@@ -49,6 +58,7 @@ public class Main extends ApplicationAdapter {
         Gdx.input.setInputProcessor(stage);
         puxarNovasCartas();
     }
+
     private void puxarNovasCartas() {
         mãoPlayer.clear();
         for (ImageButton b : botoesCartas) {
@@ -56,22 +66,18 @@ public class Main extends ApplicationAdapter {
         }
         botoesCartas.clear();
 
-        // se o deck acabou, recicla o descarte
         if (deckPlayer.isEmpty() && !descarte.isEmpty()) {
             deckPlayer.addAll(descarte);
             descarte.clear();
             Collections.shuffle(deckPlayer, new Random());
         }
 
-        // calcula quantas cartas dá pra puxar
         int cartasParaPuxar = Math.min(6, deckPlayer.size());
-        if (cartasParaPuxar == 0) return; // deck+descarte vazios
+        if (cartasParaPuxar == 0) return;
 
-        // puxa as cartas do topo
         mãoPlayer.addAll(deckPlayer.subList(0, cartasParaPuxar));
         deckPlayer.subList(0, cartasParaPuxar).clear();
 
-        // cria os botões
         for (int i = 0; i < mãoPlayer.size(); i++) {
             final Carta carta = mãoPlayer.get(i);
             TextureRegionDrawable drawable = new TextureRegionDrawable(carta.getImagem());
@@ -88,7 +94,6 @@ public class Main extends ApplicationAdapter {
                     botoesCartas.remove(button);
                     descarte.add(carta);
 
-                    // só puxa de novo se a mão ficar vazia
                     if (mãoPlayer.isEmpty()) {
                         puxarNovasCartas();
                     }
@@ -100,11 +105,9 @@ public class Main extends ApplicationAdapter {
         }
     }
 
-
     @Override
     public void render() {
         batch.begin();
-        System.out.println(deckPlayer);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Gdx.graphics.getDeltaTime());
