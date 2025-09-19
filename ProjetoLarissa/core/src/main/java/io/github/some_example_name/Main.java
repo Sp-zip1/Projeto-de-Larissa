@@ -23,6 +23,7 @@ public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private Stage stage;
     private Random rand;
+    private  ArrayList<Carta> descarte = new ArrayList<>();
     Inimigo inimigoTeste = new Inimigo(20, 2);
     private ArrayList<ImageButton> botoesCartas = new ArrayList<>();
     private ArrayList<Carta> deckPlayer = new ArrayList<>();
@@ -49,27 +50,35 @@ public class Main extends ApplicationAdapter {
         puxarNovasCartas();
     }
     private void puxarNovasCartas() {
-        //LIMPA MÃO ATUAL
         mãoPlayer.clear();
         for (ImageButton b : botoesCartas) {
             b.remove();
         }
         botoesCartas.clear();
 
-        //CAVE
+        // se o deck acabou, recicla o descarte
+        if (deckPlayer.isEmpty() && !descarte.isEmpty()) {
+            deckPlayer.addAll(descarte);
+            descarte.clear();
+            Collections.shuffle(deckPlayer, new Random());
+        }
+
+        // calcula quantas cartas dá pra puxar
         int cartasParaPuxar = Math.min(6, deckPlayer.size());
-        if (cartasParaPuxar == 0) return; // Deck vazio
+        if (cartasParaPuxar == 0) return; // deck+descarte vazios
 
+        // puxa as cartas do topo
         mãoPlayer.addAll(deckPlayer.subList(0, cartasParaPuxar));
-        deckPlayer.subList(0, cartasParaPuxar).clear(); // Remove do deck
+        deckPlayer.subList(0, cartasParaPuxar).clear();
 
-        //LOOP QUE CRIA OS BOTÕES
+        // cria os botões
         for (int i = 0; i < mãoPlayer.size(); i++) {
             final Carta carta = mãoPlayer.get(i);
             TextureRegionDrawable drawable = new TextureRegionDrawable(carta.getImagem());
             ImageButton button = new ImageButton(drawable);
             button.setPosition(350 + i * 100, 20);
             button.setSize(100, 150);
+
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -77,13 +86,15 @@ public class Main extends ApplicationAdapter {
                     mana -= carta.custo;
                     mãoPlayer.remove(carta);
                     botoesCartas.remove(button);
+                    descarte.add(carta);
 
-                    // Se a mão estiver vazia, puxar novas cartas
+                    // só puxa de novo se a mão ficar vazia
                     if (mãoPlayer.isEmpty()) {
                         puxarNovasCartas();
                     }
                 }
             });
+
             botoesCartas.add(button);
             stage.addActor(button);
         }
