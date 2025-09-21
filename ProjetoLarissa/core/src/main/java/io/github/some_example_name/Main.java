@@ -86,24 +86,26 @@ public class Main extends ApplicationAdapter {
         }
         botoesCartas.clear();
 
-        if (deckPlayer.isEmpty() && !descarte.isEmpty()) {
-            deckPlayer.addAll(descarte);
-            descarte.clear();
-            Collections.shuffle(deckPlayer, new Random());
+        // Puxa cartas até ter 6 na mão
+        while (mãoPlayer.size() < 6) {
+            if (deckPlayer.isEmpty()) {
+                if (descarte.isEmpty()) break; // não há mais cartas disponíveis
+                // recicla o descarte e embaralha
+                deckPlayer.addAll(descarte);
+                descarte.clear();
+                Collections.shuffle(deckPlayer, new Random());
+            }
+            // pega a primeira carta do deck
+            Carta carta = deckPlayer.remove(0);
+            mãoPlayer.add(carta);
         }
-
-        int cartasParaPuxar = Math.min(6, deckPlayer.size());
-        if (cartasParaPuxar == 0) return;
-
-        mãoPlayer.addAll(deckPlayer.subList(0, cartasParaPuxar));
-        deckPlayer.subList(0, cartasParaPuxar).clear();
-
         for (int i = 0; i < mãoPlayer.size(); i++) {
             final Carta carta = mãoPlayer.get(i);
             TextureRegionDrawable drawable = new TextureRegionDrawable(carta.getImagem());
             ImageButton button = new ImageButton(drawable);
             button.setPosition(350 + i * 100, 20);
             button.setSize(100, 150);
+
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -114,11 +116,10 @@ public class Main extends ApplicationAdapter {
                         botoesCartas.remove(button);
                         descarte.add(carta);
                         if(carta instanceof CartaAtq){
-                            inimigo.setHPInimigo(inimigo.getHPInimigo()-((CartaAtq) carta).dano);
+                            inimigo.setHPInimigo(
+                                    inimigo.getHPInimigo() - ((CartaAtq) carta).dano
+                            );
                         }
-                    }
-                    if (mãoPlayer.isEmpty()) {
-                        puxarNovasCartas();
                     }
                 }
             });
@@ -129,7 +130,9 @@ public class Main extends ApplicationAdapter {
     }
     void passarTurno(){
         turnoJogador = true;
-        jogador.mana = 3; // reset de mana
+        jogador.mana = 3;
+        //ACHO QUE CORRIGI O PROBLEMA MAS PRECISO FAZER MAS TESTES
+        descarte.addAll(mãoPlayer);
         puxarNovasCartas();
     }
 
