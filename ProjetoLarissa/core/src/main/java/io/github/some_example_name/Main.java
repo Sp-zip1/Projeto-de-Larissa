@@ -1,5 +1,6 @@
 package io.github.some_example_name;
 
+import Atores.Inimigo;
 import Atores.Jogador;
 import Entidades.*;
 import Flyweight.CartaFactory;
@@ -30,16 +31,20 @@ public class Main extends ApplicationAdapter {
     private ArrayList<ImageButton> botoesCartas = new ArrayList<>();
     private ArrayList<Carta> deckPlayer = new ArrayList<>();
     private ArrayList<Carta> mãoPlayer = new ArrayList<>();
-    private Texture slice, burst, wraith;
+    private Texture slice, burst, wraith, endTurnTex;
+    private ImageButton endTurnBtn;
+    private boolean turnoJogador = true;
     Jogador jogador = new Jogador(100, 0, 0, 3);
+    Inimigo inimigo = new Inimigo(100);
 
     void criardeck() {
         batch = new SpriteBatch();
         slice = new Texture(Gdx.files.internal("slice.png"));
         burst = new Texture(Gdx.files.internal("burst.png"));
         wraith = new Texture(Gdx.files.internal("wraith.png"));
+        endTurnTex = new Texture(Gdx.files.internal("slice.png"));
 
-        CartaFactory fabAtq = new FactoryCartaAtq(slice, "slice", 0);
+        CartaFactory fabAtq = new FactoryCartaAtq(slice, "slice", 0, 3);
         CartaFactory fabHab = new FactoryCartaHab(burst, "burst", 1);
         CartaFactory fabPoder = new FactoryCartaPod("wraith", wraith, 3);
 
@@ -56,9 +61,25 @@ public class Main extends ApplicationAdapter {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         puxarNovasCartas();
+        botãoTurno();
     }
-
+    private void botãoTurno(){
+        TextureRegionDrawable drawable = new TextureRegionDrawable(endTurnTex);
+        endTurnBtn = new ImageButton(drawable);
+        endTurnBtn.setSize(120, 50);
+        endTurnBtn.setPosition(600, 20);
+        endTurnBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (turnoJogador) {
+                    passarTurno();
+                }
+            }
+        });
+        stage.addActor(endTurnBtn);
+    }
     private void puxarNovasCartas() {
+        //PRIORIDADE NUMERO 1 CORRIGIR RECICLAGEM DO DESCARTE, CARTAS SE REPETEM
         mãoPlayer.clear();
         for (ImageButton b : botoesCartas) {
             b.remove();
@@ -92,6 +113,9 @@ public class Main extends ApplicationAdapter {
                         mãoPlayer.remove(carta);
                         botoesCartas.remove(button);
                         descarte.add(carta);
+                        if(carta instanceof CartaAtq){
+                            inimigo.setHPInimigo(inimigo.getHPInimigo()-((CartaAtq) carta).dano);
+                        }
                     }
                     if (mãoPlayer.isEmpty()) {
                         puxarNovasCartas();
@@ -103,6 +127,11 @@ public class Main extends ApplicationAdapter {
             stage.addActor(button);
         }
     }
+    void passarTurno(){
+        turnoJogador = true;
+        jogador.mana = 3; // reset de mana
+        puxarNovasCartas();
+    }
 
     @Override
     public void render() {
@@ -112,6 +141,8 @@ public class Main extends ApplicationAdapter {
         stage.act(Gdx.graphics.getDeltaTime());
         BitmapFont font = new BitmapFont();
         font.draw(batch, "Mana: " + jogador.mana, 50, 200);
+        font.draw(batch, "Vida inimigo"+inimigo.getHPInimigo(),500, 500);
+        font.draw(batch, turnoJogador ? "Seu Turno" : "Turno do Inimigo", 300, 400);
         stage.draw();
         batch.end();
     }
