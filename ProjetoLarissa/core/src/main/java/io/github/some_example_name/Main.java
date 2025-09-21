@@ -1,5 +1,6 @@
 package io.github.some_example_name;
 
+import Atores.Jogador;
 import Entidades.*;
 import Flyweight.CartaFactory;
 import Flyweight.FactoryCartaAtq;
@@ -30,9 +31,7 @@ public class Main extends ApplicationAdapter {
     private ArrayList<Carta> deckPlayer = new ArrayList<>();
     private ArrayList<Carta> mãoPlayer = new ArrayList<>();
     private Texture slice, burst, wraith;
-    private int mana = 3;
-
-    Inimigo inimigoTeste = new Inimigo(20, 2);
+    Jogador jogador = new Jogador(100, 0, 0, 3);
 
     void criardeck() {
         batch = new SpriteBatch();
@@ -84,16 +83,16 @@ public class Main extends ApplicationAdapter {
             ImageButton button = new ImageButton(drawable);
             button.setPosition(350 + i * 100, 20);
             button.setSize(100, 150);
-
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    button.remove();
-                    mana -= carta.custo;
-                    mãoPlayer.remove(carta);
-                    botoesCartas.remove(button);
-                    descarte.add(carta);
-
+                    if(jogador.mana >= carta.custo) {
+                        button.remove();
+                        jogador.mana -= carta.custo;
+                        mãoPlayer.remove(carta);
+                        botoesCartas.remove(button);
+                        descarte.add(carta);
+                    }
                     if (mãoPlayer.isEmpty()) {
                         puxarNovasCartas();
                     }
@@ -112,7 +111,7 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Gdx.graphics.getDeltaTime());
         BitmapFont font = new BitmapFont();
-        font.draw(batch, "Mana: " + mana, 50, 200);
+        font.draw(batch, "Mana: " + jogador.mana, 50, 200);
         stage.draw();
         batch.end();
     }
