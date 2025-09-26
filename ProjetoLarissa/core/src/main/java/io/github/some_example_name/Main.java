@@ -35,7 +35,7 @@ public class Main extends ApplicationAdapter {
     private ImageButton endTurnBtn;
     private boolean turnoJogador = true;
     Jogador jogador = new Jogador(100, 0, 0, 3);
-    Inimigo inimigo = new Inimigo(100);
+    Inimigo inimigo = new Inimigo(100, 3);
 
     void criardeck() {
         batch = new SpriteBatch();
@@ -129,6 +129,7 @@ public class Main extends ApplicationAdapter {
         }
     }
     void passarTurno(){
+        inimigo.ExecutarAçãoI(jogador);
         turnoJogador = true;
         jogador.mana = 3;
         //ACHO QUE CORRIGI O PROBLEMA MAS PRECISO FAZER MAS TESTES
@@ -143,6 +144,7 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act(Gdx.graphics.getDeltaTime());
         BitmapFont font = new BitmapFont();
+        font.draw(batch, "Vida jogador"+jogador.HPPlayer, 200, 50);
         font.draw(batch, "Mana: " + jogador.mana, 50, 200);
         font.draw(batch, "Vida inimigo"+inimigo.getHPInimigo(),500, 500);
         font.draw(batch, turnoJogador ? "Seu Turno" : "Turno do Inimigo", 300, 400);
