@@ -1,5 +1,6 @@
 package Flyweight;
 
+import Ações.Efeito;
 import Entidades.Carta;
 import Entidades.CartaHab;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,6 +19,6 @@ public class FactoryCartaHab implements CartaFactory {
     @Override
     public Carta criarCarta() {
         CartaFlyweight fly = CartaFlyweightFactory.getCarta(nome, imagem, custo);
-        return new CartaHab(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getCusto());
+        return new CartaHab(fly.getCusto(), fly.getNome(), fly.getImagem()).adicionarEfeito(Efeito.cura(10));
     }
 }

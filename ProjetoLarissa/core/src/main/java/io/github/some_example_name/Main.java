@@ -44,7 +44,7 @@ public class Main extends ApplicationAdapter {
         wraith = new Texture(Gdx.files.internal("wraith.png"));
         endTurnTex = new Texture(Gdx.files.internal("slice.png"));
 
-        CartaFactory fabAtq = new FactoryCartaAtq(slice, "slice", 0, 3);
+        CartaFactory fabAtq = new FactoryCartaAtq(slice, "slice", 0);
         CartaFactory fabHab = new FactoryCartaHab(burst, "burst", 1);
         CartaFactory fabPoder = new FactoryCartaPod("wraith", wraith, 3);
 
@@ -115,11 +115,7 @@ public class Main extends ApplicationAdapter {
                         mãoPlayer.remove(carta);
                         botoesCartas.remove(button);
                         descarte.add(carta);
-                        if(carta instanceof CartaAtq){
-                            inimigo.setHPInimigo(
-                                    inimigo.getHPInimigo() - ((CartaAtq) carta).dano
-                            );
-                        }
+                        carta.executarEfeitos(jogador, inimigo);
                     }
                 }
             });
