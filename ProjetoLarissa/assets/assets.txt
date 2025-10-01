@@ -1,3 +1,5 @@
+BossAparencia.png
+Defect.png
 burst.png
 libgdx.png
 slice.png

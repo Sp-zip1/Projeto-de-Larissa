@@ -1,14 +1,18 @@
 package Atores;
 
+import com.badlogic.gdx.graphics.Texture;
+
 import static com.badlogic.gdx.math.MathUtils.random;
 
 public class Inimigo {
     Integer HPInimigo;
     Integer Dano;
+    Texture inimigoImg;
 
-    public Inimigo(Integer HPInimigo, Integer dano) {
+    public Inimigo(Integer HPInimigo, Integer dano, Texture inimigoImg) {
         this.HPInimigo = HPInimigo;
         this.Dano = dano;
+        this.inimigoImg = inimigoImg;
     }
 
     public Integer getHPInimigo() {
@@ -25,6 +29,14 @@ public class Inimigo {
 
     public void setDano(Integer dano) {
         Dano = dano;
+    }
+
+    public Texture getInimigoImg() {
+        return inimigoImg;
+    }
+
+    public void setInimigoImg(Texture inimigoImg) {
+        this.inimigoImg = inimigoImg;
     }
 
     public void ExecutarAçãoI(Jogador jogador){

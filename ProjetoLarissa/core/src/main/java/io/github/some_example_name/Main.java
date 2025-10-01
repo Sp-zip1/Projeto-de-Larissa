@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -34,9 +35,9 @@ public class Main extends ApplicationAdapter {
     private Texture slice, burst, wraith, endTurnTex;
     private ImageButton endTurnBtn;
     private boolean turnoJogador = true;
+    private Inimigo inimigo;
+    private ShapeRenderer barraVidaIn;
     Jogador jogador = new Jogador(100, 0, 0, 3);
-    Inimigo inimigo = new Inimigo(100, 3);
-
     void criardeck() {
         batch = new SpriteBatch();
         slice = new Texture(Gdx.files.internal("slice.png"));
@@ -52,9 +53,10 @@ public class Main extends ApplicationAdapter {
         for (int i = 0; i < 6; i++) deckPlayer.add(fabHab.criarCarta());
         for (int i = 0; i < 2; i++) deckPlayer.add(fabPoder.criarCarta());
     }
-
     @Override
     public void create() {
+        Texture inimigoTex = new Texture("BossAparencia.png");
+        inimigo = new Inimigo(100, 3, inimigoTex);
         criardeck();
         Collections.shuffle(deckPlayer, new Random());
         mãoPlayer = new ArrayList<>(deckPlayer.subList(0, 6));
@@ -67,7 +69,7 @@ public class Main extends ApplicationAdapter {
         TextureRegionDrawable drawable = new TextureRegionDrawable(endTurnTex);
         endTurnBtn = new ImageButton(drawable);
         endTurnBtn.setSize(120, 50);
-        endTurnBtn.setPosition(600, 20);
+        endTurnBtn.setPosition(1000, 50);
         endTurnBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -135,14 +137,15 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
-        batch.begin();
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
         stage.act(Gdx.graphics.getDeltaTime());
         BitmapFont font = new BitmapFont();
+        batch.draw(inimigo.getInimigoImg(), 800, 200, 300, 300);
         font.draw(batch, "Vida jogador"+jogador.HPPlayer, 200, 50);
         font.draw(batch, "Mana: " + jogador.mana, 50, 200);
-        font.draw(batch, "Vida inimigo"+inimigo.getHPInimigo(),500, 500);
+        font.draw(batch, "Vida inimigo"+inimigo.getHPInimigo(),875, 500);
         font.draw(batch, turnoJogador ? "Seu Turno" : "Turno do Inimigo", 300, 400);
         stage.draw();
         batch.end();
