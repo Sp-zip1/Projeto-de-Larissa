@@ -26,6 +26,9 @@ import java.util.Collections;
 import java.util.Random;
 
 public class Main extends ApplicationAdapter {
+    private float inimigoOffsetX = 0;
+    private float inimigoOffsetY = 0;
+    private float tremorTimer = 0f;
     private SpriteBatch batch;
     private Stage stage;
     private ArrayList<Carta> descarte = new ArrayList<>();
@@ -71,34 +74,6 @@ public class Main extends ApplicationAdapter {
         for (int i = 0; i < 6; i++) deckPlayer.add(fabHab.criarCarta());
         for (int i = 0; i < 2; i++) deckPlayer.add(fabPoder.criarCarta());
     }
-    @Override
-    public void create() {
-        barraVidaIn = new ShapeRenderer();
-        Texture inimigoTex = new Texture("BossAparencia.png");
-        inimigo = new Inimigo(100, 3, inimigoTex);
-        criardeck();
-        Collections.shuffle(deckPlayer, new Random());
-        mãoPlayer = new ArrayList<>(deckPlayer.subList(0, 6));
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
-        puxarNovasCartas();
-        botãoTurno();
-    }
-    private void botãoTurno(){
-        TextureRegionDrawable drawable = new TextureRegionDrawable(endTurnTex);
-        endTurnBtn = new ImageButton(drawable);
-        endTurnBtn.setSize(120, 50);
-        endTurnBtn.setPosition(1000, 50);
-        endTurnBtn.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (turnoJogador) {
-                    passarTurno();
-                }
-            }
-        });
-        stage.addActor(endTurnBtn);
-    }
     private void puxarNovasCartas() {
         //PRIORIDADE NUMERO 1 CORRIGIR RECICLAGEM DO DESCARTE, CARTAS SE REPETEM
         mãoPlayer.clear();
@@ -138,6 +113,9 @@ public class Main extends ApplicationAdapter {
                         descarte.add(carta);
                         carta.executarEfeitos(jogador, inimigo);
                     }
+                    if(carta instanceof CartaAtq){
+                        tremerInimigo();
+                    }
                 }
             });
 
@@ -153,15 +131,55 @@ public class Main extends ApplicationAdapter {
         descarte.addAll(mãoPlayer);
         puxarNovasCartas();
     }
-
+    private void botãoTurno(){
+        TextureRegionDrawable drawable = new TextureRegionDrawable(endTurnTex);
+        endTurnBtn = new ImageButton(drawable);
+        endTurnBtn.setSize(120, 50);
+        endTurnBtn.setPosition(1000, 50);
+        endTurnBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (turnoJogador) {
+                    passarTurno();
+                }
+            }
+        });
+        stage.addActor(endTurnBtn);
+    }
+    private void tremerInimigo() {
+        tremorTimer = 0.3f; // duração do tremor em segundos
+    }
+    @Override
+    public void create() {
+        barraVidaIn = new ShapeRenderer();
+        Texture inimigoTex = new Texture("BossAparencia.png");
+        inimigo = new Inimigo(100, 3, inimigoTex);
+        criardeck();
+        Collections.shuffle(deckPlayer, new Random());
+        mãoPlayer = new ArrayList<>(deckPlayer.subList(0, 6));
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
+        puxarNovasCartas();
+        botãoTurno();
+    }
     @Override
     public void render() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        float delta = Gdx.graphics.getDeltaTime();
         batch.begin();
+        if (tremorTimer > 0) {
+            tremorTimer -= delta;
+            // DESLOCAMENTO DO INIMIGO DURANTE ATAQUE
+            inimigoOffsetX = (float)(Math.random() * 10 - 5); // -5 até +5 px
+            inimigoOffsetY = (float)(Math.random() * 10 - 5);
+        } else {
+            inimigoOffsetX = 0;
+            inimigoOffsetY = 0;
+        }
         stage.act(Gdx.graphics.getDeltaTime());
         BitmapFont font = new BitmapFont();
-        batch.draw(inimigo.getInimigoImg(), 800, 200, 300, 300);
+        batch.draw(inimigo.getInimigoImg(), 800+inimigoOffsetX, 200+inimigoOffsetY, 300, 300);
         font.draw(batch, "Vida jogador"+jogador.HPPlayer, 200, 50);
         font.draw(batch, "Mana: " + jogador.mana, 50, 200);
         font.draw(batch, "Vida inimigo"+inimigo.getHPInimigo(),875, 500);

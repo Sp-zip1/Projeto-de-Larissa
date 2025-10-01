@@ -19,6 +19,6 @@ public class FactoryCartaPod implements CartaFactory{
     @Override
     public Carta criarCarta() {
         CartaFlyweight fly = CartaFlyweightFactory.getCarta(nome, imagem, custo);
-        return new CartaPoder(fly.getCusto(), fly.getNome(), fly.getImagem()).adicionarEfeito(Efeito.dano(20));
+        return new CartaPoder(fly.getCusto(), fly.getNome(), fly.getImagem()).adicionarEfeito(Efeito.danoExtra(2));
     }
 }

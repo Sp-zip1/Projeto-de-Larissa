@@ -15,11 +15,14 @@ public class Efeito {
         acao.accept(jogador, inimigo);
     }
     public static Efeito dano(int quantia) {
-        return new Efeito((j, i) -> i.setHPInimigo(i.getHPInimigo() - quantia));
+        return new Efeito((j, i) -> i.setHPInimigo(i.getHPInimigo() - (quantia + j.getDanoEXATK())));
     }
 
     public static Efeito cura(int quantia) {
         return new Efeito((j, i) -> j.setHPPlayer(j.getHPPlayer() + quantia));
+    }
+    public static Efeito danoExtra(int quantia){
+        return new Efeito((j, i) -> j.setDanoEXATK(j.getDanoEXATK()+quantia));
     }
 
 }
