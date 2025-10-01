@@ -38,6 +38,24 @@ public class Main extends ApplicationAdapter {
     private Inimigo inimigo;
     private ShapeRenderer barraVidaIn;
     Jogador jogador = new Jogador(100, 0, 0, 3);
+    void criarBarraHPIn(){
+        barraVidaIn.begin(ShapeRenderer.ShapeType.Filled);
+        barraVidaIn.setColor(1, 0, 0, 1);
+        // calcular largura proporcional (vida atual / vida máxima)
+        float maxHP = 100f; // pode vir do objeto inimigo se você tiver salvo
+        float larguraMax = 200;
+        float larguraAtual = (inimigo.getHPInimigo() / maxHP) * larguraMax;
+        // posição da barra
+        float x = 800;
+        float y = 520;
+        float altura = 20;
+        barraVidaIn.rect(x, y, larguraAtual, altura);
+        // fundo da barra (cinza, para mostrar vida perdida)
+        barraVidaIn.setColor(0.3f, 0.3f, 0.3f, 1);
+        barraVidaIn.rect(x + larguraAtual, y, larguraMax - larguraAtual, altura);
+
+        barraVidaIn.end();
+    }
     void criardeck() {
         batch = new SpriteBatch();
         slice = new Texture(Gdx.files.internal("slice.png"));
@@ -55,6 +73,7 @@ public class Main extends ApplicationAdapter {
     }
     @Override
     public void create() {
+        barraVidaIn = new ShapeRenderer();
         Texture inimigoTex = new Texture("BossAparencia.png");
         inimigo = new Inimigo(100, 3, inimigoTex);
         criardeck();
@@ -147,6 +166,7 @@ public class Main extends ApplicationAdapter {
         font.draw(batch, "Mana: " + jogador.mana, 50, 200);
         font.draw(batch, "Vida inimigo"+inimigo.getHPInimigo(),875, 500);
         font.draw(batch, turnoJogador ? "Seu Turno" : "Turno do Inimigo", 300, 400);
+        criarBarraHPIn();
         stage.draw();
         batch.end();
     }
