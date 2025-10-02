@@ -1,4 +1,5 @@
 BossAparencia.png
+Daydream DEMO.otf
 Defect.png
 burst.png
 libgdx.png

@@ -2,13 +2,15 @@ package io.github.some_example_name;
 
 import Atores.Inimigo;
 import Atores.Jogador;
-import Entidades.*;
+import Entidades.Carta;
+import Entidades.CartaAtq;
 import Flyweight.CartaFactory;
 import Flyweight.FactoryCartaAtq;
 import Flyweight.FactoryCartaHab;
 import Flyweight.FactoryCartaPod;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -17,18 +19,18 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-
 public class Main extends ApplicationAdapter {
     private float inimigoOffsetX = 0;
     private float inimigoOffsetY = 0;
     private float tremorTimer = 0f;
+    private float delta;
     private SpriteBatch batch;
     private Stage stage;
     private ArrayList<Carta> descarte = new ArrayList<>();
@@ -45,7 +47,7 @@ public class Main extends ApplicationAdapter {
         barraVidaIn.begin(ShapeRenderer.ShapeType.Filled);
         barraVidaIn.setColor(1, 0, 0, 1);
         // calcular largura proporcional (vida atual / vida máxima)
-        float maxHP = 100f; // pode vir do objeto inimigo se você tiver salvo
+        float maxHP = 100f;
         float larguraMax = 200;
         float larguraAtual = (inimigo.getHPInimigo() / maxHP) * larguraMax;
         // posição da barra
@@ -53,7 +55,6 @@ public class Main extends ApplicationAdapter {
         float y = 520;
         float altura = 20;
         barraVidaIn.rect(x, y, larguraAtual, altura);
-        // fundo da barra (cinza, para mostrar vida perdida)
         barraVidaIn.setColor(0.3f, 0.3f, 0.3f, 1);
         barraVidaIn.rect(x + larguraAtual, y, larguraMax - larguraAtual, altura);
 
@@ -85,8 +86,7 @@ public class Main extends ApplicationAdapter {
         // Puxa cartas até ter 6 na mão
         while (mãoPlayer.size() < 6) {
             if (deckPlayer.isEmpty()) {
-                if (descarte.isEmpty()) break; // não há mais cartas disponíveis
-                // recicla o descarte e embaralha
+                if (descarte.isEmpty()) break;
                 deckPlayer.addAll(descarte);
                 descarte.clear();
                 Collections.shuffle(deckPlayer, new Random());
@@ -112,6 +112,7 @@ public class Main extends ApplicationAdapter {
                         botoesCartas.remove(button);
                         descarte.add(carta);
                         carta.executarEfeitos(jogador, inimigo);
+                        reposicionarCartas();
                     }
                     if(carta instanceof CartaAtq){
                         tremerInimigo();
@@ -122,6 +123,7 @@ public class Main extends ApplicationAdapter {
             botoesCartas.add(button);
             stage.addActor(button);
         }
+        reposicionarCartas();
     }
     void passarTurno(){
         inimigo.ExecutarAçãoI(jogador);
@@ -131,7 +133,7 @@ public class Main extends ApplicationAdapter {
         descarte.addAll(mãoPlayer);
         puxarNovasCartas();
     }
-    private void botãoTurno(){
+    public void botãoTurno(){
         TextureRegionDrawable drawable = new TextureRegionDrawable(endTurnTex);
         endTurnBtn = new ImageButton(drawable);
         endTurnBtn.setSize(120, 50);
@@ -146,9 +148,32 @@ public class Main extends ApplicationAdapter {
         });
         stage.addActor(endTurnBtn);
     }
-    private void tremerInimigo() {
+    public void tremerInimigo() {
         tremorTimer = 0.3f; // duração do tremor em segundos
     }
+    public void inimigoTremerEfeito(){
+        if (tremorTimer > 0) {
+            tremorTimer -= delta;
+            // DESLOCAMENTO DO INIMIGO DURANTE ATAQUE
+            inimigoOffsetX = (float)(Math.random() * 10 - 5); // -5 até +5 px
+            inimigoOffsetY = (float)(Math.random() * 10 - 5);
+        } else {
+            inimigoOffsetX = 0;
+            inimigoOffsetY = 0;
+        }
+    }
+    public void reposicionarCartas() {
+        float larguraTotal = mãoPlayer.size() * 100;
+        float centroTela = Gdx.graphics.getWidth() / 2f;
+        float xInicial = centroTela - (larguraTotal / 2f);
+
+        for (int i = 0; i < botoesCartas.size(); i++) {
+            ImageButton button = botoesCartas.get(i);
+            float x = xInicial + i * 100;
+            button.setPosition(x, 20);
+        }
+    }
+
     @Override
     public void create() {
         barraVidaIn = new ShapeRenderer();
@@ -166,17 +191,9 @@ public class Main extends ApplicationAdapter {
     public void render() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        float delta = Gdx.graphics.getDeltaTime();
+        delta = Gdx.graphics.getDeltaTime();
         batch.begin();
-        if (tremorTimer > 0) {
-            tremorTimer -= delta;
-            // DESLOCAMENTO DO INIMIGO DURANTE ATAQUE
-            inimigoOffsetX = (float)(Math.random() * 10 - 5); // -5 até +5 px
-            inimigoOffsetY = (float)(Math.random() * 10 - 5);
-        } else {
-            inimigoOffsetX = 0;
-            inimigoOffsetY = 0;
-        }
+        inimigoTremerEfeito();
         stage.act(Gdx.graphics.getDeltaTime());
         BitmapFont font = new BitmapFont();
         batch.draw(inimigo.getInimigoImg(), 800+inimigoOffsetX, 200+inimigoOffsetY, 300, 300);
