@@ -2,6 +2,7 @@ package Ações;
 
 import Atores.Inimigo;
 import Atores.Jogador;
+import Entidades.Carta;
 
 import java.util.function.BiConsumer;
 
@@ -24,5 +25,7 @@ public class Efeito {
     public static Efeito danoExtra(int quantia){
         return new Efeito((j, i) -> j.setDanoEXATK(j.getDanoEXATK()+quantia));
     }
-
+    public static Efeito duplicar(Carta carta){
+        return new Efeito((j, i)->carta.executarEfeitos(j, i));
+    }
 }

@@ -37,7 +37,7 @@ public class Main extends ApplicationAdapter {
     private ArrayList<ImageButton> botoesCartas = new ArrayList<>();
     private ArrayList<Carta> deckPlayer = new ArrayList<>();
     private ArrayList<Carta> mãoPlayer = new ArrayList<>();
-    private Texture slice, burst, wraith, endTurnTex;
+    private Texture slice, burst, wraith, endTurnTex, backGround;
     private ImageButton endTurnBtn;
     private boolean turnoJogador = true;
     private Inimigo inimigo;
@@ -186,6 +186,7 @@ public class Main extends ApplicationAdapter {
         mãoPlayer = new ArrayList<>(deckPlayer.subList(0, 6));
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+        backGround = new Texture("BackGround.png");
         puxarNovasCartas();
         botãoTurno();
     }
@@ -195,6 +196,7 @@ public class Main extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         delta = Gdx.graphics.getDeltaTime();
         batch.begin();
+        batch.draw(backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         inimigoTremerEfeito();
         stage.act(Gdx.graphics.getDeltaTime());
         BitmapFont font = new BitmapFont();

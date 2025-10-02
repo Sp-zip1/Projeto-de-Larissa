@@ -1,3 +1,4 @@
+BackGround.png
 BossAparencia.png
 Daydream DEMO.otf
 Defect.png
