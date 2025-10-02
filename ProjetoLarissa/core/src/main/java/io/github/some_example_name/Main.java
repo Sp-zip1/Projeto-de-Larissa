@@ -43,7 +43,7 @@ public class Main extends ApplicationAdapter {
     private Inimigo inimigo;
     private ShapeRenderer barraVidaIn;
     Jogador jogador = new Jogador(100, 0, 0, 3);
-    void criarBarraHPIn(){
+    void criarBarraHPIn(BitmapFont font){
         barraVidaIn.begin(ShapeRenderer.ShapeType.Filled);
         barraVidaIn.setColor(1, 0, 0, 1);
         // calcular largura proporcional (vida atual / vida máxima)
@@ -57,8 +57,10 @@ public class Main extends ApplicationAdapter {
         barraVidaIn.rect(x, y, larguraAtual, altura);
         barraVidaIn.setColor(0.3f, 0.3f, 0.3f, 1);
         barraVidaIn.rect(x + larguraAtual, y, larguraMax - larguraAtual, altura);
-
         barraVidaIn.end();
+        String textoVida = inimigo.getHPInimigo() + " / " + (int)maxHP;
+        float textoLargura = font.getRegion().getRegionWidth();
+        font.draw(batch, textoVida, x + larguraMax/2f - textoVida.length()*3, y + altura - 5);
     }
     void criardeck() {
         batch = new SpriteBatch();
@@ -199,9 +201,8 @@ public class Main extends ApplicationAdapter {
         batch.draw(inimigo.getInimigoImg(), 800+inimigoOffsetX, 200+inimigoOffsetY, 300, 300);
         font.draw(batch, "Vida jogador"+jogador.HPPlayer, 200, 50);
         font.draw(batch, "Mana: " + jogador.mana, 50, 200);
-        font.draw(batch, "Vida inimigo"+inimigo.getHPInimigo(),875, 500);
         font.draw(batch, turnoJogador ? "Seu Turno" : "Turno do Inimigo", 300, 400);
-        criarBarraHPIn();
+        criarBarraHPIn(font);
         stage.draw();
         batch.end();
     }
