@@ -179,14 +179,14 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         barraVidaIn = new ShapeRenderer();
-        Texture inimigoTex = new Texture("BossAparencia.png");
+        Texture inimigoTex = new Texture("tangled-wires.png");
         inimigo = new Inimigo(100, 3, inimigoTex);
         criardeck();
         Collections.shuffle(deckPlayer, new Random());
         mãoPlayer = new ArrayList<>(deckPlayer.subList(0, 6));
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-        backGround = new Texture("BackGround.png");
+        backGround = new Texture("Background.png");
         puxarNovasCartas();
         botãoTurno();
     }
