@@ -33,5 +33,6 @@ public class Lwjgl3Launcher {
         //// They can also be loaded from the root of assets/ .
         configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
         return configuration;
+        //teste
     }
 }
