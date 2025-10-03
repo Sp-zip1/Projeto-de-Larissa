@@ -33,10 +33,7 @@ public class Main extends ApplicationAdapter {
     private float delta;
     private SpriteBatch batch;
     private Stage stage;
-    private ArrayList<Carta> descarte = new ArrayList<>();
     private ArrayList<ImageButton> botoesCartas = new ArrayList<>();
-    private ArrayList<Carta> deckPlayer = new ArrayList<>();
-    private ArrayList<Carta> mãoPlayer = new ArrayList<>();
     private Texture slice, burst, wraith, endTurnTex, backGround;
     private ImageButton endTurnBtn;
     private boolean turnoJogador = true;
@@ -73,32 +70,32 @@ public class Main extends ApplicationAdapter {
         CartaFactory fabHab = new FactoryCartaHab(burst, "burst", 1);
         CartaFactory fabPoder = new FactoryCartaPod("wraith", wraith, 3);
 
-        for (int i = 0; i < 6; i++) deckPlayer.add(fabAtq.criarCarta());
-        for (int i = 0; i < 6; i++) deckPlayer.add(fabHab.criarCarta());
-        for (int i = 0; i < 2; i++) deckPlayer.add(fabPoder.criarCarta());
+        for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabAtq.criarCarta());
+        for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabHab.criarCarta());
+        for (int i = 0; i < 2; i++) jogador.deckPlayer.add(fabPoder.criarCarta());
     }
     private void puxarNovasCartas() {
         //PRIORIDADE NUMERO 1 CORRIGIR RECICLAGEM DO DESCARTE, CARTAS SE REPETEM
-        mãoPlayer.clear();
+        jogador.mãoPlayer.clear();
         for (ImageButton b : botoesCartas) {
             b.remove();
         }
         botoesCartas.clear();
 
         // Puxa cartas até ter 6 na mão
-        while (mãoPlayer.size() < 6) {
-            if (deckPlayer.isEmpty()) {
-                if (descarte.isEmpty()) break;
-                deckPlayer.addAll(descarte);
-                descarte.clear();
-                Collections.shuffle(deckPlayer, new Random());
+        while (jogador.mãoPlayer.size() < 6) {
+            if (jogador.deckPlayer.isEmpty()) {
+                if (jogador.descarte.isEmpty()) break;
+                jogador.deckPlayer.addAll(jogador.descarte);
+                jogador.descarte.clear();
+                Collections.shuffle(jogador.deckPlayer, new Random());
             }
             // pega a primeira carta do deck
-            Carta carta = deckPlayer.remove(0);
-            mãoPlayer.add(carta);
+            Carta carta = jogador.deckPlayer.remove(0);
+            jogador.mãoPlayer.add(carta);
         }
-        for (int i = 0; i < mãoPlayer.size(); i++) {
-            final Carta carta = mãoPlayer.get(i);
+        for (int i = 0; i < jogador.mãoPlayer.size(); i++) {
+            final Carta carta = jogador.mãoPlayer.get(i);
             TextureRegionDrawable drawable = new TextureRegionDrawable(carta.getImagem());
             ImageButton button = new ImageButton(drawable);
             button.setPosition(350 + i * 100, 20);
@@ -110,9 +107,9 @@ public class Main extends ApplicationAdapter {
                     if(jogador.mana >= carta.custo) {
                         button.remove();
                         jogador.mana -= carta.custo;
-                        mãoPlayer.remove(carta);
+                        jogador.mãoPlayer.remove(carta);
                         botoesCartas.remove(button);
-                        descarte.add(carta);
+                        jogador.descarte.add(carta);
                         carta.executarEfeitos(jogador, inimigo);
                         reposicionarCartas();
                     }
@@ -132,7 +129,7 @@ public class Main extends ApplicationAdapter {
         turnoJogador = true;
         jogador.mana = 3;
         //ACHO QUE CORRIGI O PROBLEMA MAS PRECISO FAZER MAS TESTES
-        descarte.addAll(mãoPlayer);
+        jogador.descarte.addAll(jogador.mãoPlayer);
         puxarNovasCartas();
     }
     public void botãoTurno(){
@@ -165,7 +162,7 @@ public class Main extends ApplicationAdapter {
         }
     }
     public void reposicionarCartas() {
-        float larguraTotal = mãoPlayer.size() * 100;
+        float larguraTotal = jogador.mãoPlayer.size() * 100;
         float centroTela = Gdx.graphics.getWidth() / 2f;
         float xInicial = centroTela - (larguraTotal / 2f);
 
@@ -182,8 +179,7 @@ public class Main extends ApplicationAdapter {
         Texture inimigoTex = new Texture("tangled-wires.png");
         inimigo = new Inimigo(100, 3, inimigoTex);
         criardeck();
-        Collections.shuffle(deckPlayer, new Random());
-        mãoPlayer = new ArrayList<>(deckPlayer.subList(0, 6));
+        Collections.shuffle(jogador.deckPlayer, new Random());
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         backGround = new Texture("Background.png");
