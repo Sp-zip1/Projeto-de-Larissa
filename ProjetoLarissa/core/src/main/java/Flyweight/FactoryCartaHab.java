@@ -19,6 +19,6 @@ public class FactoryCartaHab implements CartaFactory {
     @Override
     public Carta criarCarta() {
         CartaFlyweight fly = CartaFlyweightFactory.getCarta(nome, imagem, custo);
-        return new CartaHab(fly.getCusto(), fly.getNome(), fly.getImagem()).adicionarEfeito(Efeito.cura(10));
+        return new CartaHab(fly.getCusto(), fly.getNome(), fly.getImagem()).adicionarEfeito(Efeito.duplicarProxima());
     }
 }

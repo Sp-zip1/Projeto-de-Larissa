@@ -3,6 +3,8 @@ package Atores;
 import Entidades.Carta;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiConsumer;
 
 public class Jogador {
     public Integer HPPlayer;
@@ -12,6 +14,7 @@ public class Jogador {
     public ArrayList<Carta> deckPlayer = new ArrayList<>();
     public ArrayList<Carta> descarte = new ArrayList<>();
     public ArrayList<Carta> mãoPlayer = new ArrayList<>();
+    private final List<BiConsumer<Jogador, Carta>> buffs = new ArrayList<>();
 
     public Jogador(Integer HPPlayer, Integer danoEXATK, Integer defesaEXPlayer, Integer mana) {
         this.HPPlayer = HPPlayer;
@@ -49,5 +52,14 @@ public class Jogador {
 
     public void setMana(Integer mana) {
         this.mana = mana;
+    }
+    public void adicionarBuff(BiConsumer<Jogador, Carta> buff) {
+        buffs.add(buff);
+    }
+    public void executarBuffs(Carta carta) {
+        for (BiConsumer<Jogador, Carta> buff : buffs) {
+            buff.accept(this, carta);
+        }
+        buffs.clear();
     }
 }

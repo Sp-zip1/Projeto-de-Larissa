@@ -61,10 +61,17 @@ public abstract class Carta {
         efeitos.add(efeito);
         return this;
     }
-    public void executarEfeitos(Jogador jogador, Inimigo inimigo) {
-        for (Efeito e : efeitos) {
-            e.aplicar(jogador, inimigo);
+    // Executa os efeitos da carta sem disparar buffs
+    public void executarEfeitosDireto(Jogador jogador, Inimigo inimigo) {
+        for (Efeito efeito : efeitos) {
+            efeito.aplicar(jogador, inimigo);
         }
+    }
+
+    public void executarEfeitos(Jogador jogador, Inimigo inimigo) {
+        //Evita stackoverflow dessa maneira
+        jogador.executarBuffs(this);
+        executarEfeitosDireto(jogador, inimigo);
     }
 
 }
