@@ -2,6 +2,7 @@ Background.png
 BossAparencia.png
 Daydream DEMO.otf
 Defect.png
+Player.png
 Sons/SomTemp.mp3
 beast-cmd.png
 beast-rar.png

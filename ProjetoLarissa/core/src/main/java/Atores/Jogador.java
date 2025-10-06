@@ -1,6 +1,8 @@
 package Atores;
 //TENHO QUE ORGANIZAR ESSE CODIGO ESTA  MUITO CONFUSO
 import Entidades.Carta;
+import com.badlogic.gdx.graphics.Texture;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -10,16 +12,18 @@ public class Jogador {
     public Integer danoEXATK;
     public Integer defesaEXPlayer;
     public Integer mana;
+    public Texture ImgPlayer;
     public ArrayList<Carta> deckPlayer = new ArrayList<>();
     public ArrayList<Carta> descarte = new ArrayList<>();
     public ArrayList<Carta> mãoPlayer = new ArrayList<>();
     private final List<BiConsumer<Jogador, Carta>> buffs = new ArrayList<>();
 
-    public Jogador(Integer HPPlayer, Integer danoEXATK, Integer defesaEXPlayer, Integer mana) {
+    public Jogador(Integer HPPlayer, Integer danoEXATK, Integer defesaEXPlayer, Integer mana, Texture imgPlayer) {
         this.HPPlayer = HPPlayer;
         this.danoEXATK = danoEXATK;
         this.defesaEXPlayer = defesaEXPlayer;
         this.mana = mana;
+        this.ImgPlayer = imgPlayer;
     }
     public Integer getHPPlayer() {
         return HPPlayer;
@@ -47,6 +51,14 @@ public class Jogador {
 
     public Integer getMana() {
         return mana;
+    }
+
+    public Texture getImgPlayer() {
+        return ImgPlayer;
+    }
+
+    public void setImgPlayer(Texture imgPlayer) {
+        ImgPlayer = imgPlayer;
     }
 
     public void setMana(Integer mana) {

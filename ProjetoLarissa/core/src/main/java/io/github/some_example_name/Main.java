@@ -32,12 +32,12 @@ public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
     private Stage stage;
     private ArrayList<ImageButton> botoesCartas = new ArrayList<>();
-    private Texture slice, burst, wraith, endTurnTex, backGround;
+    private Texture slice, burst, wraith, endTurnTex, backGround, TextJog;
     private ImageButton endTurnBtn;
     private boolean turnoJogador = true;
     private Inimigo inimigo;
     private ShapeRenderer barraVidaIn;
-    Jogador jogador = new Jogador(100, 0, 0, 3);
+    Jogador jogador;
     void criarBarraHPIn(BitmapFont font){
         barraVidaIn.begin(ShapeRenderer.ShapeType.Filled);
         barraVidaIn.setColor(1, 0, 0, 1);
@@ -97,7 +97,6 @@ public class Main extends ApplicationAdapter {
             ImageButton button = new ImageButton(drawable);
             button.setPosition(350 + i * 100, 20);
             button.setSize(100, 150);
-
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -175,6 +174,8 @@ public class Main extends ApplicationAdapter {
     public void create() {
         barraVidaIn = new ShapeRenderer();
         Texture inimigoTex = new Texture("tangled-wires.png");
+        TextJog = new Texture(Gdx.files.internal("Player.png"));
+        jogador = new Jogador(100, 0, 0, 3, TextJog);
         inimigo = new Inimigo(100, 3, inimigoTex);
         criardeck();
         Collections.shuffle(jogador.deckPlayer, new Random());
@@ -194,6 +195,7 @@ public class Main extends ApplicationAdapter {
         inimigoTremerEfeito();
         stage.act(Gdx.graphics.getDeltaTime());
         BitmapFont font = new BitmapFont();
+        batch.draw(jogador.getImgPlayer(),200, 200, 300, 300);
         batch.draw(inimigo.getInimigoImg(), 800+inimigoOffsetX, 200+inimigoOffsetY, 300, 300);
         font.draw(batch, "Vida jogador"+jogador.HPPlayer, 200, 50);
         font.draw(batch, "Mana: " + jogador.mana, 50, 200);
