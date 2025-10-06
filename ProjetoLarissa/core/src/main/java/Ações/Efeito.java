@@ -27,7 +27,7 @@ public class Efeito {
     }
     public static Efeito duplicarProxima() {
         return new Efeito((j, i) -> {
-            j.adicionarBuff((jogador, carta) -> {
+            j.adicionarBuffTemporario((jogador, carta) -> {
                 carta.executarEfeitosDireto(jogador, i);
             });
         });
