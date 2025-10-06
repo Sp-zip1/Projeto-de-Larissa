@@ -3,11 +3,9 @@ package io.github.some_example_name;
 import Atores.Inimigo;
 import Atores.Jogador;
 import Entidades.Carta;
-import Entidades.CartaAtq;
+import Entidades.TipoC;
 import Flyweight.CartaFactory;
-import Flyweight.FactoryCartaAtq;
-import Flyweight.FactoryCartaHab;
-import Flyweight.FactoryCartaPod;
+import Flyweight.FactoryCartas;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -66,13 +64,12 @@ public class Main extends ApplicationAdapter {
         wraith = new Texture(Gdx.files.internal("wraith.png"));
         endTurnTex = new Texture(Gdx.files.internal("slice.png"));
 
-        CartaFactory fabAtq = new FactoryCartaAtq(slice, "slice", 0);
-        CartaFactory fabHab = new FactoryCartaHab(burst, "burst", 1);
-        CartaFactory fabPoder = new FactoryCartaPod("wraith", wraith, 3);
-
-        for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabAtq.criarCarta());
-        for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabHab.criarCarta());
-        for (int i = 0; i < 2; i++) jogador.deckPlayer.add(fabPoder.criarCarta());
+        CartaFactory fabrCAtk = new FactoryCartas(0, "golpe", slice, TipoC.ATK, Gdx.audio.newSound(Gdx.files.internal("Sons/SomTemp.mp3")));
+        CartaFactory fabrCHab = new FactoryCartas(1, "burst", burst, TipoC.HAB, Gdx.audio.newSound(Gdx.files.internal("Sons/SomTemp.mp3")));
+        CartaFactory fabrCPod = new FactoryCartas(3, "wraith", wraith, TipoC.POD, Gdx.audio.newSound(Gdx.files.internal("Sons/SomTemp.mp3")));
+        for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabrCAtk.criarCarta());
+        for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabrCHab.criarCarta());
+        for (int i = 0; i < 2; i++) jogador.deckPlayer.add(fabrCPod.criarCarta());
     }
     private void puxarNovasCartas() {
         //PRIORIDADE NUMERO 1 CORRIGIR RECICLAGEM DO DESCARTE, CARTAS SE REPETEM
@@ -111,9 +108,10 @@ public class Main extends ApplicationAdapter {
                         botoesCartas.remove(button);
                         jogador.descarte.add(carta);
                         carta.executarEfeitos(jogador, inimigo);
+                        carta.somc.play();
                         reposicionarCartas();
                     }
-                    if(carta instanceof CartaAtq){
+                    if(carta.getTipoC().equals(TipoC.ATK)){
                         tremerInimigo();
                     }
                 }
