@@ -5,14 +5,15 @@ import com.badlogic.gdx.graphics.Texture;
 import static com.badlogic.gdx.math.MathUtils.random;
 
 public class Inimigo {
-    Integer HPInimigo;
+    Integer HPInimigo, maxHP;
     Integer Dano;
     Texture inimigoImg;
 
-    public Inimigo(Integer HPInimigo, Integer dano, Texture inimigoImg) {
+    public Inimigo(Integer HPInimigo, Integer dano, Texture inimigoImg, Integer maxHP) {
         this.HPInimigo = HPInimigo;
         this.Dano = dano;
         this.inimigoImg = inimigoImg;
+        this.maxHP = maxHP;
     }
 
     public Integer getHPInimigo() {
@@ -20,7 +21,7 @@ public class Inimigo {
     }
 
     public void setHPInimigo(Integer HPInimigo) {
-        this.HPInimigo = HPInimigo;
+        this.HPInimigo = Math.max(0, Math.min(HPInimigo, maxHP));
     }
 
     public Integer getDano() {

@@ -16,8 +16,12 @@ public class Efeito {
         acao.accept(jogador, inimigo);
     }
     public static Efeito dano(int quantia) {
-        return new Efeito((j, i) -> i.setHPInimigo(i.getHPInimigo() - (quantia + j.getDanoEXATK())));
+        return new Efeito((j, i) -> {
+            int novoHP = i.getHPInimigo() - (quantia + j.getDanoEXATK());
+            i.setHPInimigo(novoHP); // já limita a 0 dentro do setter
+        });
     }
+
 
     public static Efeito cura(int quantia) {
         return new Efeito((j, i) -> j.setHPPlayer(j.getHPPlayer() + quantia));

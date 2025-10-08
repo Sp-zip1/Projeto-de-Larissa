@@ -203,7 +203,7 @@ public class Main extends ApplicationAdapter {
         TextJog = new Texture(Gdx.files.internal("Player.png"));
         playerDanTex = new Texture("player-hit.png");
         jogador = new Jogador(100, 0, 0, 3, TextJog);
-        inimigo = new Inimigo(100, 3, inimigoTex);
+        inimigo = new Inimigo(100, 3, inimigoTex, 100);
         criardeck();
         Collections.shuffle(jogador.deckPlayer, new Random());
         stage = new Stage(new ScreenViewport());
@@ -227,7 +227,7 @@ public class Main extends ApplicationAdapter {
         batch.draw(inimigo.getInimigoImg(), 800+inimigoOffsetX, 200+inimigoOffsetY, 300, 300);
         font.draw(batch, "Vida jogador"+jogador.HPPlayer, 200, 50);
         font.draw(batch, "Mana: " + jogador.mana, 50, 200);
-        font.draw(batch, turnoJogador ? "Seu Turno" : "Turno do Inimigo", 300, 400);
+        //font.draw(batch, turnoJogador ? "Seu Turno" : "Turno do Inimigo", 300, 400);
         criarBarraHPIn(font);
         stage.draw();
         batch.end();
