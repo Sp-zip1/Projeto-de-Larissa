@@ -36,10 +36,31 @@ public class Main extends ApplicationAdapter {
     private ImageButton endTurnBtn;
     private boolean turnoJogador = true;
     private Inimigo inimigo;
-    private ShapeRenderer barraVidaIn;
+    private ShapeRenderer barraVidaIn, barraVidaP;
     Jogador jogador;
     public Texture inimigoDanTex, playerDanTex;
     public Texture inimigoTex;
+    void criarBarraHPJo(BitmapFont font){
+        barraVidaP.begin(ShapeRenderer.ShapeType.Filled);
+        barraVidaP.setColor(1, 0, 0, 1);
+
+        // calcular largura proporcional (vida atual / vida máxima)
+        float maxHPJ = 100f;
+        float larguraMaxJ = 200;
+        float larguraAtualJ = (jogador.getHPPlayer() / maxHPJ) * larguraMaxJ;
+
+        // posição da barra
+        float x = 200;
+        float y = 520;
+        float altura = 20;
+        barraVidaP.rect(x, y, larguraAtualJ, altura);
+        barraVidaP.setColor(0.3f, 0.3f, 0.3f, 1);
+        barraVidaP.rect(x + larguraAtualJ, y, larguraMaxJ - larguraAtualJ, altura);
+        barraVidaP.end();
+        String textoVidaP = jogador.getHPPlayer() + " / " + (int)maxHPJ;
+        font.draw(batch, textoVidaP, x + larguraMaxJ/2f - textoVidaP.length()*3, y + altura - 5);
+    }
+
     void criarBarraHPIn(BitmapFont font){
         barraVidaIn.begin(ShapeRenderer.ShapeType.Filled);
         barraVidaIn.setColor(1, 0, 0, 1);
@@ -198,6 +219,7 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         barraVidaIn = new ShapeRenderer();
+        barraVidaP = new ShapeRenderer();
         inimigoTex = new Texture("tangled-wires.png");
         inimigoDanTex = new Texture("tangled-wires-hit.png");
         TextJog = new Texture(Gdx.files.internal("Player.png"));
@@ -225,10 +247,11 @@ public class Main extends ApplicationAdapter {
         BitmapFont font = new BitmapFont();
         batch.draw(jogador.getImgPlayer(),200+playerOffsetX, 200+playeroOffsetY, 300, 300);
         batch.draw(inimigo.getInimigoImg(), 800+inimigoOffsetX, 200+inimigoOffsetY, 300, 300);
-        font.draw(batch, "Vida jogador"+jogador.HPPlayer, 200, 50);
+        //font.draw(batch, "Vida jogador"+jogador.HPPlayer, 200, 50);
         font.draw(batch, "Mana: " + jogador.mana, 50, 200);
         //font.draw(batch, turnoJogador ? "Seu Turno" : "Turno do Inimigo", 300, 400);
         criarBarraHPIn(font);
+        criarBarraHPJo(font);
         stage.draw();
         batch.end();
     }
