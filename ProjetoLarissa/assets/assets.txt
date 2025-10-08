@@ -1,14 +1,18 @@
 Background.png
-BossAparencia.png
-Daydream DEMO.otf
-Defect.png
 Player.png
 Sons/SomTemp.mp3
 beast-cmd.png
 beast-rar.png
+binary-slime-hit.png
 binary-slime.png
 burst.png
+cmd-hit.png
+compiler-monster-hit.png
+compiler-monster.png
 libgdx.png
+player-hit.png
+rar-hit.png
 slice.png
+tangled-wires-hit.png
 tangled-wires.png
 wraith.png

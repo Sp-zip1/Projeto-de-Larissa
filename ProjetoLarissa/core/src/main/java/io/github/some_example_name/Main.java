@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 public class Main extends ApplicationAdapter {
-    private float inimigoOffsetX = 0;
-    private float inimigoOffsetY = 0;
-    private float tremorTimer = 0f;
+    private float inimigoOffsetX = 0, playerOffsetX =0;
+    private float inimigoOffsetY = 0, playeroOffsetY = 0;
+    private float tremorTimer = 0f, tremorTimerP = 0f;
     private float delta;
     private SpriteBatch batch;
     private Stage stage;
@@ -38,6 +38,8 @@ public class Main extends ApplicationAdapter {
     private Inimigo inimigo;
     private ShapeRenderer barraVidaIn;
     Jogador jogador;
+    public Texture inimigoDanTex, playerDanTex;
+    public Texture inimigoTex;
     void criarBarraHPIn(BitmapFont font){
         barraVidaIn.begin(ShapeRenderer.ShapeType.Filled);
         barraVidaIn.setColor(1, 0, 0, 1);
@@ -122,7 +124,12 @@ public class Main extends ApplicationAdapter {
         reposicionarCartas();
     }
     void passarTurno(){
+        int atual = jogador.getHPPlayer();
         inimigo.ExecutarAçãoI(jogador);
+        if(atual > jogador.getHPPlayer()){
+            tremerPlayer();
+        }
+        atual = jogador.getHPPlayer();
         turnoJogador = true;
         jogador.mana = 3;
         //ACHO QUE CORRIGI O PROBLEMA MAS PRECISO FAZER MAS TESTES
@@ -147,8 +154,12 @@ public class Main extends ApplicationAdapter {
     public void tremerInimigo() {
         tremorTimer = 0.3f; // duração do tremor em segundos
     }
+    public void tremerPlayer(){
+        tremorTimerP = 0.3f;
+    }
     public void inimigoTremerEfeito(){
         if (tremorTimer > 0) {
+            inimigo.setInimigoImg(inimigoDanTex);
             tremorTimer -= delta;
             // DESLOCAMENTO DO INIMIGO DURANTE ATAQUE
             inimigoOffsetX = (float)(Math.random() * 10 - 5); // -5 até +5 px
@@ -156,8 +167,22 @@ public class Main extends ApplicationAdapter {
         } else {
             inimigoOffsetX = 0;
             inimigoOffsetY = 0;
+            inimigo.setInimigoImg(inimigoTex);
+        }
+    }public void PlayerTremerEfeito(){
+        if (tremorTimerP > 0) {
+            jogador.setImgPlayer(playerDanTex);
+            tremorTimerP -= delta;
+            // DESLOCAMENTO DO INIMIGO DURANTE ATAQUE
+            playerOffsetX = (float)(Math.random() * 10 - 5); // -5 até +5 px
+            playeroOffsetY = (float)(Math.random() * 10 - 5);
+        } else {
+            playerOffsetX = 0;
+            playeroOffsetY = 0;
+            jogador.setImgPlayer(TextJog);
         }
     }
+
     public void reposicionarCartas() {
         float larguraTotal = jogador.mãoPlayer.size() * 100;
         float centroTela = Gdx.graphics.getWidth() / 2f;
@@ -173,8 +198,10 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
         barraVidaIn = new ShapeRenderer();
-        Texture inimigoTex = new Texture("tangled-wires.png");
+        inimigoTex = new Texture("tangled-wires.png");
+        inimigoDanTex = new Texture("tangled-wires-hit.png");
         TextJog = new Texture(Gdx.files.internal("Player.png"));
+        playerDanTex = new Texture("player-hit.png");
         jogador = new Jogador(100, 0, 0, 3, TextJog);
         inimigo = new Inimigo(100, 3, inimigoTex);
         criardeck();
@@ -193,9 +220,10 @@ public class Main extends ApplicationAdapter {
         batch.begin();
         batch.draw(backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         inimigoTremerEfeito();
+        PlayerTremerEfeito();
         stage.act(Gdx.graphics.getDeltaTime());
         BitmapFont font = new BitmapFont();
-        batch.draw(jogador.getImgPlayer(),200, 200, 300, 300);
+        batch.draw(jogador.getImgPlayer(),200+playerOffsetX, 200+playeroOffsetY, 300, 300);
         batch.draw(inimigo.getInimigoImg(), 800+inimigoOffsetX, 200+inimigoOffsetY, 300, 300);
         font.draw(batch, "Vida jogador"+jogador.HPPlayer, 200, 50);
         font.draw(batch, "Mana: " + jogador.mana, 50, 200);
