@@ -87,7 +87,7 @@ public class Main extends ApplicationAdapter {
         wraith = new Texture(Gdx.files.internal("wraith.png"));
         endTurnTex = new Texture(Gdx.files.internal("slice.png"));
 
-        CartaFactory fabrCAtk = new FactoryCartas(0, "golpe", slice, TipoC.ATK, Gdx.audio.newSound(Gdx.files.internal("Sons/SomTemp.mp3")));
+        CartaFactory fabrCAtk = new FactoryCartas(0, "golpe", slice, TipoC.ATK, Gdx.audio.newSound(Gdx.files.internal("Sons/slap-hurt-pain-sound-effect.mp3")));
         CartaFactory fabrCHab = new FactoryCartas(1, "burst", burst, TipoC.HAB, Gdx.audio.newSound(Gdx.files.internal("Sons/SomTemp.mp3")));
         CartaFactory fabrCPod = new FactoryCartas(3, "wraith", wraith, TipoC.POD, Gdx.audio.newSound(Gdx.files.internal("Sons/SomTemp.mp3")));
         for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabrCAtk.criarCarta());
