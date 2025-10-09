@@ -8,6 +8,7 @@ import Flyweight.CartaFactory;
 import Flyweight.FactoryCartas;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -37,6 +38,11 @@ public class Main extends ApplicationAdapter {
     private boolean turnoJogador = true;
     private Inimigo inimigo;
     private ShapeRenderer barraVidaIn, barraVidaP;
+
+    private Music backgroundMusic;
+    private boolean musicEnabled = true;
+    private ImageButton volumeBtn;
+ 
     Jogador jogador;
     public Texture inimigoDanTex, playerDanTex;
     public Texture inimigoTex;
@@ -88,8 +94,8 @@ public class Main extends ApplicationAdapter {
         endTurnTex = new Texture(Gdx.files.internal("slice.png"));
 
         CartaFactory fabrCAtk = new FactoryCartas(0, "golpe", slice, TipoC.ATK, Gdx.audio.newSound(Gdx.files.internal("Sons/slap-hurt-pain-sound-effect.mp3")));
-        CartaFactory fabrCHab = new FactoryCartas(1, "burst", burst, TipoC.HAB, Gdx.audio.newSound(Gdx.files.internal("Sons/SomTemp.mp3")));
-        CartaFactory fabrCPod = new FactoryCartas(3, "wraith", wraith, TipoC.POD, Gdx.audio.newSound(Gdx.files.internal("Sons/SomTemp.mp3")));
+        CartaFactory fabrCHab = new FactoryCartas(1, "burst", burst, TipoC.HAB, Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3")));
+        CartaFactory fabrCPod = new FactoryCartas(3, "wraith", wraith, TipoC.POD, Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3")));
         for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabrCAtk.criarCarta());
         for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabrCHab.criarCarta());
         for (int i = 0; i < 2; i++) jogador.deckPlayer.add(fabrCPod.criarCarta());
@@ -153,7 +159,7 @@ public class Main extends ApplicationAdapter {
         atual = jogador.getHPPlayer();
         turnoJogador = true;
         jogador.mana = 3;
-        //ACHO QUE CORRIGI O PROBLEMA MAS PRECISO FAZER MAS TESTES
+        //ACHO QUE CORRIGI O PROBLEMA MAS PRECISO FAZER MAIS TESTES
         jogador.descarte.addAll(jogador.mãoPlayer);
         puxarNovasCartas();
     }
@@ -233,6 +239,12 @@ public class Main extends ApplicationAdapter {
         backGround = new Texture("Background.png");
         puxarNovasCartas();
         botãoTurno();
+
+            backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Sons/analog-texture.mp3"));
+            backgroundMusic.setLooping(true);
+            backgroundMusic.setVolume(0.4f);
+            backgroundMusic.play();
+                criarBotaoVolumeSimples();
     }
     @Override
     public void render() {
@@ -263,5 +275,46 @@ public class Main extends ApplicationAdapter {
         burst.dispose();
         wraith.dispose();
         stage.dispose();
+
+        if (backgroundMusic != null) {
+            backgroundMusic.dispose();
+        }
+
     }
+
+    private void criarBotaoVolumeSimples() {
+        // Carrega as texturas - CERTIFIQUE-SE que estes arquivos existem!
+        Texture volumeLigadoTex = new Texture(Gdx.files.internal("volume_on.png"));
+        Texture volumeDesligadoTex = new Texture(Gdx.files.internal("volume_mute.png"));
+        
+        TextureRegionDrawable drawableLigado = new TextureRegionDrawable(volumeLigadoTex);
+        TextureRegionDrawable drawableDesligado = new TextureRegionDrawable(volumeDesligadoTex);
+        
+        ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
+        style.imageUp = drawableLigado;
+        
+        ImageButton volumeBtn = new ImageButton(style);
+        volumeBtn.setSize(40, 40);
+        volumeBtn.setPosition(1350, 830);
+        
+        volumeBtn.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                musicEnabled = !musicEnabled;
+                
+                if (backgroundMusic != null) {
+                    if (musicEnabled) {
+                        backgroundMusic.play();
+                        volumeBtn.getStyle().imageUp = drawableLigado;
+                    } else {
+                        backgroundMusic.pause();
+                        volumeBtn.getStyle().imageUp = drawableDesligado;
+                    }
+                }
+            }
+        });
+        
+        stage.addActor(volumeBtn);
+    }
+
 }
