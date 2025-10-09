@@ -155,6 +155,7 @@ public class Main extends ApplicationAdapter {
         inimigo.ExecutarAçãoI(jogador);
         if(atual > jogador.getHPPlayer()){
             tremerPlayer();
+            //FALTA ADICIONAR SOM DE DANO AQUI
         }
         atual = jogador.getHPPlayer();
         turnoJogador = true;
