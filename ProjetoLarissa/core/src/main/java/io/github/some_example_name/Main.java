@@ -38,7 +38,7 @@ public class Main extends ApplicationAdapter {
     private ArrayList<ImageButton> botoesCartas = new ArrayList<>();
     private Texture slice, burst, wraith, endTurnTex, backGround, TextJog;
     private ImageButton endTurnBtn;
-    private boolean turnoJogador = true;
+    private boolean turnoJogador = true, mostrandoRecompensa;
     private Inimigo inimigo;
     private ShapeRenderer barraVidaIn, barraVidaP;
     private Music backgroundMusic;
@@ -47,6 +47,7 @@ public class Main extends ApplicationAdapter {
     Jogador jogador;
     public Texture inimigoDanTex, playerDanTex;
     public Texture inimigoTex;
+    private ArrayList<ImageButton> botoesRecompensa = new ArrayList<>();
     private void carregarTexturasESons() {
         slice = new Texture(Gdx.files.internal("slice.png"));
         burst = new Texture(Gdx.files.internal("burst.png"));
@@ -154,6 +155,47 @@ public class Main extends ApplicationAdapter {
         }
         reposicionarCartas();
     }
+    public void mostrarEscolhaDeCarta() {
+        mostrandoRecompensa = true;
+        //Preciso mudar a aparencia das cartas e ofuscar o fundo quando elas surgem
+        ArrayList<Carta> opcoes = new ArrayList<>();
+        Random random = new Random();
+        // Escolhe aleatoriamente 3 cartas
+        for (int i = 0; i < 3; i++) {
+            int tipo = random.nextInt(3);
+            if (tipo == 0) opcoes.add(fabrCAtk.criarCarta());
+            else if (tipo == 1) opcoes.add(fabrCHab.criarCarta());
+            else opcoes.add(fabrCPod.criarCarta());
+        }
+
+        // Cria os botões de recompensa e adiciona ao stage
+        for (int i = 0; i < opcoes.size(); i++) {
+            final Carta carta = opcoes.get(i);
+            TextureRegionDrawable drawable = new TextureRegionDrawable(carta.getImagem());
+            ImageButton botaoCarta = new ImageButton(drawable);
+            botaoCarta.setSize(150, 200);
+            botaoCarta.setPosition(400 + i * 200, 400);
+
+            botaoCarta.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    jogador.deckPlayer.add(carta);
+                    System.out.println("Carta adicionada ao deck: " + carta.getNome());
+                    for (ImageButton b : botoesRecompensa) {
+                        b.remove();
+                    }
+                    botoesRecompensa.clear();
+                    mostrandoRecompensa = false;
+                    inimigo = new Inimigo(100, 3, inimigoTex, 100);
+                    puxarNovasCartas();
+                }
+            });
+
+            stage.addActor(botaoCarta);
+            botoesRecompensa.add(botaoCarta);
+        }
+    }
+
     void passarTurno(){
         int atual = jogador.getHPPlayer();
         inimigo.ExecutarAçãoI(jogador);
@@ -167,6 +209,9 @@ public class Main extends ApplicationAdapter {
         //ACHO QUE CORRIGI O PROBLEMA MAS PRECISO FAZER MAIS TESTES
         jogador.descarte.addAll(jogador.mãoPlayer);
         puxarNovasCartas();
+        if(inimigo.getHPInimigo() == 0){
+            mostrandoRecompensa = true;
+        }
     }
     public void botãoTurno(){
         TextureRegionDrawable drawable = new TextureRegionDrawable(endTurnTex);
@@ -258,6 +303,10 @@ public class Main extends ApplicationAdapter {
         batch.draw(backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         aplicarTremor(true, delta, inimigoTex, inimigoDanTex);
         aplicarTremor(false, delta, TextJog, playerDanTex);
+        if(mostrandoRecompensa){
+            mostrarEscolhaDeCarta();
+            mostrandoRecompensa = false;
+        }
         stage.act(Gdx.graphics.getDeltaTime());
         BitmapFont font = new BitmapFont();
         batch.draw(jogador.getImgPlayer(),200+playerOffsetX, 200+playeroOffsetY, 300, 300);
