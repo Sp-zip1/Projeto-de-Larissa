@@ -1,6 +1,11 @@
 Background.png
 Player.png
+Sons/MENU.mp3
 Sons/SomTemp.mp3
+Sons/analog-texture.mp3
+Sons/card-woosh.mp3
+Sons/ouch-robot.mp3
+Sons/slap-hurt-pain-sound-effect.mp3
 beast-cmd.png
 beast-rar.png
 binary-slime-hit.png
@@ -15,4 +20,6 @@ rar-hit.png
 slice.png
 tangled-wires-hit.png
 tangled-wires.png
+volume_mute.png
+volume_on.png
 wraith.png

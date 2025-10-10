@@ -107,19 +107,8 @@ public class Main extends ApplicationAdapter {
             b.remove();
         }
         botoesCartas.clear();
-
-        // Puxa cartas até ter 6 na mão
-        while (jogador.mãoPlayer.size() < 6) {
-            if (jogador.deckPlayer.isEmpty()) {
-                if (jogador.descarte.isEmpty()) break;
-                jogador.deckPlayer.addAll(jogador.descarte);
-                jogador.descarte.clear();
-                Collections.shuffle(jogador.deckPlayer, new Random());
-            }
-            // pega a primeira carta do deck
-            Carta carta = jogador.deckPlayer.remove(0);
-            jogador.mãoPlayer.add(carta);
-        }
+        ArrayList<Carta> novas = jogador.puxarCartasDoDeck(6);
+        jogador.mãoPlayer.addAll(novas);
         for (int i = 0; i < jogador.mãoPlayer.size(); i++) {
             final Carta carta = jogador.mãoPlayer.get(i);
             TextureRegionDrawable drawable = new TextureRegionDrawable(carta.getImagem());

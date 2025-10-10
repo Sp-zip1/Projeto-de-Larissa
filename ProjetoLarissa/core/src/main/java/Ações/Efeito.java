@@ -36,4 +36,11 @@ public class Efeito {
             });
         });
     }
+    public static Efeito cavarCartas(int quantia){
+        return new Efeito((j, i) -> j.puxarCartasDoDeck(quantia));
+    }
+    public static Efeito danoJogador(int quantia){
+        return new Efeito(((j, i) -> j.setHPPlayer(j.getHPPlayer() - quantia)));
+    }
+
 }

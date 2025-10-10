@@ -4,7 +4,9 @@ import Entidades.Carta;
 import com.badlogic.gdx.graphics.Texture;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.function.BiConsumer;
 
 public class Jogador {
@@ -103,4 +105,20 @@ public class Jogador {
         // Remove buffs que já foram usados (temporários)
         buffs.removeIf(buff -> buff instanceof BuffTemporario && ((BuffTemporario) buff).jaUsou());
     }
+    public ArrayList<Carta> puxarCartasDoDeck(int quantidade) {
+        ArrayList<Carta> resultado = new ArrayList<>();
+        while (resultado.size() < quantidade) {
+            if (deckPlayer.isEmpty()) {
+                if (descarte.isEmpty()) {
+                    break;
+                }
+                deckPlayer.addAll(descarte);
+                descarte.clear();
+                Collections.shuffle(deckPlayer, new Random());
+            }
+            resultado.add(deckPlayer.remove(0));
+        }
+        return resultado;
+    }
 }
+
