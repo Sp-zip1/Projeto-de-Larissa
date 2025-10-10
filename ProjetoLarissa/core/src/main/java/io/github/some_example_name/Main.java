@@ -32,20 +32,39 @@ public class Main extends ApplicationAdapter {
     private float delta;
     private SpriteBatch batch;
     private Stage stage;
+    private CartaFactory fabrCAtk;
+    private CartaFactory fabrCHab;
+    private CartaFactory fabrCPod;
     private ArrayList<ImageButton> botoesCartas = new ArrayList<>();
     private Texture slice, burst, wraith, endTurnTex, backGround, TextJog;
     private ImageButton endTurnBtn;
     private boolean turnoJogador = true;
     private Inimigo inimigo;
     private ShapeRenderer barraVidaIn, barraVidaP;
-
     private Music backgroundMusic;
     private boolean musicEnabled = true;
     private ImageButton volumeBtn;
- 
     Jogador jogador;
     public Texture inimigoDanTex, playerDanTex;
     public Texture inimigoTex;
+    private void carregarTexturasESons() {
+        slice = new Texture(Gdx.files.internal("slice.png"));
+        burst = new Texture(Gdx.files.internal("burst.png"));
+        wraith = new Texture(Gdx.files.internal("wraith.png"));
+        endTurnTex = new Texture(Gdx.files.internal("slice.png"));
+        backGround = new Texture(Gdx.files.internal("Background.png"));
+        TextJog = new Texture(Gdx.files.internal("Player.png"));
+        playerDanTex = new Texture(Gdx.files.internal("player-hit.png"));
+        inimigoTex = new Texture(Gdx.files.internal("tangled-wires.png"));
+        inimigoDanTex = new Texture(Gdx.files.internal("tangled-wires-hit.png"));
+
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Sons/analog-texture.mp3"));
+    }
+    public void fabricaCarta(){
+         fabrCAtk = new FactoryCartas(0, "golpe", slice, TipoC.ATK, Gdx.audio.newSound(Gdx.files.internal("Sons/slap-hurt-pain-sound-effect.mp3")));
+        fabrCHab = new FactoryCartas(1, "burst", burst, TipoC.HAB, Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3")));
+       fabrCPod = new FactoryCartas(3, "wraith", wraith, TipoC.POD, Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3")));
+    }
     void criarBarraHPJo(BitmapFont font){
         barraVidaP.begin(ShapeRenderer.ShapeType.Filled);
         barraVidaP.setColor(1, 0, 0, 1);
@@ -92,10 +111,6 @@ public class Main extends ApplicationAdapter {
         burst = new Texture(Gdx.files.internal("burst.png"));
         wraith = new Texture(Gdx.files.internal("wraith.png"));
         endTurnTex = new Texture(Gdx.files.internal("slice.png"));
-
-        CartaFactory fabrCAtk = new FactoryCartas(0, "golpe", slice, TipoC.ATK, Gdx.audio.newSound(Gdx.files.internal("Sons/slap-hurt-pain-sound-effect.mp3")));
-        CartaFactory fabrCHab = new FactoryCartas(1, "burst", burst, TipoC.HAB, Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3")));
-        CartaFactory fabrCPod = new FactoryCartas(3, "wraith", wraith, TipoC.POD, Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3")));
         for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabrCAtk.criarCarta());
         for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabrCHab.criarCarta());
         for (int i = 0; i < 2; i++) jogador.deckPlayer.add(fabrCPod.criarCarta());
@@ -215,19 +230,16 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
+        carregarTexturasESons();
+        fabricaCarta();
         barraVidaIn = new ShapeRenderer();
         barraVidaP = new ShapeRenderer();
-        inimigoTex = new Texture("tangled-wires.png");
-        inimigoDanTex = new Texture("tangled-wires-hit.png");
-        TextJog = new Texture(Gdx.files.internal("Player.png"));
-        playerDanTex = new Texture("player-hit.png");
         jogador = new Jogador(100, 0, 0, 3, TextJog);
         inimigo = new Inimigo(100, 3, inimigoTex, 100);
         criardeck();
         Collections.shuffle(jogador.deckPlayer, new Random());
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-        backGround = new Texture("Background.png");
         puxarNovasCartas();
         botãoTurno();
 
