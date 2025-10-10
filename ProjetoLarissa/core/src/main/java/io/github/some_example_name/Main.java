@@ -129,7 +129,7 @@ public class Main extends ApplicationAdapter {
                         reposicionarCartas();
                     }
                     if(carta.getTipoC().equals(TipoC.ATK)){
-                        tremerInimigo();
+                        tremer(true);
                     }
                 }
             });
@@ -143,7 +143,7 @@ public class Main extends ApplicationAdapter {
         int atual = jogador.getHPPlayer();
         inimigo.ExecutarAçãoI(jogador);
         if(atual > jogador.getHPPlayer()){
-            tremerPlayer();
+            tremer(false);
             //FALTA ADICIONAR SOM DE DANO AQUI
         }
         atual = jogador.getHPPlayer();
@@ -168,35 +168,36 @@ public class Main extends ApplicationAdapter {
         });
         stage.addActor(endTurnBtn);
     }
-    public void tremerInimigo() {
-        tremorTimer = 0.3f; // duração do tremor em segundos
-    }
-    public void tremerPlayer(){
-        tremorTimerP = 0.3f;
-    }
-    public void inimigoTremerEfeito(){
-        if (tremorTimer > 0) {
-            inimigo.setInimigoImg(inimigoDanTex);
-            tremorTimer -= delta;
-            // DESLOCAMENTO DO INIMIGO DURANTE ATAQUE
-            inimigoOffsetX = (float)(Math.random() * 10 - 5); // -5 até +5 px
-            inimigoOffsetY = (float)(Math.random() * 10 - 5);
+    public void tremer(boolean isInimigo) {
+        if (isInimigo) {
+            tremorTimer = 0.3f;
         } else {
-            inimigoOffsetX = 0;
-            inimigoOffsetY = 0;
-            inimigo.setInimigoImg(inimigoTex);
+            tremorTimerP = 0.3f;
         }
-    }public void PlayerTremerEfeito(){
-        if (tremorTimerP > 0) {
-            jogador.setImgPlayer(playerDanTex);
-            tremorTimerP -= delta;
-            // DESLOCAMENTO DO INIMIGO DURANTE ATAQUE
-            playerOffsetX = (float)(Math.random() * 10 - 5); // -5 até +5 px
-            playeroOffsetY = (float)(Math.random() * 10 - 5);
+    }
+    public void aplicarTremor(boolean isInimigo, float delta, Texture normalTex, Texture hitTex) {
+        if (isInimigo) {
+            if (tremorTimer > 0) {
+                inimigo.setInimigoImg(hitTex);
+                tremorTimer -= delta;
+                inimigoOffsetX = (float)(Math.random() * 10 - 5);
+                inimigoOffsetY = (float)(Math.random() * 10 - 5);
+            } else {
+                inimigoOffsetX = 0;
+                inimigoOffsetY = 0;
+                inimigo.setInimigoImg(normalTex);
+            }
         } else {
-            playerOffsetX = 0;
-            playeroOffsetY = 0;
-            jogador.setImgPlayer(TextJog);
+            if (tremorTimerP > 0) {
+                jogador.setImgPlayer(hitTex);
+                tremorTimerP -= delta;
+                playerOffsetX = (float)(Math.random() * 10 - 5);
+                playeroOffsetY = (float)(Math.random() * 10 - 5);
+            } else {
+                playerOffsetX = 0;
+                playeroOffsetY = 0;
+                jogador.setImgPlayer(normalTex);
+            }
         }
     }
 
@@ -243,8 +244,8 @@ public class Main extends ApplicationAdapter {
         delta = Gdx.graphics.getDeltaTime();
         batch.begin();
         batch.draw(backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        inimigoTremerEfeito();
-        PlayerTremerEfeito();
+        aplicarTremor(true, delta, inimigoTex, inimigoDanTex);
+        aplicarTremor(false, delta, TextJog, playerDanTex);
         stage.act(Gdx.graphics.getDeltaTime());
         BitmapFont font = new BitmapFont();
         batch.draw(jogador.getImgPlayer(),200+playerOffsetX, 200+playeroOffsetY, 300, 300);
