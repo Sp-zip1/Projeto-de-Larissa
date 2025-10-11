@@ -16,16 +16,22 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 
 public class TelaBatalha implements Screen {
 
@@ -56,6 +62,8 @@ public class TelaBatalha implements Screen {
     private Game game;
     private final TelaMapa telaMapa;
     private ArrayList<Inimigo> inimigos;
+
+    private DragAndDrop dragAndDrop;
     // === CONSTRUTOR ===
     public TelaBatalha(Game game, TelaMapa telaMapa, ArrayList<Inimigo> inimigos) {
         this.game = game;
@@ -194,31 +202,87 @@ public class TelaBatalha implements Screen {
         ArrayList<Carta> novas = jogador.puxarCartasDoDeck(6);
         Collections.shuffle(novas);
         jogador.mãoPlayer.addAll(novas);
-
+        dragAndDrop = new DragAndDrop();
         for (int i = 0; i < jogador.mãoPlayer.size(); i++) {
             final Carta carta = jogador.mãoPlayer.get(i);
             TextureRegionDrawable drawable = new TextureRegionDrawable(carta.getImagem());
             ImageButton button = new ImageButton(drawable);
             button.setSize(100, 150);
-            button.addListener(new ClickListener() {
+            dragAndDrop.addSource(new Source(button) {
                 @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    if (jogador.mana >= carta.custo) {
-                        button.remove();
-                        jogador.mana -= carta.custo;
-                        jogador.mãoPlayer.remove(carta);
-                        botoesCartas.remove(button);
-                        jogador.descarte.add(carta);
-                        carta.executarEfeitos(jogador, inimigo);
-                        carta.somc.play();
-                        reposicionarCartas();
-                        if (carta.getTipoC().equals(TipoC.ATK)) tremer(true);
+                public Payload dragStart(InputEvent event, float x, float y, int pointer) {
+                    if (jogador.mana < carta.custo) return null; // sem mana
+                    Payload payload = new Payload();
+                    payload.setObject(carta);
+                    ImageButton dragVisual = new ImageButton(new TextureRegionDrawable(carta.getImagem()));
+                    dragVisual.setSize(100, 150);
+                    payload.setDragActor(dragVisual);
+                    return payload;
+                }
+
+                @Override
+                public void dragStop(InputEvent event, float x, float y, int pointer, Payload payload, Target target) {
+                    if (target == null) {
+                        // solto em lugar inválido
+                        return;
                     }
+
+                    // Executa ataque
+                    Carta cartaSolta = (Carta) payload.getObject();
+                    jogador.mana -= cartaSolta.custo;
+                    jogador.mãoPlayer.remove(cartaSolta);
+                    botoesCartas.remove(button);
+                    jogador.descarte.add(cartaSolta);
+                    cartaSolta.executarEfeitos(jogador, inimigo);
+                    cartaSolta.somc.play();
+                    button.remove();
+                    reposicionarCartas();
+
+                    if (cartaSolta.getTipoC() == TipoC.ATK) tremer(true);
                 }
             });
+
             botoesCartas.add(button);
             stage.addActor(button);
         }
+
+        // Define o inimigo como alvo de drop
+        Actor inimigoAlvo = new Actor();
+        inimigoAlvo.setBounds(700, 150, 300, 300); // posição e tamanho do inimigo
+        stage.addActor(inimigoAlvo);
+
+//Cria um ator invisível no centro da tela (para HAB e POD)
+        Actor centroAlvo = new Actor();
+        float centroX = Gdx.graphics.getWidth() / 2f - 100;
+        float centroY = Gdx.graphics.getHeight() / 2f - 100;
+        centroAlvo.setBounds(centroX - 150, centroY-100, 400, 400);
+        stage.addActor(centroAlvo);
+
+          //Define o inimigo como alvo de drop
+        dragAndDrop.addTarget(new Target(inimigoAlvo) {
+            @Override
+            public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
+                Carta carta = (Carta) payload.getObject();
+                return carta.getTipoC() == TipoC.ATK;
+            }
+
+            @Override
+            public void drop(Source source, Payload payload, float x, float y, int pointer) {
+            }
+        });
+
+       //Define o centro da tela como alvo de drop
+        dragAndDrop.addTarget(new Target(centroAlvo) {
+            @Override
+            public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
+                Carta carta = (Carta) payload.getObject();
+                return carta.getTipoC() == TipoC.HAB || carta.getTipoC() == TipoC.POD;
+            }
+
+            @Override
+            public void drop(Source source, Payload payload, float x, float y, int pointer) {
+            }
+        });
         reposicionarCartas();
     }
 
