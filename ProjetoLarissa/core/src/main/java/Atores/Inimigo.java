@@ -8,12 +8,14 @@ public class Inimigo {
     Integer HPInimigo, maxHP;
     Integer Dano;
     Texture inimigoImg;
-
-    public Inimigo(Integer HPInimigo, Integer dano, Texture inimigoImg, Integer maxHP) {
+    Float OffsetX, OffsetY;
+    public Inimigo(Integer HPInimigo, Integer maxHP, Integer dano, Texture inimigoImg, Float offsetX, Float offsetY) {
         this.HPInimigo = HPInimigo;
-        this.Dano = dano;
-        this.inimigoImg = inimigoImg;
         this.maxHP = maxHP;
+        Dano = dano;
+        this.inimigoImg = inimigoImg;
+        OffsetX = offsetX;
+        OffsetY = offsetY;
     }
 
     public Integer getHPInimigo() {
@@ -21,7 +23,15 @@ public class Inimigo {
     }
 
     public void setHPInimigo(Integer HPInimigo) {
-        this.HPInimigo = Math.max(0, Math.min(HPInimigo, maxHP));
+        this.HPInimigo = HPInimigo;
+    }
+
+    public Integer getMaxHP() {
+        return maxHP;
+    }
+
+    public void setMaxHP(Integer maxHP) {
+        this.maxHP = maxHP;
     }
 
     public Integer getDano() {
@@ -38,6 +48,22 @@ public class Inimigo {
 
     public void setInimigoImg(Texture inimigoImg) {
         this.inimigoImg = inimigoImg;
+    }
+
+    public Float getOffsetX() {
+        return OffsetX;
+    }
+
+    public void setOffsetX(Float offsetX) {
+        OffsetX = offsetX;
+    }
+
+    public Float getOffsetY() {
+        return OffsetY;
+    }
+
+    public void setOffsetY(Float offsetY) {
+        OffsetY = offsetY;
     }
 
     public void ExecutarAçãoI(Jogador jogador){

@@ -1,5 +1,6 @@
 package Telas;
 
+import Atores.Inimigo;
 import Entidades.Nodo;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -20,7 +21,7 @@ public class TelaMapa implements Screen {
     private ShapeRenderer shapeRenderer;
     private List<Nodo> nodes;
     private Nodo currentNode;
-
+    private ArrayList<Inimigo> inimigosNivel = new ArrayList<>();
     public TelaMapa(Game game) {
         this.game = game;
         batch = new SpriteBatch();
@@ -87,7 +88,7 @@ public class TelaMapa implements Screen {
                     }
 
                     // === Muda para tela de batalha ===
-                    game.setScreen(new TelaBatalha(game, this));
+                    game.setScreen(new TelaBatalha(game, this, inimigosNivel));
                     return;
                 }
             }

@@ -50,16 +50,17 @@ public class TelaBatalha implements Screen {
     private boolean musicEnabled = true;
     private Music backgroundMusic;
 
-    private float inimigoOffsetX = 0, playerOffsetX = 0;
-    private float inimigoOffsetY = 0, playerOffsetY = 0;
-    private float tremorTimer = 0f, tremorTimerP = 0f;
-
+    private float playerOffsetY = 0, playerOffsetX = 0;
+    private float tremorTimer;
+    private  float tremorTimerP = 0f;
     private Game game;
     private final TelaMapa telaMapa;
+    private ArrayList<Inimigo> inimigos;
     // === CONSTRUTOR ===
-    public TelaBatalha(Game game, TelaMapa telaMapa) {
+    public TelaBatalha(Game game, TelaMapa telaMapa, ArrayList<Inimigo> inimigos) {
         this.game = game;
         this.telaMapa = telaMapa;
+        this.inimigos = inimigos;
         batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -69,7 +70,7 @@ public class TelaBatalha implements Screen {
         font = new BitmapFont();
 
         jogador = new Jogador(100, 0, 0, 3,TextJog);
-        inimigo = new Inimigo(100, 3, new Texture("tangled-wires.png"), 100);
+        inimigo = new Inimigo(100, 100, 3, inimigoTex, (float) 0, (float)0);
 
         carregarTexturasESons();
         fabricaCarta();
@@ -96,10 +97,8 @@ public class TelaBatalha implements Screen {
         batch.draw(backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Desenha jogador e inimigo
-        batch.draw(jogador.getImgPlayer(),
-                200 + playerOffsetX, 200 + playerOffsetY, 200, 200);
-        batch.draw(inimigo.getInimigoImg(),
-                800 + inimigoOffsetX, 200 + inimigoOffsetY, 200, 200);
+        batch.draw(jogador.getImgPlayer(), 200 + playerOffsetX, 200 + playerOffsetY, 200, 200);
+        batch.draw(inimigo.getInimigoImg(), 800 + inimigo.getOffsetX(), 200 + inimigo.getOffsetY(), 200, 200);
 
         batch.end();
         criarBarraHPJo();
@@ -326,11 +325,11 @@ public class TelaBatalha implements Screen {
             if (tremorTimer > 0) {
                 inimigo.setInimigoImg(hitTex);
                 tremorTimer -= delta;
-                inimigoOffsetX = (float)(Math.random() * 10 - 5);
-                inimigoOffsetY = (float)(Math.random() * 10 - 5);
+                inimigo.setOffsetX((float) (Math.random() * 10 - 5));
+                inimigo.setOffsetY((float) (Math.random() * 10 - 5));
             } else {
-                inimigoOffsetX = 0;
-                inimigoOffsetY = 0;
+                inimigo.setOffsetX((float) 0);
+                inimigo.setOffsetY((float) 0);
                 inimigo.setInimigoImg(normalTex);
             }
         } else {
