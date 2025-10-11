@@ -46,6 +46,5 @@ public class Main extends Game {
     }
     @Override
     public void dispose(){
-        telaMapa.dispose();
     }
 }

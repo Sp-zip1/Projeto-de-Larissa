@@ -6,6 +6,7 @@ import Entidades.Carta;
 import Entidades.TipoC;
 import Flyweight.CartaFactory;
 import Flyweight.FactoryCartas;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
@@ -53,8 +54,12 @@ public class TelaBatalha implements Screen {
     private float inimigoOffsetY = 0, playerOffsetY = 0;
     private float tremorTimer = 0f, tremorTimerP = 0f;
 
+    private Game game;
+    private final TelaMapa telaMapa;
     // === CONSTRUTOR ===
-    public TelaBatalha() {
+    public TelaBatalha(Game game, TelaMapa telaMapa) {
+        this.game = game;
+        this.telaMapa = telaMapa;
         batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -119,7 +124,10 @@ public class TelaBatalha implements Screen {
         stage.dispose();
         barraVidaIn.dispose();
         barraVidaP.dispose();
-        backgroundMusic.dispose();
+        if (backgroundMusic != null) {
+            backgroundMusic.stop();
+            backgroundMusic.dispose();
+        }
     }
 
     // === MÉTODOS DE SUPORTE ===
@@ -285,8 +293,10 @@ public class TelaBatalha implements Screen {
                     for (ImageButton b : botoesRecompensa) b.remove();
                     botoesRecompensa.clear();
                     mostrandoRecompensa = false;
-                    inimigo = new Inimigo(100, 3, inimigoTex, 100);
-                    puxarNovasCartas();
+                    //inimigo = new Inimigo(100, 3, inimigoTex, 100);
+                    //puxarNovasCartas();
+                    game.setScreen(telaMapa);
+                    dispose();
                 }
             });
             stage.addActor(botaoCarta);

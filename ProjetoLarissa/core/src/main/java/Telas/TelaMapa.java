@@ -87,8 +87,7 @@ public class TelaMapa implements Screen {
                     }
 
                     // === Muda para tela de batalha ===
-                    game.setScreen(new TelaBatalha());
-                    dispose();
+                    game.setScreen(new TelaBatalha(game, this));
                     return;
                 }
             }
