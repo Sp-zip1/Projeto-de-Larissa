@@ -8,22 +8,26 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.Game;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TelaMapa implements Screen {
 
+    private final Game game;
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
     private List<Nodo> nodes;
     private Nodo currentNode;
 
-    public TelaMapa() {
+    public TelaMapa(Game game) {
+        this.game = game;
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         nodes = new ArrayList<>();
 
+        // Exemplo de criação dos nós
         Texture nodeTexture = new Texture("slice.png");
 
         Nodo n1 = new Nodo(200, 150, nodeTexture);
@@ -76,22 +80,30 @@ public class TelaMapa implements Screen {
                 if (n.isClicked(x, y) && n.unlocked) {
                     currentNode = n;
                     n.completed = true;
+
                     // desbloqueia nós conectados
                     for (Nodo c : n.connectedNodes) {
                         c.unlocked = true;
                     }
+
+                    // === Muda para tela de batalha ===
+                    game.setScreen(new TelaBatalha());
+                    dispose();
+                    return;
                 }
             }
         }
     }
 
-    @Override public void dispose() {
+    @Override
+    public void dispose() {
         batch.dispose();
         shapeRenderer.dispose();
         for (Nodo n : nodes) n.texture.dispose();
     }
-    @Override public void show() {
-    }
+
+    // outros métodos vazios do Screen
+    @Override public void show() {}
     @Override public void resize(int width, int height) {}
     @Override public void pause() {}
     @Override public void resume() {}

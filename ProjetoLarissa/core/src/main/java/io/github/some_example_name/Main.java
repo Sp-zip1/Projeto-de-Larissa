@@ -37,7 +37,7 @@ public class Main extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        telaMapa = new TelaMapa();
+        telaMapa = new TelaMapa(this);
         setScreen(telaMapa);
     }
     @Override
