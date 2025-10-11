@@ -18,13 +18,16 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+//PRIODIADES:
+//MUDANÇA DE FASE
+//NOVAS CARTAS
+//ORGANIZAR ESSE CODIGO MELHOR(CODIGO DA RECOMPENSA ESTA MUITO CONFUSO EU PRECISO MODULARIZAR MAIS OU FAZER DE OUTRA MANEIRA
 public class Main extends ApplicationAdapter {
     private float inimigoOffsetX = 0, playerOffsetX =0;
     private float inimigoOffsetY = 0, playeroOffsetY = 0;
@@ -48,6 +51,7 @@ public class Main extends ApplicationAdapter {
     public Texture inimigoDanTex, playerDanTex;
     public Texture inimigoTex;
     private ArrayList<ImageButton> botoesRecompensa = new ArrayList<>();
+    private BitmapFont font;
     private void carregarTexturasESons() {
         slice = new Texture(Gdx.files.internal("slice.png"));
         burst = new Texture(Gdx.files.internal("burst.png"));
@@ -61,51 +65,44 @@ public class Main extends ApplicationAdapter {
 
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Sons/analog-texture.mp3"));
     }
-    public void fabricaCarta(){
-         fabrCAtk = new FactoryCartas(0, "golpe", slice, TipoC.ATK, Gdx.audio.newSound(Gdx.files.internal("Sons/slap-hurt-pain-sound-effect.mp3")));
-        fabrCHab = new FactoryCartas(1, "burst", burst, TipoC.HAB, Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3")));
-       fabrCPod = new FactoryCartas(3, "wraith", wraith, TipoC.POD, Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3")));
-    }
-    void criarBarraHPJo(BitmapFont font){
-        barraVidaP.begin(ShapeRenderer.ShapeType.Filled);
-        barraVidaP.setColor(1, 0, 0, 1);
 
-        // calcular largura proporcional (vida atual / vida máxima)
+    public void fabricaCarta(){
+        fabrCAtk = new FactoryCartas(0, "golpe", slice, TipoC.ATK, Gdx.audio.newSound(Gdx.files.internal("Sons/slap-hurt-pain-sound-effect.mp3")));
+        fabrCHab = new FactoryCartas(1, "burst", burst, TipoC.HAB, Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3")));
+        fabrCPod = new FactoryCartas(3, "wraith", wraith, TipoC.POD, Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3")));
+    }
+
+    void criarBarraHPJo(){
         float maxHPJ = 100f;
         float larguraMaxJ = 200;
         float larguraAtualJ = (jogador.getHPPlayer() / maxHPJ) * larguraMaxJ;
 
-        // posição da barra
         float x = 200;
         float y = 520;
         float altura = 20;
+        barraVidaP.begin(ShapeRenderer.ShapeType.Filled);
+        barraVidaP.setColor(1, 0, 0, 1);
         barraVidaP.rect(x, y, larguraAtualJ, altura);
         barraVidaP.setColor(0.3f, 0.3f, 0.3f, 1);
         barraVidaP.rect(x + larguraAtualJ, y, larguraMaxJ - larguraAtualJ, altura);
         barraVidaP.end();
-        String textoVidaP = jogador.getHPPlayer() + " / " + (int)maxHPJ;
-        font.draw(batch, textoVidaP, x + larguraMaxJ/2f - textoVidaP.length()*3, y + altura - 5);
     }
 
-    void criarBarraHPIn(BitmapFont font){
-        barraVidaIn.begin(ShapeRenderer.ShapeType.Filled);
-        barraVidaIn.setColor(1, 0, 0, 1);
-        // calcular largura proporcional (vida atual / vida máxima)
+    void criarBarraHPIn(){
         float maxHP = 100f;
         float larguraMax = 200;
         float larguraAtual = (inimigo.getHPInimigo() / maxHP) * larguraMax;
-        // posição da barra
         float x = 800;
         float y = 520;
         float altura = 20;
+        barraVidaIn.begin(ShapeRenderer.ShapeType.Filled);
+        barraVidaIn.setColor(1, 0, 0, 1);
         barraVidaIn.rect(x, y, larguraAtual, altura);
         barraVidaIn.setColor(0.3f, 0.3f, 0.3f, 1);
         barraVidaIn.rect(x + larguraAtual, y, larguraMax - larguraAtual, altura);
         barraVidaIn.end();
-        String textoVida = inimigo.getHPInimigo() + " / " + (int)maxHP;
-        float textoLargura = font.getRegion().getRegionWidth();
-        font.draw(batch, textoVida, x + larguraMax/2f - textoVida.length()*3, y + altura - 5);
     }
+
     void criardeck() {
         batch = new SpriteBatch();
         slice = new Texture(Gdx.files.internal("slice.png"));
@@ -116,20 +113,24 @@ public class Main extends ApplicationAdapter {
         for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabrCHab.criarCarta());
         for (int i = 0; i < 2; i++) jogador.deckPlayer.add(fabrCPod.criarCarta());
     }
+
     private void puxarNovasCartas() {
-        //PRIORIDADE NUMERO 1 CORRIGIR RECICLAGEM DO DESCARTE, CARTAS SE REPETEM
         jogador.mãoPlayer.clear();
         for (ImageButton b : botoesCartas) {
             b.remove();
         }
         botoesCartas.clear();
+
+        // Garante que os botões fixos estejam visíveis ao retornar do estado de recompensa
+        if (endTurnBtn != null) endTurnBtn.setVisible(true);
+        if (volumeBtn != null) volumeBtn.setVisible(true);
+
         ArrayList<Carta> novas = jogador.puxarCartasDoDeck(6);
         jogador.mãoPlayer.addAll(novas);
         for (int i = 0; i < jogador.mãoPlayer.size(); i++) {
             final Carta carta = jogador.mãoPlayer.get(i);
             TextureRegionDrawable drawable = new TextureRegionDrawable(carta.getImagem());
             ImageButton button = new ImageButton(drawable);
-            button.setPosition(350 + i * 100, 20);
             button.setSize(100, 150);
             button.addListener(new ClickListener() {
                 @Override
@@ -155,9 +156,31 @@ public class Main extends ApplicationAdapter {
         }
         reposicionarCartas();
     }
-    public void mostrarEscolhaDeCarta() {
+
+    public void ocultarElementosDoJogo() {
+        // Remove os botões da mão do jogador
+        for (ImageButton b : botoesCartas) {
+            b.remove();
+        }
+        botoesCartas.clear();
+
+        // Oculta os botões fixos
+        if (endTurnBtn != null) endTurnBtn.setVisible(false);
+        if (volumeBtn != null) volumeBtn.setVisible(false);
+    }
+
+    public void entrarEstadoRecompensa() {
+        if (mostrandoRecompensa) return;
+
         mostrandoRecompensa = true;
-        //Preciso mudar a aparencia das cartas e ofuscar o fundo quando elas surgem
+        ocultarElementosDoJogo();
+        criarBotoesRecompensa();
+    }
+
+    public void criarBotoesRecompensa() {
+        // Se já houver botões de recompensa, não recrie
+        if (!botoesRecompensa.isEmpty()) return;
+
         ArrayList<Carta> opcoes = new ArrayList<>();
         Random random = new Random();
         // Escolhe aleatoriamente 3 cartas
@@ -181,10 +204,14 @@ public class Main extends ApplicationAdapter {
                 public void clicked(InputEvent event, float x, float y) {
                     jogador.deckPlayer.add(carta);
                     System.out.println("Carta adicionada ao deck: " + carta.getNome());
+
+                    // Remove os botões de recompensa
                     for (ImageButton b : botoesRecompensa) {
                         b.remove();
                     }
                     botoesRecompensa.clear();
+
+                    // Retorna ao jogo
                     mostrandoRecompensa = false;
                     inimigo = new Inimigo(100, 3, inimigoTex, 100);
                     puxarNovasCartas();
@@ -203,16 +230,17 @@ public class Main extends ApplicationAdapter {
             tremer(false);
             //FALTA ADICIONAR SOM DE DANO AQUI
         }
-        atual = jogador.getHPPlayer();
-        turnoJogador = true;
-        jogador.mana = 3;
-        //ACHO QUE CORRIGI O PROBLEMA MAS PRECISO FAZER MAIS TESTES
-        jogador.descarte.addAll(jogador.mãoPlayer);
-        puxarNovasCartas();
-        if(inimigo.getHPInimigo() == 0){
-            mostrandoRecompensa = true;
+
+        if(inimigo.getHPInimigo() <= 0){
+            entrarEstadoRecompensa();
+        } else {
+            turnoJogador = true;
+            jogador.mana = 3;
+            jogador.descarte.addAll(jogador.mãoPlayer);
+            puxarNovasCartas();
         }
     }
+
     public void botãoTurno(){
         TextureRegionDrawable drawable = new TextureRegionDrawable(endTurnTex);
         endTurnBtn = new ImageButton(drawable);
@@ -228,6 +256,7 @@ public class Main extends ApplicationAdapter {
         });
         stage.addActor(endTurnBtn);
     }
+
     public void tremer(boolean isInimigo) {
         if (isInimigo) {
             tremorTimer = 0.3f;
@@ -235,6 +264,7 @@ public class Main extends ApplicationAdapter {
             tremorTimerP = 0.3f;
         }
     }
+
     public void aplicarTremor(boolean isInimigo, float delta, Texture normalTex, Texture hitTex) {
         if (isInimigo) {
             if (tremorTimer > 0) {
@@ -275,6 +305,7 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void create() {
+        font = new BitmapFont();
         carregarTexturasESons();
         fabricaCarta();
         barraVidaIn = new ShapeRenderer();
@@ -285,39 +316,65 @@ public class Main extends ApplicationAdapter {
         Collections.shuffle(jogador.deckPlayer, new Random());
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-        puxarNovasCartas();
         botãoTurno();
+        criarBotaoVolumeSimples();
+        puxarNovasCartas();
 
-            backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Sons/analog-texture.mp3"));
-            backgroundMusic.setLooping(true);
-            backgroundMusic.setVolume(0.4f);
-            backgroundMusic.play();
-                criarBotaoVolumeSimples();
+        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Sons/analog-texture.mp3"));
+        backgroundMusic.setLooping(true);
+        backgroundMusic.setVolume(0.4f);
+        backgroundMusic.play();
     }
+
     @Override
     public void render() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         delta = Gdx.graphics.getDeltaTime();
-        batch.begin();
-        batch.draw(backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        aplicarTremor(true, delta, inimigoTex, inimigoDanTex);
-        aplicarTremor(false, delta, TextJog, playerDanTex);
-        if(mostrandoRecompensa){
-            mostrarEscolhaDeCarta();
-            mostrandoRecompensa = false;
+        // LÓGICA DE DESENHO PRINCIPAL DO JOGO (SOMENTE SE NÃO ESTIVER EM RECOMPENSA)
+        if (!mostrandoRecompensa) {
+            batch.begin();
+            batch.draw(backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+            aplicarTremor(true, delta, inimigoTex, inimigoDanTex);
+            aplicarTremor(false, delta, TextJog, playerDanTex);
+
+            BitmapFont font1 = font;
+
+            batch.draw(jogador.getImgPlayer(),200+playerOffsetX, 200+playeroOffsetY, 300, 300);
+            batch.draw(inimigo.getInimigoImg(), 800+inimigoOffsetX, 200+inimigoOffsetY, 300, 300);
+
+            font1.draw(batch, "Mana: " + jogador.mana, 50, 200);
+            batch.end();
+            criarBarraHPIn();
+            criarBarraHPJo();
+            batch.begin();
+            float xJ = 200;
+            float yJ = 520;
+            float larguraMaxJ = 200;
+            float altura = 20;
+            String textoVidaP = jogador.getHPPlayer() + " / 100";
+            font1.draw(batch, textoVidaP, xJ + larguraMaxJ/2f - textoVidaP.length()*3, yJ + altura - 5);
+            // Texto do HP do Inimigo
+            float xI = 800;
+            float yI = 520;
+            float larguraMaxI = 200;
+            String textoVidaI = inimigo.getHPInimigo() + " / 100";
+            font1.draw(batch, textoVidaI, xI + larguraMaxI/2f - textoVidaI.length()*3, yI + altura - 5);
+
+            batch.end();
+        } else {
+            //Desenha uma sobreposição escura e semi-transparente
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            barraVidaP.begin(ShapeRenderer.ShapeType.Filled);
+            barraVidaP.setColor(new Color(0f, 0f, 0f, 0.7f)); // Preto com 70% de opacidade
+            barraVidaP.rect(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            barraVidaP.end();
+            Gdx.gl.glDisable(GL20.GL_BLEND);
         }
         stage.act(Gdx.graphics.getDeltaTime());
-        BitmapFont font = new BitmapFont();
-        batch.draw(jogador.getImgPlayer(),200+playerOffsetX, 200+playeroOffsetY, 300, 300);
-        batch.draw(inimigo.getInimigoImg(), 800+inimigoOffsetX, 200+inimigoOffsetY, 300, 300);
-        //font.draw(batch, "Vida jogador"+jogador.HPPlayer, 200, 50);
-        font.draw(batch, "Mana: " + jogador.mana, 50, 200);
-        //font.draw(batch, turnoJogador ? "Seu Turno" : "Turno do Inimigo", 300, 400);
-        criarBarraHPIn(font);
-        criarBarraHPJo(font);
         stage.draw();
-        batch.end();
     }
 
     @Override
@@ -327,33 +384,33 @@ public class Main extends ApplicationAdapter {
         burst.dispose();
         wraith.dispose();
         stage.dispose();
-
+        barraVidaIn.dispose();
+        barraVidaP.dispose();
+        font.dispose();
         if (backgroundMusic != null) {
             backgroundMusic.dispose();
         }
-
     }
 
     private void criarBotaoVolumeSimples() {
-        // Carrega as texturas - CERTIFIQUE-SE que estes arquivos existem!
         Texture volumeLigadoTex = new Texture(Gdx.files.internal("volume_on.png"));
         Texture volumeDesligadoTex = new Texture(Gdx.files.internal("volume_mute.png"));
-        
+
         TextureRegionDrawable drawableLigado = new TextureRegionDrawable(volumeLigadoTex);
         TextureRegionDrawable drawableDesligado = new TextureRegionDrawable(volumeDesligadoTex);
-        
+
         ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
         style.imageUp = drawableLigado;
-        
-        ImageButton volumeBtn = new ImageButton(style);
+
+        volumeBtn = new ImageButton(style);
         volumeBtn.setSize(40, 40);
         volumeBtn.setPosition(1350, 830);
-        
+
         volumeBtn.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 musicEnabled = !musicEnabled;
-                
+
                 if (backgroundMusic != null) {
                     if (musicEnabled) {
                         backgroundMusic.play();
@@ -365,7 +422,7 @@ public class Main extends ApplicationAdapter {
                 }
             }
         });
-        
+
         stage.addActor(volumeBtn);
     }
 
