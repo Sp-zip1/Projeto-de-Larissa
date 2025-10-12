@@ -32,6 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
+import io.github.some_example_name.Main;
 
 public class TelaBatalha implements Screen {
 
@@ -44,9 +45,6 @@ public class TelaBatalha implements Screen {
     private CartaFactory fabrCAtk, fabrCHab, fabrCPod;
     private ArrayList<ImageButton> botoesCartas = new ArrayList<>();
     private ArrayList<ImageButton> botoesRecompensa = new ArrayList<>();
-
-    private Texture slice, burst, wraith, endTurnTex, backGround, TextJog;
-    private Texture inimigoTex, inimigoDanTex, playerDanTex;
     private ImageButton endTurnBtn, volumeBtn;
 
     private Inimigo inimigo;
@@ -54,7 +52,6 @@ public class TelaBatalha implements Screen {
 
     private boolean turnoJogador = true, mostrandoRecompensa;
     private boolean musicEnabled = true;
-    private Music backgroundMusic;
 
     private float playerOffsetY = 0, playerOffsetX = 0;
     private float tremorTimer;
@@ -62,11 +59,13 @@ public class TelaBatalha implements Screen {
     private Game game;
     private final TelaMapa telaMapa;
     private ArrayList<Inimigo> inimigos;
-
+    private  Inimigo inimigoSorteado;
     private DragAndDrop dragAndDrop;
+    private Main main;
     // === CONSTRUTOR ===
-    public TelaBatalha(Game game, TelaMapa telaMapa, ArrayList<Inimigo> inimigos) {
+    public TelaBatalha(Game game, TelaMapa telaMapa, ArrayList<Inimigo> inimigos, Main main) {
         this.game = game;
+        this.main = main;
         this.telaMapa = telaMapa;
         this.inimigos = inimigos;
         batch = new SpriteBatch();
@@ -76,18 +75,18 @@ public class TelaBatalha implements Screen {
         barraVidaIn = new ShapeRenderer();
         barraVidaP = new ShapeRenderer();
         font = new BitmapFont();
-
-        jogador = new Jogador(100, 0, 0, 3,TextJog);
-        inimigo = new Inimigo(100, 100, 3, inimigoTex, (float) 0, (float)0);
-
-        carregarTexturasESons();
+        Random random = new Random();
+        int sorteado = random.nextInt(inimigos.size());
+        inimigoSorteado = inimigos.get(sorteado);
+        jogador = new Jogador(100, 0, 0, 3,main.TextJog);
+        inimigo = inimigoSorteado;
         fabricaCarta();
         criardeck();
         puxarNovasCartas();
         botãoTurno();
 
-        backgroundMusic.setLooping(true);
-        if (musicEnabled) backgroundMusic.play();
+        main.backgroundMusic.setLooping(true);
+        if (musicEnabled) main.backgroundMusic.play();
     }
 
     // === CICLO DE VIDA ===
@@ -96,13 +95,13 @@ public class TelaBatalha implements Screen {
 
     @Override
     public void render(float delta) {
-        this.atualizarTremores(delta);
+        this.atualizarTremores(delta, inimigoSorteado);
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.draw(main.backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Desenha jogador e inimigo
         batch.draw(jogador.getImgPlayer(), 200 + playerOffsetX, 200 + playerOffsetY, 200, 200);
@@ -131,33 +130,20 @@ public class TelaBatalha implements Screen {
         stage.dispose();
         barraVidaIn.dispose();
         barraVidaP.dispose();
-        if (backgroundMusic != null) {
-            backgroundMusic.stop();
-            backgroundMusic.dispose();
+        if (main.backgroundMusic != null) {
+            main.backgroundMusic.stop();
+            main.backgroundMusic.dispose();
         }
     }
 
     // === MÉTODOS DE SUPORTE ===
 
-    private void carregarTexturasESons() {
-        slice = new Texture(Gdx.files.internal("slice.png"));
-        burst = new Texture(Gdx.files.internal("burst.png"));
-        wraith = new Texture(Gdx.files.internal("wraith.png"));
-        endTurnTex = new Texture(Gdx.files.internal("slice.png"));
-        backGround = new Texture(Gdx.files.internal("Background.png"));
-        TextJog = new Texture(Gdx.files.internal("Player.png"));
-        playerDanTex = new Texture(Gdx.files.internal("player-hit.png"));
-        inimigoTex = new Texture(Gdx.files.internal("tangled-wires.png"));
-        inimigoDanTex = new Texture(Gdx.files.internal("tangled-wires-hit.png"));
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Sons/analog-texture.mp3"));
-    }
-
     private void fabricaCarta() {
-        fabrCAtk = new FactoryCartas(0, "golpe", slice, TipoC.ATK,
+        fabrCAtk = new FactoryCartas(0, "golpe", main.slice, TipoC.ATK,
                 Gdx.audio.newSound(Gdx.files.internal("Sons/slap-hurt-pain-sound-effect.mp3")));
-        fabrCHab = new FactoryCartas(1, "burst", burst, TipoC.HAB,
+        fabrCHab = new FactoryCartas(1, "burst", main.burst, TipoC.HAB,
                 Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3")));
-        fabrCPod = new FactoryCartas(2, "wraith", wraith, TipoC.POD,
+        fabrCPod = new FactoryCartas(2, "wraith", main.wraith, TipoC.POD,
                 Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3")));
     }
 
@@ -298,7 +284,7 @@ public class TelaBatalha implements Screen {
     }
 
     private void botãoTurno() {
-        TextureRegionDrawable drawable = new TextureRegionDrawable(endTurnTex);
+        TextureRegionDrawable drawable = new TextureRegionDrawable(main.endTurnTex);
         endTurnBtn = new ImageButton(drawable);
         endTurnBtn.setSize(120, 50);
         endTurnBtn.setPosition(1000, 50);
@@ -374,9 +360,9 @@ public class TelaBatalha implements Screen {
         if (volumeBtn != null) volumeBtn.setVisible(false);
     }
 
-    private void atualizarTremores(float delta) {
-        aplicarTremor(true, delta, inimigoTex, inimigoDanTex);
-        aplicarTremor(false, delta, TextJog, playerDanTex);
+    private void atualizarTremores(float delta, Inimigo inimigo) {
+        aplicarTremor(true, delta, inimigo.getInimigoImg(), inimigo.getInimigoDan(), inimigo.getInimigoIdle());
+        aplicarTremor(false, delta, main.TextJog, main.playerDanTex, main.TextJog);
     }
 
     private void tremer(boolean isInimigo) {
@@ -384,7 +370,7 @@ public class TelaBatalha implements Screen {
         else tremorTimerP = 0.3f;
     }
 
-    private void aplicarTremor(boolean isInimigo, float delta, Texture normalTex, Texture hitTex) {
+    private void aplicarTremor(boolean isInimigo, float delta, Texture normalTex, Texture hitTex, Texture idleTex) {
         if (isInimigo) {
             if (tremorTimer > 0) {
                 inimigo.setInimigoImg(hitTex);
@@ -394,7 +380,7 @@ public class TelaBatalha implements Screen {
             } else {
                 inimigo.setOffsetX((float) 0);
                 inimigo.setOffsetY((float) 0);
-                inimigo.setInimigoImg(normalTex);
+                inimigo.setInimigoImg(idleTex);
             }
         } else {
             if (tremorTimerP > 0) {

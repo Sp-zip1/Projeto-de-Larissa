@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.Game;
+import io.github.some_example_name.Main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +23,19 @@ public class TelaMapa implements Screen {
     private List<Nodo> nodes;
     private Nodo currentNode;
     private ArrayList<Inimigo> inimigosNivel = new ArrayList<>();
-    public TelaMapa(Game game) {
+    private Main main;
+    public TelaMapa(Game game, Main main) {
         this.game = game;
+        this.main = main;
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         nodes = new ArrayList<>();
-
+        Inimigo inimigoO = new Inimigo(55, 55, 10, main.inimigo, main.inimigoHit, main.inimigo, (float)0, (float)0);
+        Inimigo inimigoO1 = new Inimigo(70, 70, 5,main.inimigo1,main.inimigo1Hit, main.inimigo1 ,(float)0, (float)0);
+        Inimigo inimigo02 = new Inimigo(30, 30, 10, main.inimigo2, main.inimigo2Hit, main.inimigo2, (float)0, (float)0);
+        inimigosNivel.add(inimigoO);
+        inimigosNivel.add(inimigoO1);
+        inimigosNivel.add(inimigo02);
         // Exemplo de criação dos nós
         Texture nodeTexture = new Texture("slice.png");
 
@@ -86,9 +94,7 @@ public class TelaMapa implements Screen {
                     for (Nodo c : n.connectedNodes) {
                         c.unlocked = true;
                     }
-
-                    // === Muda para tela de batalha ===
-                    game.setScreen(new TelaBatalha(game, this, inimigosNivel));
+                    game.setScreen(new TelaBatalha(game, this, inimigosNivel, main));
                     return;
                 }
             }

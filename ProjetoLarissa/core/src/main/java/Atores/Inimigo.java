@@ -7,13 +7,16 @@ import static com.badlogic.gdx.math.MathUtils.random;
 public class Inimigo {
     Integer HPInimigo, maxHP;
     Integer Dano;
-    Texture inimigoImg;
+    Texture inimigoImg, inimigoDan, inimigoIdle;
     Float OffsetX, OffsetY;
-    public Inimigo(Integer HPInimigo, Integer maxHP, Integer dano, Texture inimigoImg, Float offsetX, Float offsetY) {
+
+    public Inimigo(Integer HPInimigo, Integer maxHP, Integer dano, Texture inimigoImg, Texture inimigoDan, Texture inimigoIdle, Float offsetX, Float offsetY) {
         this.HPInimigo = HPInimigo;
         this.maxHP = maxHP;
         Dano = dano;
         this.inimigoImg = inimigoImg;
+        this.inimigoDan = inimigoDan;
+        this.inimigoIdle = inimigoIdle;
         OffsetX = offsetX;
         OffsetY = offsetY;
     }
@@ -48,6 +51,22 @@ public class Inimigo {
 
     public void setInimigoImg(Texture inimigoImg) {
         this.inimigoImg = inimigoImg;
+    }
+
+    public Texture getInimigoDan() {
+        return inimigoDan;
+    }
+
+    public void setInimigoDan(Texture inimigoDan) {
+        this.inimigoDan = inimigoDan;
+    }
+
+    public Texture getInimigoIdle() {
+        return inimigoIdle;
+    }
+
+    public void setInimigoIdle(Texture inimigoIdle) {
+        this.inimigoIdle = inimigoIdle;
     }
 
     public Float getOffsetX() {
