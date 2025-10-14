@@ -41,6 +41,8 @@ public class Main extends Game {
     public Texture TextJog, playerDanTex;
     public Music backgroundMusic;
     public Jogador jogador;
+    public BitmapFont fontGrande, fontPequena;
+
     public Map<String, FactoryCartas> fabricasCartas;
     public Texture inimigo,inimigoHit, inimigo1, inimigo1Hit, inimigo2, inimigo2Hit;
     //OQ ESTAVA NO MAIN AGORA VAI PARA TELA BATALHA

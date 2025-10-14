@@ -15,6 +15,9 @@ cmd-hit.png
 code_injection.png
 compiler-monster-hit.png
 compiler-monster.png
+fonte/fontejogo.fnt
+fonte/fontejogo1.png
+fonte/fontejogo2.png
 garbage_colector.png
 libgdx.png
 player-hit.png

@@ -74,7 +74,9 @@ public class TelaBatalha implements Screen {
         shapeRaios = new ShapeRenderer();
         barraVidaIn = new ShapeRenderer();
         barraVidaP = new ShapeRenderer();
-        font = new BitmapFont();
+        font = new BitmapFont(Gdx.files.internal("fonte/fontejogo.fnt"));
+        font.getData().setScale(0.5f);
+        font.setColor(Color.WHITE);
         Random random = new Random();
         int sorteado = random.nextInt(inimigos.size());
         inimigoSorteado = inimigos.get(sorteado);
