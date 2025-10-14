@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -41,7 +42,7 @@ public class TelaBatalha implements Screen {
     private Stage stage;
     private ShapeRenderer barraVidaIn, barraVidaP;
     private BitmapFont font;
-
+    float larguraDelay;
     private CartaFactory fabrCAtk, fabrCHab, fabrCPod;
     private ArrayList<ImageButton> botoesCartas = new ArrayList<>();
     private ArrayList<ImageButton> botoesRecompensa = new ArrayList<>();
@@ -78,6 +79,7 @@ public class TelaBatalha implements Screen {
         Random random = new Random();
         int sorteado = random.nextInt(inimigos.size());
         inimigoSorteado = inimigos.get(sorteado);
+        inimigoSorteado.setHPInimigo(inimigoSorteado.getMaxHP());
         jogador = new Jogador(100, 0, 0, 3,main.TextJog);
         inimigo = inimigoSorteado;
         fabricaCarta();
@@ -108,8 +110,8 @@ public class TelaBatalha implements Screen {
         batch.draw(inimigo.getInimigoImg(), 800 + inimigo.getOffsetX(), 200 + inimigo.getOffsetY(), 200, 200);
 
         batch.end();
-        criarBarraHPJo();
-        criarBarraHPIn();
+        criarBarraHPIn(760, 540, 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
+        criarBarraHPIn(270, 540, 200, 30, jogador.getHPPlayer(), 100);
         botãoTurno();
         stage.act(delta);
         stage.draw();
@@ -154,30 +156,59 @@ public class TelaBatalha implements Screen {
         Collections.shuffle(jogador.deckPlayer, new Random());
     }
 
-    private void criarBarraHPJo() {
-        float maxHPJ = 100f;
-        float larguraMaxJ = 200;
-        float larguraAtualJ = (jogador.getHPPlayer() / maxHPJ) * larguraMaxJ;
-        float x = 200, y = 520, altura = 20;
-        barraVidaP.begin(ShapeRenderer.ShapeType.Filled);
-        barraVidaP.setColor(1, 0, 0, 1);
-        barraVidaP.rect(x, y, larguraAtualJ, altura);
-        barraVidaP.setColor(0.3f, 0.3f, 0.3f, 1);
-        barraVidaP.rect(x + larguraAtualJ, y, larguraMaxJ - larguraAtualJ, altura);
-        barraVidaP.end();
-    }
+    private void criarBarraHPIn(float x, float y, float larguraMax, float altura, float hpAtual, float hpMax) {
+            float ratio = Math.max(0, Math.min(hpAtual / hpMax, 1));
 
-    private void criarBarraHPIn() {
-        float maxHP = 100f;
-        float larguraMax = 200;
-        float larguraAtual = (inimigo.getHPInimigo() / maxHP) * larguraMax;
-        float x = 800, y = 520, altura = 20;
-        barraVidaIn.begin(ShapeRenderer.ShapeType.Filled);
-        barraVidaIn.setColor(1, 0, 0, 1);
-        barraVidaIn.rect(x, y, larguraAtual, altura);
-        barraVidaIn.setColor(0.3f, 0.3f, 0.3f, 1);
-        barraVidaIn.rect(x + larguraAtual, y, larguraMax - larguraAtual, altura);
-        barraVidaIn.end();
+            float larguraAtual = larguraMax * ratio;
+            larguraDelay = Math.max(larguraAtual, larguraDelay - 80 * Gdx.graphics.getDeltaTime());
+
+            Color corVida = new Color();
+            if (ratio > 0.5f)
+                corVida.set(1 - (ratio - 0.5f) * 2f, 1, 0.2f, 1);
+            else
+                corVida.set(1, ratio * 2f, 0.1f, 1);
+
+            ShapeRenderer sr = barraVidaIn;
+            sr.begin(ShapeRenderer.ShapeType.Filled);
+
+            sr.setColor(0.07f, 0.07f, 0.07f, 1f);
+            sr.rect(x, y, larguraMax, altura);
+
+            // Barra vermelha de delay
+            sr.setColor(0.7f, 0.1f, 0.1f, 1f);
+            sr.rect(x, y, larguraDelay, altura);
+
+            sr.rect(x, y, larguraAtual, altura,
+                    new Color(corVida.r * 0.7f, corVida.g * 0.7f, corVida.b * 0.7f, 1),
+                    corVida,
+                    corVida,
+                    new Color(corVida.r * 0.7f, corVida.g * 0.7f, corVida.b * 0.7f, 1));
+            sr.end();
+            sr.begin(ShapeRenderer.ShapeType.Line);
+            sr.setColor(0, 0, 0, 0.9f);
+
+            sr.rect(x, y, larguraMax, altura);
+
+            int steps = 6;
+            float r = altura * 0.3f;
+            for (int i = 0; i < steps; i++) {
+                float t = (float) i / (steps - 1);
+                float offset = (float) Math.sin(t * Math.PI / 2f) * r;
+                sr.line(x + offset, y + i * (altura / steps), x, y + i * (altura / steps));
+                sr.line(x + larguraMax - offset, y + i * (altura / steps), x + larguraMax, y + i * (altura / steps));
+            }
+
+            sr.end();
+
+            batch.begin();
+            String texto = (int) hpAtual + " / " + (int) hpMax;
+            font.setColor(Color.WHITE);
+            BitmapFont.BitmapFontData data = font.getData();
+            float textoLargura = data.capHeight * texto.length() / 2f;
+            font.draw(batch, texto, x + larguraMax / 2f - textoLargura / 2f, y + altura / 2f + 6);
+            batch.end();
+
+
     }
 
     private void puxarNovasCartas() {
@@ -212,19 +243,20 @@ public class TelaBatalha implements Screen {
                         // solto em lugar inválido
                         return;
                     }
+                    if(inimigoSorteado.getHPInimigo() > 0) {
+                        // Executa ataque
+                        Carta cartaSolta = (Carta) payload.getObject();
+                        jogador.mana -= cartaSolta.custo;
+                        jogador.mãoPlayer.remove(cartaSolta);
+                        botoesCartas.remove(button);
+                        jogador.descarte.add(cartaSolta);
+                        cartaSolta.executarEfeitos(jogador, inimigo);
+                        cartaSolta.somc.play();
+                        button.remove();
+                        reposicionarCartas();
 
-                    // Executa ataque
-                    Carta cartaSolta = (Carta) payload.getObject();
-                    jogador.mana -= cartaSolta.custo;
-                    jogador.mãoPlayer.remove(cartaSolta);
-                    botoesCartas.remove(button);
-                    jogador.descarte.add(cartaSolta);
-                    cartaSolta.executarEfeitos(jogador, inimigo);
-                    cartaSolta.somc.play();
-                    button.remove();
-                    reposicionarCartas();
-
-                    if (cartaSolta.getTipoC() == TipoC.ATK) tremer(true);
+                        if (cartaSolta.getTipoC() == TipoC.ATK) tremer(true);
+                    }
                 }
             });
 

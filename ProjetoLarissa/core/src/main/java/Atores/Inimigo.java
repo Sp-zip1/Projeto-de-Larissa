@@ -26,7 +26,7 @@ public class Inimigo {
     }
 
     public void setHPInimigo(Integer HPInimigo) {
-        this.HPInimigo = HPInimigo;
+        this.HPInimigo = Math.min(Math.max(HPInimigo, 0), maxHP);
     }
 
     public Integer getMaxHP() {
