@@ -332,9 +332,9 @@ public class TelaBatalha implements Screen {
         Random random = new Random();
         for (int i = 0; i < 3; i++) {
             int tipo = random.nextInt(3);
-            if (tipo == 0) opcoes.add(main.fabricasCartas.get("golpe").criarCarta());
-            else if (tipo == 1) opcoes.add(main.fabricasCartas.get("burst").criarCarta());
-            else opcoes.add(main.fabricasCartas.get("wraith").criarCarta());
+            if (tipo == 0) opcoes.add(main.fabricasCartas.get("root_acess").criarCarta());
+            else if (tipo == 1) opcoes.add(main.fabricasCartas.get("garbage_colector").criarCarta());
+            else opcoes.add(main.fabricasCartas.get("code_injection").criarCarta());
         }
 
         for (int i = 0; i < opcoes.size(); i++) {

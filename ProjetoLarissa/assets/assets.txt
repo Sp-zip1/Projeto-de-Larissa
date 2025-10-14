@@ -12,11 +12,14 @@ binary-slime-hit.png
 binary-slime.png
 burst.png
 cmd-hit.png
+code_injection.png
 compiler-monster-hit.png
 compiler-monster.png
+garbage_colector.png
 libgdx.png
 player-hit.png
 rar-hit.png
+root_acess.png
 slice.png
 tangled-wires-hit.png
 tangled-wires.png

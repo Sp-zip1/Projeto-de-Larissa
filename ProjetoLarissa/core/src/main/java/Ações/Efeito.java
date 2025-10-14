@@ -4,11 +4,12 @@ import Atores.Inimigo;
 import Atores.Jogador;
 import Entidades.Carta;
 
+import java.util.Random;
 import java.util.function.BiConsumer;
 
 public class Efeito {
     public BiConsumer<Jogador, Inimigo> acao;
-
+    public static  Random random = new Random();
     public Efeito(BiConsumer<Jogador, Inimigo> acao) {
         this.acao = acao;
     }
@@ -41,6 +42,15 @@ public class Efeito {
     }
     public static Efeito danoJogador(int quantia){
         return new Efeito(((j, i) -> j.setHPPlayer(j.getHPPlayer() - quantia)));
+    }
+    public static Efeito removerMão() {
+        return new Efeito((j, i) -> {
+            int index = random.nextInt(j.mãoPlayer.size());
+            j.mãoPlayer.remove(index);
+        });
+    }
+    public static Efeito manaExtra(int quantia){
+        return new Efeito(((j, i) -> j.setMana(j.getMana()+1)));
     }
 
 }

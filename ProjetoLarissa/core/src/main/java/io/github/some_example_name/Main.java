@@ -35,7 +35,7 @@ public class Main extends Game {
     public TelaMapa telaMapa;
     public ArrayList<Inimigo> todosInimigos = new ArrayList<>();
     public SpriteBatch batch;
-    public Texture slice, burst, wraith;
+    public Texture slice, burst, wraith, code_injection, garbage_colector, root_acess;
     public Texture inimigoBossHit, inimigoBoss;
     public Texture endTurnTex, backGround;
     public Texture TextJog, playerDanTex;
@@ -78,12 +78,18 @@ public class Main extends Game {
         inimigo1Hit = new Texture("binary-slime-hit.png");
         inimigo2 = new Texture("beast-cmd.png");
         inimigo2Hit = new Texture("binary-slime-hit.png");
+        code_injection = new Texture("code_injection.png");
+        garbage_colector = new Texture("garbage_colector.png");
+        root_acess = new Texture("root_acess.png");
     }
     private void fabricaCarta() {
         fabricasCartas = new HashMap<>();
         adicionarFactory("golpe", 0, slice, TipoC.ATK, "Sons/slap-hurt-pain-sound-effect.mp3");
         adicionarFactory("burst", 1, burst, TipoC.HAB, "Sons/card-woosh.mp3");
         adicionarFactory("wraith", 2, wraith, TipoC.POD, "Sons/card-woosh.mp3");
+        adicionarFactory("code_injection", 1, code_injection, TipoC.ATK, "Sons/slap-hurt-pain-sound-effect.mp3");
+        adicionarFactory("garbage_colector", 0, garbage_colector, TipoC.HAB, "Sons/card-woosh.mp3");
+        adicionarFactory("root_acess", 0, root_acess, TipoC.POD,"Sons/card-woosh.mp3");
     }
     private void criardeck() {
         for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabricasCartas.get("golpe").criarCarta());
