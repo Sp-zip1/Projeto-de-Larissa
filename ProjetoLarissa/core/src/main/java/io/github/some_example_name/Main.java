@@ -24,9 +24,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
+
+import java.util.*;
+
 //PRIODIADES:
 //MUDANÇA DE FASE
 //NOVAS CARTAS
@@ -40,12 +40,17 @@ public class Main extends Game {
     public Texture endTurnTex, backGround;
     public Texture TextJog, playerDanTex;
     public Music backgroundMusic;
+    public Jogador jogador;
+    public Map<String, FactoryCartas> fabricasCartas;
     public Texture inimigo,inimigoHit, inimigo1, inimigo1Hit, inimigo2, inimigo2Hit;
     //OQ ESTAVA NO MAIN AGORA VAI PARA TELA BATALHA
     @Override
     public void create() {
         batch = new SpriteBatch();
+        jogador = new Jogador(100, 0, 0, 3,TextJog);
         carregarTexturasESons();
+        fabricaCarta();
+        criardeck();
         telaMapa = new TelaMapa(this, this);
         setScreen(telaMapa);
     }
@@ -74,4 +79,22 @@ public class Main extends Game {
         inimigo2 = new Texture("beast-cmd.png");
         inimigo2Hit = new Texture("binary-slime-hit.png");
     }
+    private void fabricaCarta() {
+        fabricasCartas = new HashMap<>();
+        adicionarFactory("golpe", 0, slice, TipoC.ATK, "Sons/slap-hurt-pain-sound-effect.mp3");
+        adicionarFactory("burst", 1, burst, TipoC.HAB, "Sons/card-woosh.mp3");
+        adicionarFactory("wraith", 2, wraith, TipoC.POD, "Sons/card-woosh.mp3");
+    }
+    private void criardeck() {
+        for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabricasCartas.get("golpe").criarCarta());
+        for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabricasCartas.get("burst").criarCarta());
+        for (int i = 0; i < 2; i++) jogador.deckPlayer.add(fabricasCartas.get("wraith").criarCarta());
+        Collections.shuffle(jogador.deckPlayer, new Random());
+    }
+    private void adicionarFactory(String nome, int custo, Texture img, TipoC tipo, String somPath) {
+        Sound som = Gdx.audio.newSound(Gdx.files.internal(somPath));
+        FactoryCartas factory = new FactoryCartas(custo, nome, img, tipo, som);
+        fabricasCartas.put(nome.toLowerCase(), factory);
+    }
+
 }

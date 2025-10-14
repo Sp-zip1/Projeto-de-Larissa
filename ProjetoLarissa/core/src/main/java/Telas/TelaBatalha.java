@@ -43,16 +43,12 @@ public class TelaBatalha implements Screen {
     private ShapeRenderer barraVidaIn, barraVidaP;
     private BitmapFont font;
     float larguraDelay;
-    private CartaFactory fabrCAtk, fabrCHab, fabrCPod;
     private ArrayList<ImageButton> botoesCartas = new ArrayList<>();
     private ArrayList<ImageButton> botoesRecompensa = new ArrayList<>();
     private ImageButton endTurnBtn, volumeBtn;
-
     private Inimigo inimigo;
-    private Jogador jogador;
-
     private boolean turnoJogador = true, mostrandoRecompensa;
-    private boolean musicEnabled = true;
+    private boolean musicEnabled = true, bakcroungVisivel = true;
 
     private float playerOffsetY = 0, playerOffsetX = 0;
     private float tremorTimer;
@@ -80,13 +76,9 @@ public class TelaBatalha implements Screen {
         int sorteado = random.nextInt(inimigos.size());
         inimigoSorteado = inimigos.get(sorteado);
         inimigoSorteado.setHPInimigo(inimigoSorteado.getMaxHP());
-        jogador = new Jogador(100, 0, 0, 3,main.TextJog);
         inimigo = inimigoSorteado;
-        fabricaCarta();
-        criardeck();
         puxarNovasCartas();
         botãoTurno();
-
         main.backgroundMusic.setLooping(true);
         if (musicEnabled) main.backgroundMusic.play();
     }
@@ -98,21 +90,19 @@ public class TelaBatalha implements Screen {
     @Override
     public void render(float delta) {
         this.atualizarTremores(delta, inimigoSorteado);
-
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if (bakcroungVisivel && main.backGround != null) {
+            batch.begin();
+            batch.draw(main.backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            batch.draw(main.jogador.getImgPlayer(), 200 + playerOffsetX, 200 + playerOffsetY, 200, 200);
+            batch.draw(inimigo.getInimigoImg(), 800 + inimigo.getOffsetX(), 200 + inimigo.getOffsetY(), 200, 200);
 
-        batch.begin();
-        batch.draw(main.backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
+            batch.end();
+            criarBarraHPIn(760, 540, 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
+            criarBarraHPIn(270, 540, 200, 30, main.jogador.getHPPlayer(), 100);
+        }
         // Desenha jogador e inimigo
-        batch.draw(jogador.getImgPlayer(), 200 + playerOffsetX, 200 + playerOffsetY, 200, 200);
-        batch.draw(inimigo.getInimigoImg(), 800 + inimigo.getOffsetX(), 200 + inimigo.getOffsetY(), 200, 200);
-
-        batch.end();
-        criarBarraHPIn(760, 540, 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
-        criarBarraHPIn(270, 540, 200, 30, jogador.getHPPlayer(), 100);
-        botãoTurno();
         stage.act(delta);
         stage.draw();
     }
@@ -140,27 +130,13 @@ public class TelaBatalha implements Screen {
 
     // === MÉTODOS DE SUPORTE ===
 
-    private void fabricaCarta() {
-        fabrCAtk = new FactoryCartas(0, "golpe", main.slice, TipoC.ATK,
-                Gdx.audio.newSound(Gdx.files.internal("Sons/slap-hurt-pain-sound-effect.mp3")));
-        fabrCHab = new FactoryCartas(1, "burst", main.burst, TipoC.HAB,
-                Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3")));
-        fabrCPod = new FactoryCartas(2, "wraith", main.wraith, TipoC.POD,
-                Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3")));
-    }
 
-    private void criardeck() {
-        for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabrCAtk.criarCarta());
-        for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabrCHab.criarCarta());
-        for (int i = 0; i < 2; i++) jogador.deckPlayer.add(fabrCPod.criarCarta());
-        Collections.shuffle(jogador.deckPlayer, new Random());
-    }
 
     private void criarBarraHPIn(float x, float y, float larguraMax, float altura, float hpAtual, float hpMax) {
             float ratio = Math.max(0, Math.min(hpAtual / hpMax, 1));
 
             float larguraAtual = larguraMax * ratio;
-            larguraDelay = Math.max(larguraAtual, larguraDelay - 80 * Gdx.graphics.getDeltaTime());
+            larguraDelay = Math.max(larguraAtual, larguraDelay - 100 * Gdx.graphics.getDeltaTime());
 
             Color corVida = new Color();
             if (ratio > 0.5f)
@@ -212,23 +188,23 @@ public class TelaBatalha implements Screen {
     }
 
     private void puxarNovasCartas() {
-        jogador.mãoPlayer.clear();
+        main.jogador.mãoPlayer.clear();
         for (ImageButton b : botoesCartas) b.remove();
         botoesCartas.clear();
 
-        ArrayList<Carta> novas = jogador.puxarCartasDoDeck(6);
+        ArrayList<Carta> novas = main.jogador.puxarCartasDoDeck(6);
         Collections.shuffle(novas);
-        jogador.mãoPlayer.addAll(novas);
+        main.jogador.mãoPlayer.addAll(novas);
         dragAndDrop = new DragAndDrop();
-        for (int i = 0; i < jogador.mãoPlayer.size(); i++) {
-            final Carta carta = jogador.mãoPlayer.get(i);
+        for (int i = 0; i < main.jogador.mãoPlayer.size(); i++) {
+            final Carta carta = main.jogador.mãoPlayer.get(i);
             TextureRegionDrawable drawable = new TextureRegionDrawable(carta.getImagem());
             ImageButton button = new ImageButton(drawable);
             button.setSize(100, 150);
             dragAndDrop.addSource(new Source(button) {
                 @Override
                 public Payload dragStart(InputEvent event, float x, float y, int pointer) {
-                    if (jogador.mana < carta.custo) return null; // sem mana
+                    if (main.jogador.mana < carta.custo) return null; // sem mana
                     Payload payload = new Payload();
                     payload.setObject(carta);
                     ImageButton dragVisual = new ImageButton(new TextureRegionDrawable(carta.getImagem()));
@@ -246,11 +222,11 @@ public class TelaBatalha implements Screen {
                     if(inimigoSorteado.getHPInimigo() > 0) {
                         // Executa ataque
                         Carta cartaSolta = (Carta) payload.getObject();
-                        jogador.mana -= cartaSolta.custo;
-                        jogador.mãoPlayer.remove(cartaSolta);
+                        main.jogador.mana -= cartaSolta.custo;
+                        main.jogador.mãoPlayer.remove(cartaSolta);
                         botoesCartas.remove(button);
-                        jogador.descarte.add(cartaSolta);
-                        cartaSolta.executarEfeitos(jogador, inimigo);
+                        main.jogador.descarte.add(cartaSolta);
+                        cartaSolta.executarEfeitos(main.jogador, inimigo);
                         cartaSolta.somc.play();
                         button.remove();
                         reposicionarCartas();
@@ -305,7 +281,7 @@ public class TelaBatalha implements Screen {
     }
 
     private void reposicionarCartas() {
-        float larguraTotal = jogador.mãoPlayer.size() * 100;
+        float larguraTotal = main.jogador.mãoPlayer.size() * 100;
         float centroTela = Gdx.graphics.getWidth() / 2f;
         float xInicial = centroTela - (larguraTotal / 2f);
         for (int i = 0; i < botoesCartas.size(); i++) {
@@ -330,15 +306,15 @@ public class TelaBatalha implements Screen {
     }
 
     private void passarTurno() {
-        int atual = jogador.getHPPlayer();
-        inimigo.ExecutarAçãoI(jogador);
-        if (atual > jogador.getHPPlayer()) tremer(false);
+        int atual = main.jogador.getHPPlayer();
+        inimigo.ExecutarAçãoI(main.jogador);
+        if (atual > main.jogador.getHPPlayer()) tremer(false);
         if (inimigo.getHPInimigo() <= 0) {
             entrarEstadoRecompensa();
         } else {
             turnoJogador = true;
-            jogador.mana = 3;
-            jogador.descarte.addAll(jogador.mãoPlayer);
+            main.jogador.mana = 3;
+            main.jogador.descarte.addAll(main.jogador.mãoPlayer);
             puxarNovasCartas();
         }
     }
@@ -356,9 +332,9 @@ public class TelaBatalha implements Screen {
         Random random = new Random();
         for (int i = 0; i < 3; i++) {
             int tipo = random.nextInt(3);
-            if (tipo == 0) opcoes.add(fabrCAtk.criarCarta());
-            else if (tipo == 1) opcoes.add(fabrCHab.criarCarta());
-            else opcoes.add(fabrCPod.criarCarta());
+            if (tipo == 0) opcoes.add(main.fabricasCartas.get("golpe").criarCarta());
+            else if (tipo == 1) opcoes.add(main.fabricasCartas.get("burst").criarCarta());
+            else opcoes.add(main.fabricasCartas.get("wraith").criarCarta());
         }
 
         for (int i = 0; i < opcoes.size(); i++) {
@@ -370,7 +346,8 @@ public class TelaBatalha implements Screen {
             botaoCarta.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    jogador.deckPlayer.add(carta);
+                    main.jogador.deckPlayer.add(carta);
+                    bakcroungVisivel = true;
                     for (ImageButton b : botoesRecompensa) b.remove();
                     botoesRecompensa.clear();
                     mostrandoRecompensa = false;
@@ -390,6 +367,8 @@ public class TelaBatalha implements Screen {
         botoesCartas.clear();
         if (endTurnBtn != null) endTurnBtn.setVisible(false);
         if (volumeBtn != null) volumeBtn.setVisible(false);
+        if (endTurnBtn != null) endTurnBtn.setVisible(false);
+        bakcroungVisivel = false;
     }
 
     private void atualizarTremores(float delta, Inimigo inimigo) {
@@ -416,14 +395,14 @@ public class TelaBatalha implements Screen {
             }
         } else {
             if (tremorTimerP > 0) {
-                jogador.setImgPlayer(hitTex);
+                main.jogador.setImgPlayer(hitTex);
                 tremorTimerP -= delta;
                 playerOffsetX = (float)(Math.random() * 10 - 5);
                 playerOffsetY = (float)(Math.random() * 10 - 5);
             } else {
                 playerOffsetX = 0;
                 playerOffsetY = 0;
-                jogador.setImgPlayer(normalTex);
+                main.jogador.setImgPlayer(normalTex);
             }
         }
     }
