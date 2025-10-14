@@ -42,6 +42,8 @@ public class TelaBatalha implements Screen {
     private Stage stage;
     private ShapeRenderer barraVidaIn, barraVidaP;
     private BitmapFont font;
+    private float tempoRespiracao = 0f;
+    private float escalaRespiracao = 1f;
     float larguraDelay;
     private ArrayList<ImageButton> botoesCartas = new ArrayList<>();
     private ArrayList<ImageButton> botoesRecompensa = new ArrayList<>();
@@ -59,6 +61,7 @@ public class TelaBatalha implements Screen {
     private  Inimigo inimigoSorteado;
     private DragAndDrop dragAndDrop;
     private Main main;
+    public ShapeRenderer shapeRaios;
     // === CONSTRUTOR ===
     public TelaBatalha(Game game, TelaMapa telaMapa, ArrayList<Inimigo> inimigos, Main main) {
         this.game = game;
@@ -68,7 +71,7 @@ public class TelaBatalha implements Screen {
         batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
-
+        shapeRaios = new ShapeRenderer();
         barraVidaIn = new ShapeRenderer();
         barraVidaP = new ShapeRenderer();
         font = new BitmapFont();
@@ -89,18 +92,30 @@ public class TelaBatalha implements Screen {
 
     @Override
     public void render(float delta) {
+        tempoRespiracao += delta;
+        escalaRespiracao = 1f + 0.03f * (float)Math.sin(tempoRespiracao * 2.5f);
+        float largura = 200 * escalaRespiracao;
+        float altura = 200 * escalaRespiracao;
         this.atualizarTremores(delta, inimigoSorteado);
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (bakcroungVisivel && main.backGround != null) {
             batch.begin();
             batch.draw(main.backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            batch.draw(main.jogador.getImgPlayer(), 200 + playerOffsetX, 200 + playerOffsetY, 200, 200);
+            //ficou feinho
+            batch.draw(main.jogador.getImgPlayer(),
+                    200 + playerOffsetX - (largura - 200) / 2f,
+                    200 + playerOffsetY - (altura - 200) / 2f,
+                    largura,
+                    altura);
             batch.draw(inimigo.getInimigoImg(), 800 + inimigo.getOffsetX(), 200 + inimigo.getOffsetY(), 200, 200);
 
             batch.end();
             criarBarraHPIn(760, 540, 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
             criarBarraHPIn(270, 540, 200, 30, main.jogador.getHPPlayer(), 100);
+            if (tremorTimerP > 0) {
+                desenharRaiosSobreJogador();
+            }
         }
         // Desenha jogador e inimigo
         stage.act(delta);
@@ -380,11 +395,84 @@ public class TelaBatalha implements Screen {
         if (isInimigo) tremorTimer = 0.3f;
         else tremorTimerP = 0.3f;
     }
+    private void desenharRaiosSobreJogador() {
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 
+        shapeRaios.begin(ShapeRenderer.ShapeType.Filled);
+
+        // Calcula o centro exato do sprite do player com escala de respiração
+        float largura = 200 * escalaRespiracao;
+        float altura = 200 * escalaRespiracao;
+        float baseX = 200 + playerOffsetX - (largura - 200) / 2f + largura / 2f;
+        float baseY = 200 + playerOffsetY - (altura - 200) / 2f + altura / 2f;
+
+        for (int i = 0; i < 12; i++) {
+            float angulo = (float)(Math.random() * Math.PI * 2);
+            float distancia = 50 + (float)(Math.random() * 80);
+
+            float x1 = baseX;
+            float y1 = baseY;
+            float x2 = baseX + (float)Math.cos(angulo) * distancia;
+            float y2 = baseY + (float)Math.sin(angulo) * distancia;
+
+            shapeRaios.setColor(1, 1, 1, 0.9f);
+            desenharLinhaGrossa(x1, y1, x2, y2, 3);
+            int segmentos = 2 + (int)(Math.random() * 3);
+            float currentX = x1;
+            float currentY = y1;
+
+            for (int j = 0; j < segmentos; j++) {
+                float t = (j + 1) / (float)segmentos;
+                float nextX = x1 + (x2 - x1) * t + (float)(Math.random() * 20 - 10);
+                float nextY = y1 + (y2 - y1) * t + (float)(Math.random() * 20 - 10);
+
+                shapeRaios.setColor(1, 1, 1, 0.7f);
+                desenharLinhaGrossa(currentX, currentY, nextX, nextY, 2);
+
+                currentX = nextX;
+                currentY = nextY;
+            }
+        }
+
+        shapeRaios.end();
+        shapeRaios.begin(ShapeRenderer.ShapeType.Filled);
+        for (int i = 0; i < 8; i++) {
+            float angulo = (float)(Math.random() * Math.PI * 2);
+            float distancia = 40 + (float)(Math.random() * 60);
+
+            float x = baseX + (float)Math.cos(angulo) * distancia;
+            float y = baseY + (float)Math.sin(angulo) * distancia;
+
+            shapeRaios.setColor(0.3f, 0.7f, 1f, 0.6f);
+            shapeRaios.circle(x, y, 3);
+        }
+        shapeRaios.end();
+
+        // Restaura blending normal
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+    }
+    private void desenharLinhaGrossa(float x1, float y1, float x2, float y2, float grossura) {
+        float dx = x2 - x1;
+        float dy = y2 - y1;
+        float dist = (float)Math.sqrt(dx * dx + dy * dy);
+
+        if (dist == 0) return;
+
+        float perpX = -dy / dist * grossura / 2;
+        float perpY = dx / dist * grossura / 2;
+
+        shapeRaios.triangle(
+                x1 + perpX, y1 + perpY,
+                x1 - perpX, y1 - perpY,
+                x2, y2
+        );
+    }
     private void aplicarTremor(boolean isInimigo, float delta, Texture normalTex, Texture hitTex, Texture idleTex) {
         if (isInimigo) {
             if (tremorTimer > 0) {
                 inimigo.setInimigoImg(hitTex);
+                desenharRaiosSobreJogador();
                 tremorTimer -= delta;
                 inimigo.setOffsetX((float) (Math.random() * 10 - 5));
                 inimigo.setOffsetY((float) (Math.random() * 10 - 5));
