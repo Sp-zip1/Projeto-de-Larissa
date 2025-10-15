@@ -42,6 +42,7 @@ public class Main extends Game {
     public Texture TextJog, playerDanTex, playerAtkTex, playerMorteText;
     public Music backgroundMusic;
     public Jogador jogador;
+    public Sound somHitJ;
     TelaMenu telaMenu;
     public BitmapFont fontGrande, fontPequena;
 
@@ -51,8 +52,8 @@ public class Main extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        jogador = new Jogador(100, 0, 0, 3,TextJog);
         carregarTexturasESons();
+        jogador = new Jogador(100, 0, 0, 3,TextJog, somHitJ);
         fabricaCarta();
         criardeck();
         telaMapa = new TelaMapa(this, this);
@@ -91,6 +92,7 @@ public class Main extends Game {
         soundD = new Texture("volume_mute.png");
         playerAtkTex = new Texture("PlayerdAMA.png");
         playerMorteText = new Texture("PlayerMorto.png");
+        somHitJ = Gdx.audio.newSound(Gdx.files.internal("Sons/ouch-robot.mp3"));
     }
     private void fabricaCarta() {
         fabricasCartas = new HashMap<>();

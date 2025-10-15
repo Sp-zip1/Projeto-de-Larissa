@@ -51,7 +51,6 @@ public class TelaBatalha implements Screen {
     private Inimigo inimigo;
     private boolean turnoJogador = true, mostrandoRecompensa;
     private boolean musicEnabled = true, bakcroungVisivel = true;
-
     private float playerOffsetY = 0, playerOffsetX = 0;
     private float tremorTimer;
     private  float tremorTimerP = 0f;
@@ -96,9 +95,9 @@ public class TelaBatalha implements Screen {
     @Override
     public void render(float delta) {
         tempoRespiracao += delta;
-        escalaRespiracao = 1f + 0.03f * (float)Math.sin(tempoRespiracao * 2.5f);
-        float largura = 200 * escalaRespiracao;
-        float altura = 200 * escalaRespiracao;
+        escalaRespiracao = 15f * (float)Math.sin(tempoRespiracao * 0.8f);
+        float largura = 200;
+        float altura = 200;
         this.atualizarTremores(delta, inimigoSorteado);
 
         // Atualizar timer de ataque do player
@@ -118,15 +117,15 @@ public class TelaBatalha implements Screen {
             batch.draw(main.backGround, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             //ficou feinho
             batch.draw(main.jogador.getImgPlayer(),
-                    200 + playerOffsetX - (largura - 200) / 2f,
-                    200 + playerOffsetY - (altura - 200) / 2f,
+                    200 + playerOffsetX,
+                    200 + playerOffsetY + escalaRespiracao,
                     largura,
                     altura);
             batch.draw(inimigo.getInimigoImg(), 800 + inimigo.getOffsetX(), 200 + inimigo.getOffsetY(), 200, 200);
             font.draw(batch, "Mana: " + main.jogador.getMana(), 270, 100);
             batch.end();
             criarBarraHPIn(760, 400, 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
-            criarBarraHPIn(270, 400, 200, 30, main.jogador.getHPPlayer(), 100);
+            criarBarraHPIn(200, 400+escalaRespiracao, 200, 30, main.jogador.getHPPlayer(), 100);
             if (tremorTimerP > 0) {
                 desenharRaiosSobreJogador();
             }
@@ -441,10 +440,10 @@ public class TelaBatalha implements Screen {
         shapeRaios.begin(ShapeRenderer.ShapeType.Filled);
 
         // Calcula o centro exato do sprite do player com escala de respiração
-        float largura = 200 * escalaRespiracao;
-        float altura = 200 * escalaRespiracao;
-        float baseX = 200 + playerOffsetX - (largura - 200) / 2f + largura / 2f;
-        float baseY = 200 + playerOffsetY - (altura - 200) / 2f + altura / 2f;
+        float largura = 200;
+        float altura = 200;
+        float baseX = 200 + playerOffsetX + largura/2f;
+        float baseY = 200 + playerOffsetY + escalaRespiracao + altura/2f;
 
         for (int i = 0; i < 12; i++) {
             float angulo = (float)(Math.random() * Math.PI * 2);
@@ -522,6 +521,7 @@ public class TelaBatalha implements Screen {
             }
         } else {
             if (tremorTimerP > 0) {
+                main.jogador.som.play();
                 main.jogador.setImgPlayer(hitTex);
                 tremorTimerP -= delta;
                 playerOffsetX = (float)(Math.random() * 10 - 5);
