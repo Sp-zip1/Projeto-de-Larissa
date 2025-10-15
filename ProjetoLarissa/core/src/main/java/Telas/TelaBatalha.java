@@ -51,10 +51,11 @@ public class TelaBatalha implements Screen {
     private Inimigo inimigo;
     private boolean turnoJogador = true, mostrandoRecompensa;
     private boolean musicEnabled = true, bakcroungVisivel = true;
-    private float timerAtaquePlayer = 0f;
+
     private float playerOffsetY = 0, playerOffsetX = 0;
     private float tremorTimer;
     private  float tremorTimerP = 0f;
+    private float timerAtaquePlayer = 0f;
     private Game game;
     private final TelaMapa telaMapa;
     private ArrayList<Inimigo> inimigos;
@@ -99,6 +100,8 @@ public class TelaBatalha implements Screen {
         float largura = 200 * escalaRespiracao;
         float altura = 200 * escalaRespiracao;
         this.atualizarTremores(delta, inimigoSorteado);
+
+        // Atualizar timer de ataque do player
         if (timerAtaquePlayer > 0) {
             timerAtaquePlayer -= delta;
             if (timerAtaquePlayer <= 0) {
@@ -107,6 +110,7 @@ public class TelaBatalha implements Screen {
                 }
             }
         }
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (bakcroungVisivel && main.backGround != null) {
@@ -158,68 +162,70 @@ public class TelaBatalha implements Screen {
 
 
     private void criarBarraHPIn(float x, float y, float larguraMax, float altura, float hpAtual, float hpMax) {
-            float ratio = Math.max(0, Math.min(hpAtual / hpMax, 1));
+        float ratio = Math.max(0, Math.min(hpAtual / hpMax, 1));
 
-            float larguraAtual = larguraMax * ratio;
-            larguraDelay = Math.max(larguraAtual, larguraDelay - 100 * Gdx.graphics.getDeltaTime());
+        float larguraAtual = larguraMax * ratio;
+        larguraDelay = Math.max(larguraAtual, larguraDelay - 100 * Gdx.graphics.getDeltaTime());
 
-            Color corVida = new Color();
-            if (ratio > 0.5f)
-                corVida.set(1 - (ratio - 0.5f) * 2f, 1, 0.2f, 1);
-            else
-                corVida.set(1, ratio * 2f, 0.1f, 1);
+        Color corVida = new Color();
+        if (ratio > 0.5f)
+            corVida.set(1 - (ratio - 0.5f) * 2f, 1, 0.2f, 1);
+        else
+            corVida.set(1, ratio * 2f, 0.1f, 1);
 
-            ShapeRenderer sr = barraVidaIn;
-            sr.begin(ShapeRenderer.ShapeType.Filled);
+        ShapeRenderer sr = barraVidaIn;
+        sr.begin(ShapeRenderer.ShapeType.Filled);
 
-            sr.setColor(0.07f, 0.07f, 0.07f, 1f);
-            sr.rect(x, y, larguraMax, altura);
+        sr.setColor(0.07f, 0.07f, 0.07f, 1f);
+        sr.rect(x, y, larguraMax, altura);
 
-            // Barra vermelha de delay
-            sr.setColor(0.7f, 0.1f, 0.1f, 1f);
-            sr.rect(x, y, larguraDelay, altura);
+        // Barra vermelha de delay
+        sr.setColor(0.7f, 0.1f, 0.1f, 1f);
+        sr.rect(x, y, larguraDelay, altura);
 
-            sr.rect(x, y, larguraAtual, altura,
-                    new Color(corVida.r * 0.7f, corVida.g * 0.7f, corVida.b * 0.7f, 1),
-                    corVida,
-                    corVida,
-                    new Color(corVida.r * 0.7f, corVida.g * 0.7f, corVida.b * 0.7f, 1));
-            sr.end();
-            sr.begin(ShapeRenderer.ShapeType.Line);
-            sr.setColor(0, 0, 0, 0.9f);
+        sr.rect(x, y, larguraAtual, altura,
+                new Color(corVida.r * 0.7f, corVida.g * 0.7f, corVida.b * 0.7f, 1),
+                corVida,
+                corVida,
+                new Color(corVida.r * 0.7f, corVida.g * 0.7f, corVida.b * 0.7f, 1));
+        sr.end();
+        sr.begin(ShapeRenderer.ShapeType.Line);
+        sr.setColor(0, 0, 0, 0.9f);
 
-            sr.rect(x, y, larguraMax, altura);
+        sr.rect(x, y, larguraMax, altura);
 
-            int steps = 6;
-            float r = altura * 0.3f;
-            for (int i = 0; i < steps; i++) {
-                float t = (float) i / (steps - 1);
-                float offset = (float) Math.sin(t * Math.PI / 2f) * r;
-                sr.line(x + offset, y + i * (altura / steps), x, y + i * (altura / steps));
-                sr.line(x + larguraMax - offset, y + i * (altura / steps), x + larguraMax, y + i * (altura / steps));
-            }
+        int steps = 6;
+        float r = altura * 0.3f;
+        for (int i = 0; i < steps; i++) {
+            float t = (float) i / (steps - 1);
+            float offset = (float) Math.sin(t * Math.PI / 2f) * r;
+            sr.line(x + offset, y + i * (altura / steps), x, y + i * (altura / steps));
+            sr.line(x + larguraMax - offset, y + i * (altura / steps), x + larguraMax, y + i * (altura / steps));
+        }
 
-            sr.end();
+        sr.end();
 
-            batch.begin();
-            String texto = (int) hpAtual + " / " + (int) hpMax;
-            font.setColor(Color.WHITE);
-            BitmapFont.BitmapFontData data = font.getData();
-            float textoLargura = data.capHeight * texto.length() / 2f;
-            font.draw(batch, texto, x + larguraMax / 2f - textoLargura / 2f, y + altura / 2f + 6);
-            batch.end();
+        batch.begin();
+        String texto = (int) hpAtual + " / " + (int) hpMax;
+        font.setColor(Color.WHITE);
+        BitmapFont.BitmapFontData data = font.getData();
+        float textoLargura = data.capHeight * texto.length() / 2f;
+        font.draw(batch, texto, x + larguraMax / 2f - textoLargura / 2f, y + altura / 2f + 6);
+        batch.end();
 
 
     }
 
     private void puxarNovasCartas() {
+        //creio que FINALMENTE corrigi o bug das cartas sumirem
         main.jogador.mãoPlayer.clear();
         for (ImageButton b : botoesCartas) b.remove();
         botoesCartas.clear();
-
+        System.out.println("Puxando cartas - Deck: " + main.jogador.deckPlayer.size() + " | Descarte: " + main.jogador.descarte.size());
         ArrayList<Carta> novas = main.jogador.puxarCartasDoDeck(6);
         Collections.shuffle(novas);
         main.jogador.mãoPlayer.addAll(novas);
+        System.out.println("Após puxar - Deck: " + main.jogador.deckPlayer.size() + " | Descarte: " + main.jogador.descarte.size() + " | Mão: " + main.jogador.mãoPlayer.size());
         dragAndDrop = new DragAndDrop();
         for (int i = 0; i < main.jogador.mãoPlayer.size(); i++) {
             final Carta carta = main.jogador.mãoPlayer.get(i);
@@ -258,10 +264,8 @@ public class TelaBatalha implements Screen {
 
                         if (cartaSolta.getTipoC() == TipoC.ATK){
                             tremer(true);
-                            playerOffsetX += 100;
                             main.jogador.setImgPlayer(main.playerAtkTex);
                             timerAtaquePlayer = 0.5f;
-
                         }
                     }
                 }
@@ -283,7 +287,7 @@ public class TelaBatalha implements Screen {
         centroAlvo.setBounds(centroX - 150, centroY-100, 400, 400);
         stage.addActor(centroAlvo);
 
-          //Define o inimigo como alvo de drop
+        //Define o inimigo como alvo de drop
         dragAndDrop.addTarget(new Target(inimigoAlvo) {
             @Override
             public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
@@ -296,7 +300,7 @@ public class TelaBatalha implements Screen {
             }
         });
 
-       //Define o centro da tela como alvo de drop
+        //Define o centro da tela como alvo de drop
         dragAndDrop.addTarget(new Target(centroAlvo) {
             @Override
             public boolean drag(Source source, Payload payload, float x, float y, int pointer) {
@@ -339,7 +343,12 @@ public class TelaBatalha implements Screen {
     private void passarTurno() {
         int atual = main.jogador.getHPPlayer();
         inimigo.ExecutarAçãoI(main.jogador);
-        if (atual > main.jogador.getHPPlayer()) tremer(false);
+        if (atual > main.jogador.getHPPlayer()) {
+            tremer(false);
+            if (main.jogador.getHPPlayer() <= 0) {
+                main.jogador.setImgPlayer(main.playerMorteText);
+            }
+        }
         if (inimigo.getHPInimigo() <= 0) {
             entrarEstadoRecompensa();
         } else {
@@ -369,21 +378,32 @@ public class TelaBatalha implements Screen {
         }
 
         for (int i = 0; i < opcoes.size(); i++) {
-            final Carta carta = opcoes.get(i);
-            TextureRegionDrawable drawable = new TextureRegionDrawable(carta.getImagem());
+            final Carta cartaFinal = opcoes.get(i);
+            TextureRegionDrawable drawable = new TextureRegionDrawable(cartaFinal.getImagem());
             ImageButton botaoCarta = new ImageButton(drawable);
             botaoCarta.setSize(150, 200);
             botaoCarta.setPosition(400 + i * 200, 400);
             botaoCarta.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    main.jogador.deckPlayer.add(carta);
+                    System.out.println("=== ESCOLHENDO RECOMPENSA ===");
+                    System.out.println("Antes - Deck: " + main.jogador.deckPlayer.size() + " | Descarte: " + main.jogador.descarte.size() + " | Mão: " + main.jogador.mãoPlayer.size());
+
+                    // Retorna todas as cartas para o deck antes de sair
+                    main.jogador.deckPlayer.addAll(main.jogador.descarte);
+                    main.jogador.deckPlayer.addAll(main.jogador.mãoPlayer);
+                    main.jogador.descarte.clear();
+                    main.jogador.mãoPlayer.clear();
+
+                    // Adiciona a carta de recompensa
+                    main.jogador.deckPlayer.add(cartaFinal);
+
+                    System.out.println("Depois - Total no deck: " + main.jogador.deckPlayer.size());
+
                     bakcroungVisivel = true;
                     for (ImageButton b : botoesRecompensa) b.remove();
                     botoesRecompensa.clear();
                     mostrandoRecompensa = false;
-                    //inimigo = new Inimigo(100, 3, inimigoTex, 100);
-                    //puxarNovasCartas();
                     game.setScreen(telaMapa);
                     dispose();
                 }
@@ -404,6 +424,7 @@ public class TelaBatalha implements Screen {
 
     private void atualizarTremores(float delta, Inimigo inimigo) {
         aplicarTremor(true, delta, inimigo.getInimigoImg(), inimigo.getInimigoDan(), inimigo.getInimigoIdle());
+        // Só aplica tremor do player se não estiver no modo ataque
         if (timerAtaquePlayer <= 0) {
             aplicarTremor(false, delta, main.TextJog, main.playerDanTex, main.TextJog);
         }
@@ -508,7 +529,9 @@ public class TelaBatalha implements Screen {
             } else {
                 playerOffsetX = 0;
                 playerOffsetY = 0;
-                main.jogador.setImgPlayer(normalTex);
+                if (main.jogador.getHPPlayer() > 0) {
+                    main.jogador.setImgPlayer(normalTex);
+                }
             }
         }
     }
