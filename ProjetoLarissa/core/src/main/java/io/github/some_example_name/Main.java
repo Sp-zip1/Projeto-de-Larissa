@@ -7,6 +7,7 @@ import Entidades.TipoC;
 import Flyweight.CartaFactory;
 import Flyweight.FactoryCartas;
 import Telas.TelaMapa;
+import Telas.TelaMenu;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -37,10 +38,11 @@ public class Main extends Game {
     public SpriteBatch batch;
     public Texture slice, burst, wraith, code_injection, garbage_colector, root_acess;
     public Texture inimigoBossHit, inimigoBoss;
-    public Texture endTurnTex, backGround;
+    public Texture endTurnTex, backGround, soundA, soundD;
     public Texture TextJog, playerDanTex;
     public Music backgroundMusic;
     public Jogador jogador;
+    TelaMenu telaMenu;
     public BitmapFont fontGrande, fontPequena;
 
     public Map<String, FactoryCartas> fabricasCartas;
@@ -54,7 +56,9 @@ public class Main extends Game {
         fabricaCarta();
         criardeck();
         telaMapa = new TelaMapa(this, this);
-        setScreen(telaMapa);
+        telaMenu = new TelaMenu(this, this);
+        //setScreen(new TelaMenu(this, this));
+        setScreen(telaMenu);
     }
     @Override
     public void render(){
@@ -83,6 +87,8 @@ public class Main extends Game {
         code_injection = new Texture("code_injection.png");
         garbage_colector = new Texture("garbage_colector.png");
         root_acess = new Texture("root_acess.png");
+        soundA = new Texture("volume_on.png");
+        soundD = new Texture("volume_mute.png");
     }
     private void fabricaCarta() {
         fabricasCartas = new HashMap<>();

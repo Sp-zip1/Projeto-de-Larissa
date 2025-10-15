@@ -111,10 +111,10 @@ public class TelaBatalha implements Screen {
                     largura,
                     altura);
             batch.draw(inimigo.getInimigoImg(), 800 + inimigo.getOffsetX(), 200 + inimigo.getOffsetY(), 200, 200);
-
+            font.draw(batch, "Mana: " + main.jogador.getMana(), 270, 100);
             batch.end();
-            criarBarraHPIn(760, 540, 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
-            criarBarraHPIn(270, 540, 200, 30, main.jogador.getHPPlayer(), 100);
+            criarBarraHPIn(760, 400, 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
+            criarBarraHPIn(270, 400, 200, 30, main.jogador.getHPPlayer(), 100);
             if (tremorTimerP > 0) {
                 desenharRaiosSobreJogador();
             }

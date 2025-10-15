@@ -32,7 +32,7 @@ public class Jogador {
     }
 
     public void setHPPlayer(Integer HPPlayer) {
-        this.HPPlayer = HPPlayer;
+        this.HPPlayer = Math.min(Math.max(HPPlayer, 0), 100);
     }
 
     public Integer getDanoEXATK() {
