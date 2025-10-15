@@ -20,6 +20,7 @@ fonte/fontejogo1.png
 fonte/fontejogo2.png
 garbage_colector.png
 libgdx.png
+node.png
 player-hit.png
 rar-hit.png
 root_acess.png

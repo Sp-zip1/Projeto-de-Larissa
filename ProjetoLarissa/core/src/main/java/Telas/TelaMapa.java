@@ -37,7 +37,7 @@ public class TelaMapa implements Screen {
         inimigosNivel.add(inimigoO1);
         inimigosNivel.add(inimigo02);
         // Exemplo de criação dos nós
-        Texture nodeTexture = new Texture("slice.png");
+        Texture nodeTexture = new Texture("node.png");
 
         Nodo n1 = new Nodo(200, 150, nodeTexture);
         Nodo n2 = new Nodo(400, 300, nodeTexture);
