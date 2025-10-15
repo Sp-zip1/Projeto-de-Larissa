@@ -133,6 +133,7 @@ public class TelaBatalha implements Screen {
         // Desenha jogador e inimigo
         stage.act(delta);
         stage.draw();
+        verificarMorte();
     }
 
     @Override
@@ -344,13 +345,8 @@ public class TelaBatalha implements Screen {
         inimigo.ExecutarAçãoI(main.jogador);
         if (atual > main.jogador.getHPPlayer()) {
             tremer(false);
-            if (main.jogador.getHPPlayer() <= 0) {
-                main.jogador.setImgPlayer(main.playerMorteText);
-            }
         }
-        if (inimigo.getHPInimigo() <= 0) {
-            entrarEstadoRecompensa();
-        } else {
+         else {
             turnoJogador = true;
             main.jogador.mana = 3;
             main.jogador.descarte.addAll(main.jogador.mãoPlayer);
@@ -535,4 +531,26 @@ public class TelaBatalha implements Screen {
             }
         }
     }
+    private void verificarMorte() {
+        if (main.jogador.getHPPlayer() <= 0) {
+            if (main.jogador.getImgPlayer() != main.playerMorteText) {
+                main.jogador.setImgPlayer(main.playerMorteText);
+                if (main.backgroundMusic != null) {
+                    main.backgroundMusic.stop();
+                }
+            }
+            Gdx.app.postRunnable(() -> {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {}
+                game.setScreen(main.telaMenu);
+                dispose();
+            });
+            return;
+        }
+        if (inimigo.getHPInimigo() <= 0 && !mostrandoRecompensa) {
+            entrarEstadoRecompensa();
+        }
+    }
+
 }

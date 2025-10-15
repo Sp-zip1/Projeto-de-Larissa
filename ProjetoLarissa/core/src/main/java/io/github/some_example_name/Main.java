@@ -43,7 +43,7 @@ public class Main extends Game {
     public Music backgroundMusic;
     public Jogador jogador;
     public Sound somHitJ;
-    TelaMenu telaMenu;
+    public TelaMenu telaMenu;
     public BitmapFont fontGrande, fontPequena;
 
     public Map<String, FactoryCartas> fabricasCartas;
