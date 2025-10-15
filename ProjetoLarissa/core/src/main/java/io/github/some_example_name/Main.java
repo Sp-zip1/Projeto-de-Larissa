@@ -83,7 +83,7 @@ public class Main extends Game {
         inimigo1 = new Texture("binary-slime.png");
         inimigo1Hit = new Texture("binary-slime-hit.png");
         inimigo2 = new Texture("beast-cmd.png");
-        inimigo2Hit = new Texture("binary-slime-hit.png");
+        inimigo2Hit = new Texture("cmd-hit.png");
         code_injection = new Texture("code_injection.png");
         garbage_colector = new Texture("garbage_colector.png");
         root_acess = new Texture("root_acess.png");
