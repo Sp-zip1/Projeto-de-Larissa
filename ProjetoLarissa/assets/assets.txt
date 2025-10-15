@@ -1,5 +1,7 @@
 Background.png
 Player.png
+PlayerMorto.png
+PlayerdAMA.png
 Sons/MENU.mp3
 Sons/SomTemp.mp3
 Sons/analog-texture.mp3

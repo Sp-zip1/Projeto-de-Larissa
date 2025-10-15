@@ -39,7 +39,7 @@ public class Main extends Game {
     public Texture slice, burst, wraith, code_injection, garbage_colector, root_acess;
     public Texture inimigoBossHit, inimigoBoss;
     public Texture endTurnTex, backGround, soundA, soundD;
-    public Texture TextJog, playerDanTex;
+    public Texture TextJog, playerDanTex, playerAtkTex, playerMorteText;
     public Music backgroundMusic;
     public Jogador jogador;
     TelaMenu telaMenu;
@@ -89,6 +89,8 @@ public class Main extends Game {
         root_acess = new Texture("root_acess.png");
         soundA = new Texture("volume_on.png");
         soundD = new Texture("volume_mute.png");
+        playerAtkTex = new Texture("PlayerdAMA.png");
+        playerMorteText = new Texture("PlayerMorto.png");
     }
     private void fabricaCarta() {
         fabricasCartas = new HashMap<>();

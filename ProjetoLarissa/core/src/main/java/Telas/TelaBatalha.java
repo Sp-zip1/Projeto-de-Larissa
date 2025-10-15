@@ -51,7 +51,7 @@ public class TelaBatalha implements Screen {
     private Inimigo inimigo;
     private boolean turnoJogador = true, mostrandoRecompensa;
     private boolean musicEnabled = true, bakcroungVisivel = true;
-
+    private float timerAtaquePlayer = 0f;
     private float playerOffsetY = 0, playerOffsetX = 0;
     private float tremorTimer;
     private  float tremorTimerP = 0f;
@@ -99,6 +99,14 @@ public class TelaBatalha implements Screen {
         float largura = 200 * escalaRespiracao;
         float altura = 200 * escalaRespiracao;
         this.atualizarTremores(delta, inimigoSorteado);
+        if (timerAtaquePlayer > 0) {
+            timerAtaquePlayer -= delta;
+            if (timerAtaquePlayer <= 0) {
+                if (main.jogador.getHPPlayer() > 0) {
+                    main.jogador.setImgPlayer(main.TextJog);
+                }
+            }
+        }
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (bakcroungVisivel && main.backGround != null) {
@@ -248,7 +256,13 @@ public class TelaBatalha implements Screen {
                         button.remove();
                         reposicionarCartas();
 
-                        if (cartaSolta.getTipoC() == TipoC.ATK) tremer(true);
+                        if (cartaSolta.getTipoC() == TipoC.ATK){
+                            tremer(true);
+                            playerOffsetX += 100;
+                            main.jogador.setImgPlayer(main.playerAtkTex);
+                            timerAtaquePlayer = 0.5f;
+
+                        }
                     }
                 }
             });
@@ -390,7 +404,9 @@ public class TelaBatalha implements Screen {
 
     private void atualizarTremores(float delta, Inimigo inimigo) {
         aplicarTremor(true, delta, inimigo.getInimigoImg(), inimigo.getInimigoDan(), inimigo.getInimigoIdle());
-        aplicarTremor(false, delta, main.TextJog, main.playerDanTex, main.TextJog);
+        if (timerAtaquePlayer <= 0) {
+            aplicarTremor(false, delta, main.TextJog, main.playerDanTex, main.TextJog);
+        }
     }
 
     private void tremer(boolean isInimigo) {
