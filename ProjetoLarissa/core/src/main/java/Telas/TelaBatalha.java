@@ -99,7 +99,6 @@ public class TelaBatalha implements Screen {
         float largura = 200;
         float altura = 200;
         this.atualizarTremores(delta, inimigoSorteado);
-
         // Atualizar timer de ataque do player
         if (timerAtaquePlayer > 0) {
             timerAtaquePlayer -= delta;
@@ -258,6 +257,7 @@ public class TelaBatalha implements Screen {
                         botoesCartas.remove(button);
                         main.jogador.descarte.add(cartaSolta);
                         cartaSolta.executarEfeitos(main.jogador, inimigo);
+                        sincronizarBotoesComMao();
                         cartaSolta.somc.play();
                         button.remove();
                         reposicionarCartas();
@@ -267,6 +267,9 @@ public class TelaBatalha implements Screen {
                             main.jogador.setImgPlayer(main.playerAtkTex);
                             timerAtaquePlayer = 0.5f;
                         }
+                        //if(cartaSolta.getTipoC() == TipoC.POD){
+                           // reposicionarCartas();
+                        //}
                     }
                 }
             });
@@ -342,6 +345,7 @@ public class TelaBatalha implements Screen {
 
     private void passarTurno() {
         int atual = main.jogador.getHPPlayer();
+        main.jogador.descarte.addAll(main.jogador.mãoPlayer);
         inimigo.ExecutarAçãoI(main.jogador);
         if (atual > main.jogador.getHPPlayer()) {
             tremer(false);
@@ -349,9 +353,8 @@ public class TelaBatalha implements Screen {
          else {
             turnoJogador = true;
             main.jogador.mana = 3;
-            main.jogador.descarte.addAll(main.jogador.mãoPlayer);
-            puxarNovasCartas();
         }
+        puxarNovasCartas();
     }
 
     private void entrarEstadoRecompensa() {
@@ -371,7 +374,6 @@ public class TelaBatalha implements Screen {
             else if (tipo == 1) opcoes.add(main.fabricasCartas.get("garbage_colector").criarCarta());
             else opcoes.add(main.fabricasCartas.get("code_injection").criarCarta());
         }
-
         for (int i = 0; i < opcoes.size(); i++) {
             final Carta cartaFinal = opcoes.get(i);
             TextureRegionDrawable drawable = new TextureRegionDrawable(cartaFinal.getImagem());
@@ -552,5 +554,56 @@ public class TelaBatalha implements Screen {
             entrarEstadoRecompensa();
         }
     }
+    //Depois vou mudar isso para que todas cartas sem criadas por essa função
+    private void criarBotaoParaCarta(Carta carta) {
+        TextureRegionDrawable drawable = new TextureRegionDrawable(carta.getImagem());
+        ImageButton button = new ImageButton(drawable);
+        button.setSize(100, 150);
 
+        dragAndDrop.addSource(new Source(button) {
+            @Override
+            public Payload dragStart(InputEvent event, float x, float y, int pointer) {
+                if (main.jogador.mana < carta.custo) return null;
+                Payload payload = new Payload();
+                payload.setObject(carta);
+                ImageButton dragVisual = new ImageButton(new TextureRegionDrawable(carta.getImagem()));
+                dragVisual.setSize(100, 150);
+                payload.setDragActor(dragVisual);
+                return payload;
+            }
+
+            @Override
+            public void dragStop(InputEvent event, float x, float y, int pointer, Payload payload, Target target) {
+                if (target == null) return;
+                if(inimigoSorteado.getHPInimigo() > 0) {
+                    Carta cartaSolta = (Carta) payload.getObject();
+                    main.jogador.mana -= cartaSolta.custo;
+                    main.jogador.mãoPlayer.remove(cartaSolta);
+                    main.jogador.descarte.add(cartaSolta);
+                    cartaSolta.executarEfeitos(main.jogador, inimigo);
+                    cartaSolta.somc.play();
+                    botoesCartas.remove(button);
+                    button.remove();
+                    sincronizarBotoesComMao();
+                    reposicionarCartas();
+                    if (cartaSolta.getTipoC() == TipoC.ATK){
+                        tremer(true);
+                        main.jogador.setImgPlayer(main.playerAtkTex);
+                        timerAtaquePlayer = 0.5f;
+                    }
+                }
+            }
+        });
+
+        botoesCartas.add(button);
+        stage.addActor(button);
+    }
+    private void sincronizarBotoesComMao() {
+        while (botoesCartas.size() < main.jogador.mãoPlayer.size()) {
+            int index = botoesCartas.size();
+            Carta carta = main.jogador.mãoPlayer.get(index);
+            criarBotaoParaCarta(carta);
+        }
+        reposicionarCartas();
+    }
 }

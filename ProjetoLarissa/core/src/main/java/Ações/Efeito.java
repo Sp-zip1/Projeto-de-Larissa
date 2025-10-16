@@ -4,6 +4,7 @@ import Atores.Inimigo;
 import Atores.Jogador;
 import Entidades.Carta;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.function.BiConsumer;
 
@@ -38,7 +39,10 @@ public class Efeito {
         });
     }
     public static Efeito cavarCartas(int quantia){
-        return new Efeito((j, i) -> j.puxarCartasDoDeck(quantia));
+        return new Efeito((j, i) -> {
+            ArrayList<Carta> cartasPuxadas = j.puxarCartasDoDeck(quantia);
+            j.mãoPlayer.addAll(cartasPuxadas);
+        });
     }
     public static Efeito danoJogador(int quantia){
         return new Efeito(((j, i) -> j.setHPPlayer(j.getHPPlayer() - quantia)));
