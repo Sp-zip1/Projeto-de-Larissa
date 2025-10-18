@@ -3,6 +3,8 @@ package Ações;
 import Atores.Inimigo;
 import Atores.Jogador;
 import Entidades.Carta;
+import com.badlogic.gdx.graphics.Texture;
+import io.github.some_example_name.Main;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -11,11 +13,19 @@ import java.util.function.BiConsumer;
 public class Efeito {
     public BiConsumer<Jogador, Inimigo> acao;
     public static  Random random = new Random();
+    public Texture icone;
     public Efeito(BiConsumer<Jogador, Inimigo> acao) {
         this.acao = acao;
     }
     public void aplicar(Jogador jogador, Inimigo inimigo) {
         acao.accept(jogador, inimigo);
+    }
+    public Texture getIcone() {
+        return icone;
+    }
+    public Efeito setIcone(Texture icone) {
+        this.icone = icone;
+        return this;
     }
     public static Efeito dano(int quantia) {
         return new Efeito((j, i) -> {
@@ -36,7 +46,7 @@ public class Efeito {
             j.adicionarBuffTemporario((jogador, carta) -> {
                 carta.executarEfeitosDireto(jogador, i);
             });
-        });
+        }).setIcone(Main.instance.iconduplication);
     }
     public static Efeito cavarCartas(int quantia){
         return new Efeito((j, i) -> {

@@ -36,6 +36,7 @@ public class Main extends Game {
     public TelaMapa telaMapa;
     public ArrayList<Inimigo> todosInimigos = new ArrayList<>();
     public SpriteBatch batch;
+    public Texture iconduplication;
     public Texture slice, burst, wraith, code_injection, garbage_colector, root_acess;
     public Texture inimigoBossHit, inimigoBoss;
     public Texture endTurnTex, backGround, soundA, soundD;
@@ -45,14 +46,20 @@ public class Main extends Game {
     public Sound somHitJ;
     public TelaMenu telaMenu;
     public BitmapFont fontGrande, fontPequena;
-
     public Map<String, FactoryCartas> fabricasCartas;
     public Texture inimigo,inimigoHit, inimigo1, inimigo1Hit, inimigo2, inimigo2Hit;
+    public static Main instance;
     //OQ ESTAVA NO MAIN AGORA VAI PARA TELA BATALHA
+    public static Main getInstance() {
+        return instance;
+    }
     @Override
     public void create() {
+        instance = this;
         batch = new SpriteBatch();
         carregarTexturasESons();
+        System.out.println("Main.instance: " + (instance != null ? "OK" : "NULL"));
+        System.out.println("iconduplication: " + (iconduplication != null ? "OK" : "NULL"));
         jogador = new Jogador(100, 0, 0, 3,TextJog, somHitJ);
         fabricaCarta();
         criardeck();
@@ -93,6 +100,7 @@ public class Main extends Game {
         playerAtkTex = new Texture("PlayerdAMA.png");
         playerMorteText = new Texture("PlayerMorto.png");
         somHitJ = Gdx.audio.newSound(Gdx.files.internal("Sons/ouch-robot.mp3"));
+        iconduplication = new Texture("duplicationicon.png");
     }
     private void fabricaCarta() {
         fabricasCartas = new HashMap<>();

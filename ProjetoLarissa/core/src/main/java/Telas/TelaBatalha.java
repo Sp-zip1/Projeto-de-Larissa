@@ -2,6 +2,7 @@ package Telas;
 
 import Atores.Inimigo;
 import Atores.Jogador;
+import Ações.Efeito;
 import Entidades.Carta;
 import Entidades.TipoC;
 import Flyweight.CartaFactory;
@@ -62,12 +63,14 @@ public class TelaBatalha implements Screen {
     private DragAndDrop dragAndDrop;
     private Main main;
     public ShapeRenderer shapeRaios;
+    ArrayList<Efeito> efeitos;
     // === CONSTRUTOR ===
     public TelaBatalha(Game game, TelaMapa telaMapa, ArrayList<Inimigo> inimigos, Main main) {
         this.game = game;
         this.main = main;
         this.telaMapa = telaMapa;
         this.inimigos = inimigos;
+        efeitos = new ArrayList<>();
         batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -125,6 +128,7 @@ public class TelaBatalha implements Screen {
             batch.end();
             criarBarraHPIn(760, 400, 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
             criarBarraHPIn(200, 400+escalaRespiracao, 200, 30, main.jogador.getHPPlayer(), 100);
+            desenharBarraStatus();
             if (tremorTimerP > 0) {
                 desenharRaiosSobreJogador();
             }
@@ -155,11 +159,28 @@ public class TelaBatalha implements Screen {
             main.backgroundMusic.dispose();
         }
     }
+    private void desenharBarraStatus() {
+        if (efeitos.isEmpty()) return;
+        batch.begin();
+        float baseX = 200; // mesma posição X da barra de vida do jogador
+        float baseY = 380; // logo abaixo da barra de vida
+        float tamanhoIcone = 32;
+        float espacamento = 5;
 
-    // === MÉTODOS DE SUPORTE ===
-
-
-
+        for (int i = 0; i < efeitos.size(); i++) {
+            Efeito efeito = efeitos.get(i);
+            float x = baseX + i * (tamanhoIcone + espacamento);
+            float y = baseY;
+            //batch.setColor(0.2f, 0.2f, 0.2f, 0.8f);
+            //batch.draw(main.slice, x - 2, y - 2, tamanhoIcone + 4, tamanhoIcone + 4);
+            batch.setColor(Color.WHITE);
+            if (efeito.getIcone() != null) {
+                batch.draw(efeito.getIcone(), x, y+escalaRespiracao, tamanhoIcone, tamanhoIcone);
+                System.out.println("✓ Desenhando ícone " + i + " em (" + x + ", " + y + ")");
+            }
+        }
+        batch.end();
+    }
     private void criarBarraHPIn(float x, float y, float larguraMax, float altura, float hpAtual, float hpMax) {
         float ratio = Math.max(0, Math.min(hpAtual / hpMax, 1));
 
@@ -252,6 +273,10 @@ public class TelaBatalha implements Screen {
                     if(inimigoSorteado.getHPInimigo() > 0) {
                         // Executa ataque
                         Carta cartaSolta = (Carta) payload.getObject();
+                        if (cartaSolta.efeitos != null && !cartaSolta.efeitos.isEmpty()) {
+                            efeitos.clear();
+                            efeitos.addAll(cartaSolta.efeitos);
+                        }
                         main.jogador.mana -= cartaSolta.custo;
                         main.jogador.mãoPlayer.remove(cartaSolta);
                         botoesCartas.remove(button);

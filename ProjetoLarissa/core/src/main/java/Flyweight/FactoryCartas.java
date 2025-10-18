@@ -13,6 +13,7 @@ public class FactoryCartas implements CartaFactory{
     public TipoC tipoc;
     public Sound somc;
 
+
     public FactoryCartas(int custo, String nome, Texture img, TipoC tipoc, Sound somc) {
         this.custo = custo;
         this.nome = nome;

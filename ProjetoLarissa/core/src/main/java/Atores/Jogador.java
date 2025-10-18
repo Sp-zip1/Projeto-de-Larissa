@@ -69,6 +69,11 @@ public class Jogador {
     public void setMana(Integer mana) {
         this.mana = mana;
     }
+
+    public List<BiConsumer<Jogador, Carta>> getBuffs() {
+        return buffs;
+    }
+
     //CLASSE INTERNA DE SUPORTE
     //VOU BOTAR SEPARADO DPS???
     private static class BuffTemporario implements BiConsumer<Jogador, Carta> {
