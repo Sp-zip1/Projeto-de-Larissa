@@ -55,7 +55,7 @@ public class Efeito {
         });
     }
     public static Efeito danoJogador(int quantia){
-        return new Efeito(((j, i) -> j.setHPPlayer(j.getHPPlayer() - (quantia+i.getDano()))));
+        return new Efeito(((j, i) -> j.setHPPlayer(j.getHPPlayer() - (quantia+i.getDano())))).setIcone(Main.getInstance().attackicon);
     }
     public static Efeito removerMão() {
         return new Efeito((j, i) -> {

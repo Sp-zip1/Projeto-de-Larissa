@@ -85,6 +85,9 @@ public class TelaBatalha implements Screen {
         inimigoSorteado = inimigos.get(sorteado);
         inimigoSorteado.setHPInimigo(inimigoSorteado.getMaxHP());
         inimigo = inimigoSorteado;
+        inimigo.Escolheração();
+        System.out.println("Efeitos disponíveis: " + inimigo.getEfeitosIn().size());
+        System.out.println("Escolhido: " + inimigo.getEscolhido());
         puxarNovasCartas();
         botãoTurno();
         main.backgroundMusic.setLooping(true);
@@ -129,6 +132,7 @@ public class TelaBatalha implements Screen {
             criarBarraHPIn(760, 400, 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
             criarBarraHPIn(200, 400+escalaRespiracao, 200, 30, main.jogador.getHPPlayer(), 100);
             desenharBarraStatus();
+            desenharBarraStatusI();
             if (tremorTimerP > 0) {
                 desenharRaiosSobreJogador();
             }
@@ -178,6 +182,23 @@ public class TelaBatalha implements Screen {
                 batch.draw(efeito.getIcone(), x, y + escalaRespiracao, tamanhoIcone, tamanhoIcone);
             }
         }
+        batch.end();
+    }
+    private void desenharBarraStatusI() {
+        batch.begin();
+        float baseX = 700; // mesma posição X da barra de vida do jogador
+        float baseY = 350; // logo abaixo da barra de vida
+        float tamanhoIcone = 32;
+        float espacamento = 5;
+            float x = baseX +  (tamanhoIcone + espacamento);
+            float y = baseY;
+            //batch.setColor(0.2f, 0.2f, 0.2f, 0.8f);
+            if (inimigo.getEscolhido() != null && inimigo.getEscolhido().getIcone() != null) {
+                batch.setColor(Color.WHITE);
+                batch.draw(main.instance.brancofundo, x - 2, y - 2 , tamanhoIcone + 4, tamanhoIcone + 4);
+                batch.draw(inimigo.getEscolhido().getIcone(), x, y , tamanhoIcone, tamanhoIcone);
+            }
+
         batch.end();
     }
     private void criarBarraHPIn(float x, float y, float larguraMax, float altura, float hpAtual, float hpMax) {
@@ -374,10 +395,9 @@ public class TelaBatalha implements Screen {
         if (atual > main.jogador.getHPPlayer()) {
             tremer(false);
         }
-         else {
-            turnoJogador = true;
-            main.jogador.mana = 3;
-        }
+        turnoJogador = true;
+        main.jogador.mana = 3;
+        inimigo.Escolheração();
         puxarNovasCartas();
     }
 

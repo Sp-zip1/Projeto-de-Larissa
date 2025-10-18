@@ -14,6 +14,7 @@ public class Inimigo {
     Texture inimigoImg, inimigoDan, inimigoIdle;
     Float OffsetX, OffsetY;
     ArrayList<Efeito> efeitosIn;
+    Efeito escolhido;
 
     public Inimigo(Integer HPInimigo, Integer maxHP, Integer dano, Texture inimigoImg, Texture inimigoDan, Texture inimigoIdle, Float offsetX, Float offsetY, ArrayList<Efeito> efeitosIn) {
         this.HPInimigo = HPInimigo;
@@ -99,8 +100,23 @@ public class Inimigo {
         this.efeitosIn = efeitosIn;
     }
 
+    public Efeito getEscolhido() {
+        return escolhido;
+    }
+
+    public void setEscolhido(Efeito escolhido) {
+        this.escolhido = escolhido;
+    }
     public void ExecutarAçãoI(Jogador jogador){
+        escolhido.aplicar(jogador, this);
+    }
+    public void Escolheração(){
+        if (efeitosIn == null || efeitosIn.isEmpty()) {
+            System.err.println("ERRO: Lista de efeitos do inimigo está vazia!");
+            return;
+        }
         int escolha = random.nextInt(efeitosIn.size());
-        efeitosIn.get(escolha).aplicar(jogador, this);
+        escolhido = efeitosIn.get(escolha);
+        System.out.println("Inimigo escolheu ação: " + escolhido);
     }
 }

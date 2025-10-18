@@ -36,7 +36,7 @@ public class Main extends Game {
     public TelaMapa telaMapa;
     public ArrayList<Inimigo> todosInimigos = new ArrayList<>();
     public SpriteBatch batch;
-    public Texture iconduplication;
+    public Texture iconduplication, attackicon;
     public Texture slice, burst, wraith, code_injection, garbage_colector, root_acess;
     public Texture inimigoBossHit, inimigoBoss;
     public Texture endTurnTex, backGround, soundA, soundD;
@@ -103,6 +103,7 @@ public class Main extends Game {
         somHitJ = Gdx.audio.newSound(Gdx.files.internal("Sons/ouch-robot.mp3"));
         iconduplication = new Texture("duplicationicon.png");
         brancofundo = new Texture("branco.png");
+        attackicon = new Texture("attackicon.png");
     }
     private void fabricaCarta() {
         fabricasCartas = new HashMap<>();
