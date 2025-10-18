@@ -163,7 +163,7 @@ public class TelaBatalha implements Screen {
         if (efeitos.isEmpty()) return;
         batch.begin();
         float baseX = 200; // mesma posição X da barra de vida do jogador
-        float baseY = 380; // logo abaixo da barra de vida
+        float baseY = 350; // logo abaixo da barra de vida
         float tamanhoIcone = 32;
         float espacamento = 5;
 
@@ -172,11 +172,10 @@ public class TelaBatalha implements Screen {
             float x = baseX + i * (tamanhoIcone + espacamento);
             float y = baseY;
             //batch.setColor(0.2f, 0.2f, 0.2f, 0.8f);
-            //batch.draw(main.slice, x - 2, y - 2, tamanhoIcone + 4, tamanhoIcone + 4);
-            batch.setColor(Color.WHITE);
             if (efeito.getIcone() != null) {
-                batch.draw(efeito.getIcone(), x, y+escalaRespiracao, tamanhoIcone, tamanhoIcone);
-                System.out.println("✓ Desenhando ícone " + i + " em (" + x + ", " + y + ")");
+                batch.setColor(Color.WHITE);
+                batch.draw(main.instance.brancofundo, x - 2, y - 2 + escalaRespiracao, tamanhoIcone + 4, tamanhoIcone + 4);
+                batch.draw(efeito.getIcone(), x, y + escalaRespiracao, tamanhoIcone, tamanhoIcone);
             }
         }
         batch.end();

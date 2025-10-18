@@ -12,6 +12,7 @@ beast-cmd.png
 beast-rar.png
 binary-slime-hit.png
 binary-slime.png
+branco.png
 burst.png
 cmd-hit.png
 code_injection.png

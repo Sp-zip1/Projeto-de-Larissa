@@ -55,13 +55,20 @@ public class Efeito {
         });
     }
     public static Efeito danoJogador(int quantia){
-        return new Efeito(((j, i) -> j.setHPPlayer(j.getHPPlayer() - quantia)));
+        return new Efeito(((j, i) -> j.setHPPlayer(j.getHPPlayer() - (quantia+i.getDano()))));
     }
     public static Efeito removerMão() {
         return new Efeito((j, i) -> {
             int index = random.nextInt(j.mãoPlayer.size());
             j.mãoPlayer.remove(index);
         });
+    }
+
+        public static Efeito curaIn(int quantia) {
+            return new Efeito((j, i) -> i.setHPInimigo(i.getHPInimigo() + quantia));
+        }
+    public static Efeito danoExtraIn(int quantia){
+        return new Efeito((j, i) -> i.setDano(1));
     }
     public static Efeito manaExtra(int quantia){
         return new Efeito(((j, i) -> j.setMana(j.getMana()+1)));

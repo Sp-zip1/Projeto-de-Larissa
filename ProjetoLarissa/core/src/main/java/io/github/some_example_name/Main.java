@@ -45,6 +45,7 @@ public class Main extends Game {
     public Jogador jogador;
     public Sound somHitJ;
     public TelaMenu telaMenu;
+    public Texture brancofundo;
     public BitmapFont fontGrande, fontPequena;
     public Map<String, FactoryCartas> fabricasCartas;
     public Texture inimigo,inimigoHit, inimigo1, inimigo1Hit, inimigo2, inimigo2Hit;
@@ -101,6 +102,7 @@ public class Main extends Game {
         playerMorteText = new Texture("PlayerMorto.png");
         somHitJ = Gdx.audio.newSound(Gdx.files.internal("Sons/ouch-robot.mp3"));
         iconduplication = new Texture("duplicationicon.png");
+        brancofundo = new Texture("branco.png");
     }
     private void fabricaCarta() {
         fabricasCartas = new HashMap<>();

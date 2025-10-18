@@ -1,6 +1,7 @@
 package Telas;
 
 import Atores.Inimigo;
+import Ações.Efeito;
 import Entidades.Nodo;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -22,17 +23,21 @@ public class TelaMapa implements Screen {
     private ShapeRenderer shapeRenderer;
     private List<Nodo> nodes;
     private Nodo currentNode;
+    private ArrayList<Efeito> efeitosIn = new ArrayList<>();
     private ArrayList<Inimigo> inimigosNivel = new ArrayList<>();
     private Main main;
     public TelaMapa(Game game, Main main) {
         this.game = game;
         this.main = main;
+        efeitosIn.add(Efeito.danoJogador(10));
+        efeitosIn.add(Efeito.curaIn(4));
+        efeitosIn.add(Efeito.danoExtraIn(1));
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         nodes = new ArrayList<>();
-        Inimigo inimigoO = new Inimigo(55, 55, 10, main.inimigo, main.inimigoHit, main.inimigo, (float)0, (float)0);
-        Inimigo inimigoO1 = new Inimigo(70, 70, 5,main.inimigo1,main.inimigo1Hit, main.inimigo1 ,(float)0, (float)0);
-        Inimigo inimigo02 = new Inimigo(30, 30, 10, main.inimigo2, main.inimigo2Hit, main.inimigo2, (float)0, (float)0);
+        Inimigo inimigoO = new Inimigo(55, 55, 10, main.inimigo, main.inimigoHit, main.inimigo, (float)0, (float)0, efeitosIn);
+        Inimigo inimigoO1 = new Inimigo(70, 70, 5,main.inimigo1,main.inimigo1Hit, main.inimigo1 ,(float)0, (float)0,efeitosIn);
+        Inimigo inimigo02 = new Inimigo(30, 30, 10, main.inimigo2, main.inimigo2Hit, main.inimigo2, (float)0, (float)0,efeitosIn);
         inimigosNivel.add(inimigoO);
         inimigosNivel.add(inimigoO1);
         inimigosNivel.add(inimigo02);
