@@ -20,6 +20,7 @@ public class Jogador {
     public ArrayList<Carta> deckPlayer = new ArrayList<>();
     public ArrayList<Carta> descarte = new ArrayList<>();
     public ArrayList<Carta> mãoPlayer = new ArrayList<>();
+    public ArrayList<Carta> exaustas = new ArrayList<>();
     private final List<BiConsumer<Jogador, Carta>> buffs = new ArrayList<>();
     public Integer turnosInvulneravel=0;
 
@@ -142,6 +143,20 @@ public class Jogador {
             resultado.add(deckPlayer.remove(0));
         }
         return resultado;
+    }
+    public void loopInicioBatalha(){
+        if (!exaustas.isEmpty()) {
+            System.out.println("Restaurando " + exaustas.size() + " cartas exaustas para o deck");
+            deckPlayer.addAll(exaustas);
+            exaustas.clear();
+        }
+        deckPlayer.addAll(descarte);
+        deckPlayer.addAll(mãoPlayer);
+        descarte.clear();
+        mãoPlayer.clear();
+        mana = 3;
+        danoEXATK = 0;
+        turnosInvulneravel = 0;
     }
 }
 

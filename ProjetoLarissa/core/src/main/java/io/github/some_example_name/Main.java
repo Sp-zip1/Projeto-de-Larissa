@@ -37,7 +37,7 @@ public class Main extends Game {
     public ArrayList<Inimigo> todosInimigos = new ArrayList<>();
     public SpriteBatch batch;
     public Texture iconduplication, attackicon;
-    public Texture slice, burst, wraith, code_injection, garbage_colector, root_acess, nullpointerslash, overclock, safemode;
+    public Texture slice, burst, wraith, code_injection, garbage_colector, root_acess, nullpointerslash, overclock, safemode, adaptiveai;
     public Texture inimigoBossHit, inimigoBoss;
     public Texture endTurnTex, backGround, soundA, soundD;
     public Texture TextJog, playerDanTex, playerAtkTex, playerMorteText;
@@ -107,6 +107,7 @@ public class Main extends Game {
         nullpointerslash = new Texture("nullpointer.png");
         overclock = new Texture("overclock.png");
         safemode = new Texture("safemode.png");
+        adaptiveai = new Texture("adaptiveai.png");
     }
     private void fabricaCarta() {
         fabricasCartas = new HashMap<>();
@@ -119,6 +120,7 @@ public class Main extends Game {
         adicionarFactory("null_pointer_slash", 0, nullpointerslash, TipoC.ATK, "Sons/slap-hurt-pain-sound-effect.mp3");
         adicionarFactory("systemoverclock", 3, overclock,TipoC.HAB, "Sons/card-woosh.mp3");
         adicionarFactory("safemode", 2, safemode, TipoC.POD, "Sons/card-woosh.mp3");
+        adicionarFactory("adaptiveai", 3, adaptiveai, TipoC.HAB, "Sons/card-woosh.mp3");
     }
     private void criardeck() {
         for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabricasCartas.get("golpe").criarCarta());

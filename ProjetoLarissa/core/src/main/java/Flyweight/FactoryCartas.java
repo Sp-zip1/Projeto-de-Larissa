@@ -38,7 +38,7 @@ public class FactoryCartas implements CartaFactory{
             return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.cavarCartas(2)).adicionarEfeito(Efeito.dano(2));
         }
         if (nome.equalsIgnoreCase("garbage_colector")){
-            return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.cura(4));
+            return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.cura(4)).adicionarEfeito(Efeito.removerMão());
         }
         if(nome.equalsIgnoreCase("root_acess")){
             return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.manaExtra(1));
@@ -51,6 +51,9 @@ public class FactoryCartas implements CartaFactory{
         }
         if (nome.equalsIgnoreCase("safemode")){
             return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.imunedanoJ(1));
+        }
+        if(nome.equalsIgnoreCase("adaptiveai")){
+            return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.adaptiveAI());
         }
         else {
             return null;

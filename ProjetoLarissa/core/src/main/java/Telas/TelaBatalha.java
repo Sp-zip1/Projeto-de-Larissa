@@ -70,6 +70,7 @@ public class TelaBatalha implements Screen {
         this.main = main;
         this.telaMapa = telaMapa;
         this.inimigos = inimigos;
+        Main.getInstance().jogador.loopInicioBatalha();
         efeitos = new ArrayList<>();
         batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
@@ -410,20 +411,24 @@ public class TelaBatalha implements Screen {
     }
 
     private void criarBotoesRecompensa() {
+        System.out.println("Main dentro da TelaBatalha: " + main);
+        System.out.println("Main.getInstance(): " + Main.getInstance());
         if (!botoesRecompensa.isEmpty()) return;
         ArrayList<Carta> opcoes = new ArrayList<>();
         Random random = new Random();
-        for (int i = 0; i < 5; i++) {
-            int tipo = random.nextInt(5);
-            if (tipo == 0) opcoes.add(main.fabricasCartas.get("root_acess").criarCarta());
-            else if (tipo == 1) opcoes.add(main.fabricasCartas.get("garbage_colector").criarCarta());
+        for (int i = 0; i < 7; i++) {
+            int tipo = random.nextInt(7);
+            if (tipo == 0) opcoes.add(Main.getInstance().fabricasCartas.get("root_acess").criarCarta());
+            else if (tipo == 1) opcoes.add(Main.getInstance().fabricasCartas.get("garbage_colector").criarCarta());
             else if(tipo == 2) opcoes.add(Main.getInstance().fabricasCartas.get("safemode").criarCarta());
             else if(tipo == 3) opcoes.add(Main.getInstance().fabricasCartas.get("null_pointer_slash").criarCarta());
             else if(tipo == 4) opcoes.add(Main.getInstance().fabricasCartas.get("systemoverclock").criarCarta());
-            else opcoes.add(main.fabricasCartas.get("code_injection").criarCarta());
+            else if(tipo == 5) opcoes.add(Main.getInstance().fabricasCartas.get("adaptiveai").criarCarta());
+            else opcoes.add(Main.getInstance().fabricasCartas.get("code_injection").criarCarta());
         }
         for (int i = 0; i < 3; i++) {
             final Carta cartaFinal = opcoes.get(i);
+            System.out.println(cartaFinal.nome);
             TextureRegionDrawable drawable = new TextureRegionDrawable(cartaFinal.getImagem());
             ImageButton botaoCarta = new ImageButton(drawable);
             botaoCarta.setSize(150, 200);
@@ -433,13 +438,8 @@ public class TelaBatalha implements Screen {
                 public void clicked(InputEvent event, float x, float y) {
                     System.out.println("=== ESCOLHENDO RECOMPENSA ===");
                     System.out.println("Antes - Deck: " + main.jogador.deckPlayer.size() + " | Descarte: " + main.jogador.descarte.size() + " | Mão: " + main.jogador.mãoPlayer.size());
-
                     // Retorna todas as cartas para o deck antes de sair
-                    main.jogador.deckPlayer.addAll(main.jogador.descarte);
-                    main.jogador.deckPlayer.addAll(main.jogador.mãoPlayer);
-                    main.jogador.descarte.clear();
-                    main.jogador.mãoPlayer.clear();
-
+                    Main.getInstance().jogador.loopInicioBatalha();
                     // Adiciona a carta de recompensa
                     main.jogador.deckPlayer.add(cartaFinal);
 
@@ -647,6 +647,10 @@ public class TelaBatalha implements Screen {
         stage.addActor(button);
     }
     private void sincronizarBotoesComMao() {
+        while (botoesCartas.size() > main.jogador.mãoPlayer.size()) {
+            ImageButton botaoRemover = botoesCartas.remove(botoesCartas.size() - 1);
+            botaoRemover.remove();
+        }
         while (botoesCartas.size() < main.jogador.mãoPlayer.size()) {
             int index = botoesCartas.size();
             Carta carta = main.jogador.mãoPlayer.get(index);

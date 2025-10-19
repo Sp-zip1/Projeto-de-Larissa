@@ -60,7 +60,9 @@ public class Efeito {
     public static Efeito removerMão() {
         return new Efeito((j, i) -> {
             int index = random.nextInt(j.mãoPlayer.size());
+            Carta cartaRemovida = j.mãoPlayer.get(index);
             j.mãoPlayer.remove(index);
+            j.exaustas.add(cartaRemovida);
         });
     }
 
@@ -97,6 +99,18 @@ public class Efeito {
     public static Efeito imunedanoJ(int quantia){
         return new Efeito((j, i)->{
             j.setTurnosInvulneravel(quantia);
+        });
+    }
+    public static Efeito adaptiveAI() {
+        return new Efeito((j, i) -> {
+            float hpRatio = (float) j.getHPPlayer() / 100f;
+            if (hpRatio < 0.4f) {
+                j.setHPPlayer(j.getHPPlayer() + 20);
+                j.setTurnosInvulneravel(1);
+            } else {
+                int dano = 15 + j.getDanoEXATK();
+                i.setHPInimigo(i.getHPInimigo() - dano);
+            }
         });
     }
 }
