@@ -8,6 +8,7 @@ Sons/analog-texture.mp3
 Sons/card-woosh.mp3
 Sons/ouch-robot.mp3
 Sons/slap-hurt-pain-sound-effect.mp3
+attackicon.png
 beast-cmd.png
 beast-rar.png
 binary-slime-hit.png

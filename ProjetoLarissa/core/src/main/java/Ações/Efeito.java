@@ -73,5 +73,30 @@ public class Efeito {
     public static Efeito manaExtra(int quantia){
         return new Efeito(((j, i) -> j.setMana(j.getMana()+1)));
     }
-
+    public static Efeito nullPointerSlash(int quantia){
+        return new Efeito((j, i) -> {
+            int index = random.nextInt(1, 10);
+            if(index > 5){
+                i.setHPInimigo(i.getHPInimigo()-quantia);
+            }
+            else{
+                j.setHPPlayer(j.getHPPlayer()-quantia);
+            }
+        });
+    }
+    public static Efeito systemOverclock(){
+        return new Efeito((j, i)->{
+            j.setDanoEXATK(j.getDanoEXATK()+(j.getDanoEXATK()*2));
+        });
+    }
+    public static Efeito imunedano(int quantia){
+        return new Efeito((j, i)->{
+           i.setTurnosInvuneravel(quantia);
+        });
+    }
+    public static Efeito imunedanoJ(int quantia){
+        return new Efeito((j, i)->{
+            j.setTurnosInvulneravel(quantia);
+        });
+    }
 }

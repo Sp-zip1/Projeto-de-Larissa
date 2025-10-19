@@ -21,6 +21,7 @@ public class Jogador {
     public ArrayList<Carta> descarte = new ArrayList<>();
     public ArrayList<Carta> mãoPlayer = new ArrayList<>();
     private final List<BiConsumer<Jogador, Carta>> buffs = new ArrayList<>();
+    public Integer turnosInvulneravel=0;
 
     public Jogador(Integer HPPlayer, Integer danoEXATK, Integer defesaEXPlayer, Integer mana, Texture imgPlayer, Sound som) {
         this.HPPlayer = HPPlayer;
@@ -35,7 +36,8 @@ public class Jogador {
     }
 
     public void setHPPlayer(Integer HPPlayer) {
-        this.HPPlayer = Math.min(Math.max(HPPlayer, 0), 100);
+        if(turnosInvulneravel == 0){
+        this.HPPlayer = Math.min(Math.max(HPPlayer, 0), 100);}
     }
 
     public Integer getDanoEXATK() {
@@ -72,6 +74,19 @@ public class Jogador {
 
     public List<BiConsumer<Jogador, Carta>> getBuffs() {
         return buffs;
+    }
+    public void atualizarTurno() {
+        if (turnosInvulneravel > 0) {
+            turnosInvulneravel--;
+        }
+    }
+
+    public Integer getTurnosInvulneravel() {
+        return turnosInvulneravel;
+    }
+
+    public void setTurnosInvulneravel(Integer turnosInvulneravel) {
+        this.turnosInvulneravel = turnosInvulneravel;
     }
 
     //CLASSE INTERNA DE SUPORTE
