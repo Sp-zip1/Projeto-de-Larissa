@@ -16,6 +16,7 @@ public class Inimigo {
     ArrayList<Efeito> efeitosIn;
     Efeito escolhido;
     Integer turnosInvuneravel=0;
+    Integer ultimDano = 0;
     public Inimigo(Integer HPInimigo, Integer maxHP, Integer dano, Texture inimigoImg, Texture inimigoDan, Texture inimigoIdle, Float offsetX, Float offsetY, ArrayList<Efeito> efeitosIn) {
         this.HPInimigo = HPInimigo;
         this.maxHP = maxHP;
@@ -32,9 +33,11 @@ public class Inimigo {
         return HPInimigo;
     }
 
-    public void setHPInimigo(Integer HPInimigo) {
+    public void setHPInimigo(Integer novoHP) {
         if(turnosInvuneravel <=0) {
-            this.HPInimigo = Math.min(Math.max(HPInimigo, 0), maxHP);
+            int dano = this.HPInimigo - novoHP;
+            if (dano > 0) this.ultimDano = dano;
+            this.HPInimigo = Math.max(0, novoHP);
         }
     }
     public void atualizarTurno() {
@@ -116,6 +119,14 @@ public class Inimigo {
 
     public Integer getTurnosInvuneravel() {
         return turnosInvuneravel;
+    }
+
+    public Integer getUltimDano() {
+        return ultimDano;
+    }
+
+    public void setUltimDano(Integer ultimDano) {
+        this.ultimDano = ultimDano;
     }
 
     public void setTurnosInvuneravel(Integer turnosInvuneravel) {

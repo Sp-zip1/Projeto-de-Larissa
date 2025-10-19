@@ -3,6 +3,7 @@ package Telas;
 import Atores.Inimigo;
 import Atores.Jogador;
 import Ações.Efeito;
+import Ações.EfeitoVisual;
 import Entidades.Carta;
 import Entidades.TipoC;
 import Flyweight.CartaFactory;
@@ -42,7 +43,7 @@ public class TelaBatalha implements Screen {
     private SpriteBatch batch;
     private Stage stage;
     private ShapeRenderer barraVidaIn, barraVidaP;
-    private BitmapFont font;
+    private BitmapFont font, fontDano;
     private float tempoRespiracao = 0f;
     private float escalaRespiracao = 1f;
     float larguraDelay;
@@ -63,6 +64,7 @@ public class TelaBatalha implements Screen {
     private DragAndDrop dragAndDrop;
     private Main main;
     public ShapeRenderer shapeRaios;
+    public ArrayList<EfeitoVisual> efeitoVisuals = new ArrayList<>();
     ArrayList<Efeito> efeitos;
     // === CONSTRUTOR ===
     public TelaBatalha(Game game, TelaMapa telaMapa, ArrayList<Inimigo> inimigos, Main main) {
@@ -81,6 +83,8 @@ public class TelaBatalha implements Screen {
         font = new BitmapFont(Gdx.files.internal("fonte/fontejogo.fnt"));
         font.getData().setScale(0.5f);
         font.setColor(Color.WHITE);
+        fontDano = new BitmapFont(Gdx.files.internal("fonte/fontejogo.fnt"));
+        fontDano.getData().setScale(2.0f);
         Random random = new Random();
         int sorteado = random.nextInt(inimigos.size());
         inimigoSorteado = inimigos.get(sorteado);
@@ -101,6 +105,11 @@ public class TelaBatalha implements Screen {
 
     @Override
     public void render(float delta) {
+        for (int i = efeitoVisuals.size() - 1; i >= 0; i--) {
+            if (efeitoVisuals.get(i).atualizar(delta)) {
+                efeitoVisuals.remove(i);
+            }
+        }
         tempoRespiracao += delta;
         escalaRespiracao = 15f * (float)Math.sin(tempoRespiracao * 0.8f);
         float largura = 200;
@@ -128,6 +137,9 @@ public class TelaBatalha implements Screen {
                     largura,
                     altura);
             batch.draw(inimigo.getInimigoImg(), 800 + inimigo.getOffsetX(), 200 + inimigo.getOffsetY(), 200, 200);
+            for (EfeitoVisual d : efeitoVisuals) {
+                d.desenhar(batch, fontDano);
+            }
             font.draw(batch, "Mana: " + main.jogador.getMana(), 270, 100);
             batch.end();
             criarBarraHPIn(760, 400, 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
@@ -312,6 +324,14 @@ public class TelaBatalha implements Screen {
                             tremer(true);
                             main.jogador.setImgPlayer(main.playerAtkTex);
                             timerAtaquePlayer = 0.5f;
+                            efeitoVisuals.add(
+                                    new EfeitoVisual(
+                                            inimigo.getOffsetX() + 800,
+                                            inimigo.getOffsetY() + 350,
+                                            "-" + inimigo.getUltimDano(),
+                                            Color.RED,
+                                            1.2f)
+                            );
                         }
                         //if(cartaSolta.getTipoC() == TipoC.POD){
                            // reposicionarCartas();
