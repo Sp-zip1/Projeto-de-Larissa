@@ -43,6 +43,15 @@ public class FactoryCartas implements CartaFactory{
         if(nome.equalsIgnoreCase("root_acess")){
             return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.manaExtra(1));
         }
+        if(nome.equalsIgnoreCase("null_pointer_slash")){
+            return new Carta(fly.getCusto(), fly.getNome(),fly.getImagem(), fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.nullPointerSlash(12));
+        }
+        if(nome.equalsIgnoreCase("systemoverclock")){
+            return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(),fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.systemOverclock());
+        }
+        if (nome.equalsIgnoreCase("safemode")){
+            return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.imunedanoJ(1));
+        }
         else {
             return null;
         }

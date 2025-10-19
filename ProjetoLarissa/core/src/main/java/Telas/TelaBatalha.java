@@ -395,6 +395,7 @@ public class TelaBatalha implements Screen {
         if (atual > main.jogador.getHPPlayer()) {
             tremer(false);
         }
+        Main.getInstance().jogador.atualizarTurno();
         turnoJogador = true;
         main.jogador.mana = 3;
         inimigo.Escolheração();
@@ -412,13 +413,16 @@ public class TelaBatalha implements Screen {
         if (!botoesRecompensa.isEmpty()) return;
         ArrayList<Carta> opcoes = new ArrayList<>();
         Random random = new Random();
-        for (int i = 0; i < 3; i++) {
-            int tipo = random.nextInt(3);
+        for (int i = 0; i < 5; i++) {
+            int tipo = random.nextInt(5);
             if (tipo == 0) opcoes.add(main.fabricasCartas.get("root_acess").criarCarta());
             else if (tipo == 1) opcoes.add(main.fabricasCartas.get("garbage_colector").criarCarta());
+            else if(tipo == 2) opcoes.add(Main.getInstance().fabricasCartas.get("safemode").criarCarta());
+            else if(tipo == 3) opcoes.add(Main.getInstance().fabricasCartas.get("null_pointer_slash").criarCarta());
+            else if(tipo == 4) opcoes.add(Main.getInstance().fabricasCartas.get("systemoverclock").criarCarta());
             else opcoes.add(main.fabricasCartas.get("code_injection").criarCarta());
         }
-        for (int i = 0; i < opcoes.size(); i++) {
+        for (int i = 0; i < 3; i++) {
             final Carta cartaFinal = opcoes.get(i);
             TextureRegionDrawable drawable = new TextureRegionDrawable(cartaFinal.getImagem());
             ImageButton botaoCarta = new ImageButton(drawable);

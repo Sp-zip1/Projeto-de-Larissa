@@ -37,7 +37,7 @@ public class Main extends Game {
     public ArrayList<Inimigo> todosInimigos = new ArrayList<>();
     public SpriteBatch batch;
     public Texture iconduplication, attackicon;
-    public Texture slice, burst, wraith, code_injection, garbage_colector, root_acess;
+    public Texture slice, burst, wraith, code_injection, garbage_colector, root_acess, nullpointerslash, overclock, safemode;
     public Texture inimigoBossHit, inimigoBoss;
     public Texture endTurnTex, backGround, soundA, soundD;
     public Texture TextJog, playerDanTex, playerAtkTex, playerMorteText;
@@ -104,6 +104,9 @@ public class Main extends Game {
         iconduplication = new Texture("duplicationicon.png");
         brancofundo = new Texture("branco.png");
         attackicon = new Texture("attackicon.png");
+        nullpointerslash = new Texture("nullpointer.png");
+        overclock = new Texture("overclock.png");
+        safemode = new Texture("safemode.png");
     }
     private void fabricaCarta() {
         fabricasCartas = new HashMap<>();
@@ -113,6 +116,9 @@ public class Main extends Game {
         adicionarFactory("code_injection", 1, code_injection, TipoC.ATK, "Sons/slap-hurt-pain-sound-effect.mp3");
         adicionarFactory("garbage_colector", 0, garbage_colector, TipoC.HAB, "Sons/card-woosh.mp3");
         adicionarFactory("root_acess", 0, root_acess, TipoC.POD,"Sons/card-woosh.mp3");
+        adicionarFactory("null_pointer_slash", 0, nullpointerslash, TipoC.ATK, "Sons/slap-hurt-pain-sound-effect.mp3");
+        adicionarFactory("systemoverclock", 3, overclock,TipoC.HAB, "Sons/card-woosh.mp3");
+        adicionarFactory("safemode", 2, safemode, TipoC.POD, "Sons/card-woosh.mp3");
     }
     private void criardeck() {
         for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabricasCartas.get("golpe").criarCarta());
