@@ -1,5 +1,6 @@
 package Atores;
 //TENHO QUE ORGANIZAR ESSE CODIGO ESTA  MUITO CONFUSO
+import Ações.BuffManager;
 import Entidades.Carta;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,7 +23,8 @@ public class Jogador {
     public ArrayList<Carta> mãoPlayer = new ArrayList<>();
     public ArrayList<Carta> exaustas = new ArrayList<>();
     private final List<BiConsumer<Jogador, Carta>> buffs = new ArrayList<>();
-    public Integer turnosInvulneravel=0;
+    private final BuffManager buffManager = new BuffManager();
+    public Integer turnosInvulneravel = 0;
 
     public Jogador(Integer HPPlayer, Integer danoEXATK, Integer defesaEXPlayer, Integer mana, Texture imgPlayer, Sound som) {
         this.HPPlayer = HPPlayer;
@@ -32,13 +34,15 @@ public class Jogador {
         this.ImgPlayer = imgPlayer;
         this.som = som;
     }
+
     public Integer getHPPlayer() {
         return HPPlayer;
     }
 
     public void setHPPlayer(Integer HPPlayer) {
-        if(turnosInvulneravel == 0){
-        this.HPPlayer = Math.min(Math.max(HPPlayer, 0), 100);}
+        if (turnosInvulneravel == 0) {
+            this.HPPlayer = Math.min(Math.max(HPPlayer, 0), 100);
+        }
     }
 
     public Integer getDanoEXATK() {
@@ -76,106 +80,25 @@ public class Jogador {
     public List<BiConsumer<Jogador, Carta>> getBuffs() {
         return buffs;
     }
-    public void atualizarTurno() {
+
+    public BuffManager getBuffManager() {
+        return buffManager;
+    }
+    public void atualizarTurno(Inimigo inimigo) {
         if (turnosInvulneravel > 0) {
             turnosInvulneravel--;
         }
-        aplicarBuffsDeTurno();
+        buffManager.aplicarBuffsDeTurno(this, inimigo);
     }
-
+    public void executarBuffTemp(Carta carta){
+        buffManager.executarBuffTemp(this, carta);
+    }
     public Integer getTurnosInvulneravel() {
         return turnosInvulneravel;
     }
 
     public void setTurnosInvulneravel(Integer turnosInvulneravel) {
         this.turnosInvulneravel = turnosInvulneravel;
-    }
-
-    //CLASSE INTERNA DE SUPORTE
-    //VOU BOTAR SEPARADO DPS???
-    private static class BuffTemporario implements BiConsumer<Jogador, Carta> {
-        private final BiConsumer<Jogador, Carta> acao;
-        private boolean usado = false;
-
-        public BuffTemporario(BiConsumer<Jogador, Carta> acao) {
-            this.acao = acao;
-        }
-
-        @Override
-        public void accept(Jogador jogador, Carta carta) {
-            if (!usado) {
-                acao.accept(jogador, carta);
-                usado = true;
-            }
-        }
-
-        public boolean jaUsou() {
-            return usado;
-        }
-    }
-    private static class BuffDuracao implements BiConsumer<Jogador, Carta> {
-        private final BiConsumer<Jogador, Carta> acaoPorTurno;
-        private int turnosRestantes;
-
-        public BuffDuracao(BiConsumer<Jogador, Carta> acaoPorTurno, int turnos) {
-            this.acaoPorTurno = acaoPorTurno;
-            this.turnosRestantes = turnos;
-        }
-
-        @Override
-        public void accept(Jogador jogador, Carta carta) {
-
-        }
-
-        public void aplicarPorTurno(Jogador jogador) {
-            if (turnosRestantes > 0) {
-                acaoPorTurno.accept(jogador, null);
-                turnosRestantes--;
-            }
-        }
-
-        public boolean terminou() {
-            return turnosRestantes <= 0;
-        }
-    }
-
-    public void adicionarBuffDuracao(BiConsumer<Jogador, Carta> acao, int turnos) {
-        buffs.add(new BuffDuracao(acao, turnos));
-    }
-
-    public void aplicarBuffsDeTurno() {
-        List<BuffDuracao> buffsTurno = new ArrayList<>();
-
-        for (BiConsumer<Jogador, Carta> buff : buffs) {
-            if (buff instanceof BuffDuracao) {
-                buffsTurno.add((BuffDuracao) buff);
-            }
-        }
-
-        for (BuffDuracao buff : buffsTurno) {
-            buff.aplicarPorTurno(this);
-        }
-
-        // Remove buffs expirados
-        buffs.removeIf(buff -> buff instanceof BuffDuracao && ((BuffDuracao) buff).terminou());
-    }
-
-    public void adicionarBuff(BiConsumer<Jogador, Carta> buff) {
-        buffs.add(buff);
-    }
-    public void adicionarBuffTemporario(BiConsumer<Jogador, Carta> acao) {
-        buffs.add(new BuffTemporario(acao));
-    }
-    //tive que mudar o codigo pois jogar uma carta de duplicação atras da outra causava crash
-    public void executarBuffs(Carta carta) {
-        List<BiConsumer<Jogador, Carta>> ativos = new ArrayList<>(buffs);
-
-        for (BiConsumer<Jogador, Carta> buff : ativos) {
-            buff.accept(this, carta);
-        }
-
-        // Remove buffs que já foram usados (temporários)
-        buffs.removeIf(buff -> buff instanceof BuffTemporario && ((BuffTemporario) buff).jaUsou());
     }
     public ArrayList<Carta> puxarCartasDoDeck(int quantidade) {
         ArrayList<Carta> resultado = new ArrayList<>();
@@ -205,6 +128,7 @@ public class Jogador {
         mana = 3;
         danoEXATK = 0;
         turnosInvulneravel = 0;
+        buffManager.limparBuffs();
     }
 }
 

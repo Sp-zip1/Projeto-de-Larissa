@@ -320,6 +320,7 @@ public class TelaBatalha implements Screen {
                         botoesCartas.remove(button);
                         main.jogador.descarte.add(cartaSolta);
                         cartaSolta.executarEfeitos(main.jogador, inimigo);
+                        Main.getInstance().jogador.executarBuffTemp(cartaSolta);
                         sincronizarBotoesComMao();
                         cartaSolta.somc.play();
                         button.remove();
@@ -434,7 +435,8 @@ public class TelaBatalha implements Screen {
                     )
             );
         }
-        Main.getInstance().jogador.atualizarTurno();
+        Main.getInstance().jogador.atualizarTurno(inimigo);
+        inimigo.atualizarTurno(Main.getInstance().jogador);
         turnoJogador = true;
         main.jogador.mana = 3;
         inimigo.Escolheração();

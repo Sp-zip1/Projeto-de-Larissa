@@ -54,6 +54,9 @@ public class BuffManager {
 public void adicionarBuffTemp(BiConsumer<Jogador, Carta> acao){
     buffs.add(new BuffTemporario(acao));
 }
+    public void adicionarBuffDuracao(BiConsumer<Jogador, Inimigo> acaoPorTurno, int turnos) {
+        buffs.add(new BuffDuracao(acaoPorTurno, turnos));
+    }
 public void executarBuffTemp(Jogador j, Carta c){
     List<BuffBase> ativos = new ArrayList<>(buffs);
     for (BuffBase buff : ativos) {

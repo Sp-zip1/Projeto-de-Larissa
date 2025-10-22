@@ -1,5 +1,6 @@
 package Atores;
 
+import Ações.BuffManager;
 import Ações.Efeito;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.some_example_name.Main;
@@ -13,6 +14,7 @@ public class Inimigo {
     Integer Dano;
     Texture inimigoImg, inimigoDan, inimigoIdle;
     Float OffsetX, OffsetY;
+    private final BuffManager buffManager = new BuffManager();
     ArrayList<Efeito> efeitosIn;
     Efeito escolhido;
     Integer turnosInvuneravel=0;
@@ -45,10 +47,11 @@ public class Inimigo {
         }
         this.HPInimigo = Math.max(0, Math.min(novoHP, this.maxHP));
     }
-    public void atualizarTurno() {
+    public void atualizarTurno(Jogador jogador) {
         if (turnosInvuneravel > 0) {
             turnosInvuneravel--;
         }
+        buffManager.aplicarBuffsDeTurno(jogador, this);
     }
     public Integer getMaxHP() {
         return maxHP;
@@ -140,6 +143,10 @@ public class Inimigo {
 
     public void setUltimaCura(Integer ultimaCura) {
         this.ultimaCura = ultimaCura;
+    }
+
+    public BuffManager getBuffManager() {
+        return buffManager;
     }
 
     public void setTurnosInvuneravel(Integer turnosInvuneravel) {
