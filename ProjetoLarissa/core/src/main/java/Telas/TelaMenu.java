@@ -54,8 +54,8 @@ public class TelaMenu implements Screen {
         buttonFont.getData().setScale(0.6f);
         buttonFont.setColor(Color.WHITE);
 
-        if (main.backGround != null) {
-            backgroundTexture = main.backGround;
+        if (main.menuFundo != null) {
+            backgroundTexture = main.menuFundo;
         }
 
         criarBotoes();

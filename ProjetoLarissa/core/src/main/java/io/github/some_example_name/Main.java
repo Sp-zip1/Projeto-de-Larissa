@@ -39,7 +39,7 @@ public class Main extends Game {
     public Texture iconduplication, attackicon;
     public Texture slice, burst, wraith, code_injection, garbage_colector, root_acess, nullpointerslash, overclock, safemode, adaptiveai, erro404;
     public Texture inimigoBossHit, inimigoBoss;
-    public Texture endTurnTex, backGround, soundA, soundD;
+    public Texture endTurnTex, backGround, soundA, soundD, menuFundo;
     public Texture TextJog, playerDanTex, playerAtkTex, playerMorteText;
     public Music backgroundMusic, MenuMusic;
     public Jogador jogador;
@@ -81,7 +81,8 @@ public class Main extends Game {
         burst = new Texture(Gdx.files.internal("Recurvidade.png"));
         wraith = new Texture(Gdx.files.internal("wraith.png"));
         endTurnTex = new Texture(Gdx.files.internal("slice.png"));
-        backGround = new Texture(Gdx.files.internal("Background.png"));
+        backGround = new Texture(Gdx.files.internal("testFundo.png"));
+        menuFundo = new Texture(Gdx.files.internal("FundoMenu.png"));
         TextJog = new Texture(Gdx.files.internal("Player.png"));
         playerDanTex = new Texture(Gdx.files.internal("player-hit.png"));
         inimigoBoss = new Texture(Gdx.files.internal("tangled-wires.png"));
