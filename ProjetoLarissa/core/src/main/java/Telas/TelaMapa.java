@@ -19,44 +19,70 @@ import java.util.List;
 public class TelaMapa implements Screen {
 
     private final Game game;
+    private final Main main;
     private SpriteBatch batch;
     private ShapeRenderer shapeRenderer;
     private List<Nodo> nodes;
     private Nodo currentNode;
     private ArrayList<Efeito> efeitosIn = new ArrayList<>();
     private ArrayList<Inimigo> inimigosNivel = new ArrayList<>();
-    private Main main;
+    private Texture nodeTexture;
+
     public TelaMapa(Game game, Main main) {
         this.game = game;
         this.main = main;
+
         efeitosIn.add(Efeito.danoJogador(10));
         efeitosIn.add(Efeito.curaIn(4));
         efeitosIn.add(Efeito.danoExtraIn(1));
+
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         nodes = new ArrayList<>();
-        Inimigo inimigoO = new Inimigo(55, 55, 10, main.inimigo, main.inimigoHit, main.inimigo, (float)0, (float)0, efeitosIn);
-        Inimigo inimigoO1 = new Inimigo(70, 70, 5,main.inimigo1,main.inimigo1Hit, main.inimigo1 ,(float)0, (float)0,efeitosIn);
-        Inimigo inimigo02 = new Inimigo(30, 30, 10, main.inimigo2, main.inimigo2Hit, main.inimigo2, (float)0, (float)0,efeitosIn);
-        inimigosNivel.add(inimigoO);
-        inimigosNivel.add(inimigoO1);
-        inimigosNivel.add(inimigo02);
-        // Exemplo de criação dos nós
-        Texture nodeTexture = new Texture("node.png");
 
-        Nodo n1 = new Nodo(200, 150, nodeTexture);
-        Nodo n2 = new Nodo(400, 300, nodeTexture);
-        Nodo n3 = new Nodo(600, 150, nodeTexture);
+        nodeTexture = new Texture("node.png");
 
-        n1.connect(n2);
-        n2.connect(n3);
+        // Exemplo de inimigos
+        inimigosNivel.add(new Inimigo(55, 55, 10, main.inimigo, main.inimigoHit, main.inimigo, 0f, 0f, efeitosIn));
+        inimigosNivel.add(new Inimigo(70, 70, 5, main.inimigo1, main.inimigo1Hit, main.inimigo1, 0f, 0f, efeitosIn));
+        inimigosNivel.add(new Inimigo(30, 30, 10, main.inimigo2, main.inimigo2Hit, main.inimigo2, 0f, 0f, efeitosIn));
 
-        n1.unlocked = true;
-        currentNode = n1;
+        gerarMapaFixo();
+    }
 
-        nodes.add(n1);
-        nodes.add(n2);
-        nodes.add(n3);
+    private void gerarMapaFixo() {
+        float startX = 350;
+        float stepX = 180;
+        float baseY = 300;
+        float offsetY = 150;
+        Nodo start = new Nodo(startX, baseY, nodeTexture);
+        start.unlocked = true;
+
+        // Caminho superior
+        Nodo a1 = new Nodo(startX + stepX, baseY + offsetY, nodeTexture);
+        Nodo a2 = new Nodo(startX + stepX * 2, baseY + offsetY, nodeTexture);
+        Nodo a3 = new Nodo(startX + stepX * 3, baseY + offsetY, nodeTexture);
+        Nodo b1 = new Nodo(startX + stepX, baseY - offsetY, nodeTexture);
+        Nodo b2 = new Nodo(startX + stepX * 2, baseY - offsetY, nodeTexture);
+        Nodo b3 = new Nodo(startX + stepX * 3, baseY - offsetY, nodeTexture);
+        Nodo boss = new Nodo(startX + stepX * 4, baseY, nodeTexture);
+        start.connect(a1);
+        start.connect(b1);
+
+        a1.connect(a2);
+        a2.connect(a3);
+        a3.connect(boss);
+
+        b1.connect(b2);
+        b2.connect(b3);
+        b3.connect(boss);
+
+        nodes.add(start);
+        nodes.add(a1); nodes.add(a2); nodes.add(a3);
+        nodes.add(b1); nodes.add(b2); nodes.add(b3);
+        nodes.add(boss);
+
+        currentNode = start;
     }
 
     @Override
@@ -66,18 +92,18 @@ public class TelaMapa implements Screen {
 
         // Desenha conexões
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.LIGHT_GRAY);
+        shapeRenderer.setColor(Color.GOLD);
         for (Nodo n : nodes) {
             for (Nodo c : n.connectedNodes) {
                 shapeRenderer.line(n.position.x, n.position.y, c.position.x, c.position.y);
             }
         }
         shapeRenderer.end();
-
-        // Desenha nós
         batch.begin();
         for (Nodo n : nodes) {
-            if (n.unlocked)
+            if (n.completed)
+                batch.setColor(Color.GREEN);
+            else if (n.unlocked)
                 batch.setColor(Color.WHITE);
             else
                 batch.setColor(Color.DARK_GRAY);
@@ -86,16 +112,16 @@ public class TelaMapa implements Screen {
         }
         batch.end();
 
-        // Detecta clique
+        // Clique do jogador
         if (Gdx.input.justTouched()) {
             float x = Gdx.input.getX();
-            float y = Gdx.graphics.getHeight() - Gdx.input.getY(); // converte Y
+            float y = Gdx.graphics.getHeight() - Gdx.input.getY();
+
             for (Nodo n : nodes) {
                 if (n.isClicked(x, y) && n.unlocked) {
                     currentNode = n;
                     n.completed = true;
 
-                    // desbloqueia nós conectados
                     for (Nodo c : n.connectedNodes) {
                         c.unlocked = true;
                     }
@@ -106,14 +132,12 @@ public class TelaMapa implements Screen {
         }
     }
 
-    @Override
-    public void dispose() {
+    @Override public void dispose() {
         batch.dispose();
         shapeRenderer.dispose();
-        for (Nodo n : nodes) n.texture.dispose();
+        nodeTexture.dispose();
     }
 
-    // outros métodos vazios do Screen
     @Override public void show() {}
     @Override public void resize(int width, int height) {}
     @Override public void pause() {}

@@ -13,17 +13,14 @@ public class Nodo {
     public List<Nodo> connectedNodes;
     public boolean unlocked = false;
     public boolean completed = false;
-    //Nodos do mapa que servem para representar fases
     public Nodo(float x, float y, Texture texture) {
         this.position = new Vector2(x, y);
         this.texture = texture;
         this.connectedNodes = new ArrayList<>();
     }
-
     public void connect(Nodo other) {
         if (!connectedNodes.contains(other)) {
             connectedNodes.add(other);
-            other.connectedNodes.add(this); // conexão bidirecional
         }
     }
 
