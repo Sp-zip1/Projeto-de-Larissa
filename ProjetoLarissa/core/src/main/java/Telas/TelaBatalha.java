@@ -36,7 +36,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Source;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Target;
 import io.github.some_example_name.Main;
-
+//´PRIORIDADES-
+//ADICIONAR ESCRITA QUANDO CURA TBM
+//AÇÕES VARIADAS PARA INIMIGO
 public class TelaBatalha implements Screen {
 
     // === VARIÁVEIS PRINCIPAIS ===
@@ -411,10 +413,23 @@ public class TelaBatalha implements Screen {
 
     private void passarTurno() {
         int atual = main.jogador.getHPPlayer();
+        int atualInimigoHP = inimigo.getHPInimigo();
         main.jogador.descarte.addAll(main.jogador.mãoPlayer);
         inimigo.ExecutarAçãoI(main.jogador);
         if (atual > main.jogador.getHPPlayer()) {
             tremer(false);
+        }
+        if (inimigo.getHPInimigo() > atualInimigoHP) {
+            int cura = inimigo.getHPInimigo() - atualInimigoHP;
+            efeitoVisuals.add(
+                    new EfeitoVisual(
+                            inimigo.getOffsetX() + 850,
+                            inimigo.getOffsetY() + 350,
+                            "+" + cura,
+                            Color.GREEN,
+                            1.2f
+                    )
+            );
         }
         Main.getInstance().jogador.atualizarTurno();
         turnoJogador = true;
