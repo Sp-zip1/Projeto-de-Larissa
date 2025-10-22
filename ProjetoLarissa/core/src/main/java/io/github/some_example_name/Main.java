@@ -41,7 +41,7 @@ public class Main extends Game {
     public Texture inimigoBossHit, inimigoBoss;
     public Texture endTurnTex, backGround, soundA, soundD;
     public Texture TextJog, playerDanTex, playerAtkTex, playerMorteText;
-    public Music backgroundMusic;
+    public Music backgroundMusic, MenuMusic;
     public Jogador jogador;
     public Sound somHitJ;
     public TelaMenu telaMenu;
@@ -87,6 +87,7 @@ public class Main extends Game {
         inimigoBoss = new Texture(Gdx.files.internal("tangled-wires.png"));
         inimigoBossHit = new Texture(Gdx.files.internal("tangled-wires-hit.png"));
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Sons/analog-texture.mp3"));
+        MenuMusic = Gdx.audio.newMusic(Gdx.files.internal("Sons/MENU.mp3"));
         inimigo = new Texture("compiler-monster.png");
         inimigoHit = new Texture("compiler-monster-hit.png");
         inimigo1 = new Texture("binary-slime.png");

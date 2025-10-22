@@ -59,10 +59,10 @@ public class TelaMenu implements Screen {
         }
 
         criarBotoes();
-        if (main.backgroundMusic != null) {
-            main.backgroundMusic.setLooping(true);
+        if (main.MenuMusic != null) {
+            main.MenuMusic.setLooping(true);
             if (musicEnabled) {
-                main.backgroundMusic.play();
+                main.MenuMusic.play();
             }
         }
     }
@@ -87,8 +87,8 @@ public class TelaMenu implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                if (main.backgroundMusic != null) {
-                    main.backgroundMusic.stop();
+                if (main.MenuMusic != null) {
+                    main.MenuMusic.stop();
                 }
                 game.setScreen(main.telaMapa);
             }
@@ -128,11 +128,11 @@ public class TelaMenu implements Screen {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     musicEnabled = !musicEnabled;
-                    if (main.backgroundMusic != null) {
+                    if (main.MenuMusic != null) {
                         if (musicEnabled) {
-                            main.backgroundMusic.play();
+                            main.MenuMusic.play();
                         } else {
-                            main.backgroundMusic.pause();
+                            main.MenuMusic.pause();
                         }
                     }
                 }
