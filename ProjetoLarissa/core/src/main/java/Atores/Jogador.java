@@ -80,6 +80,7 @@ public class Jogador {
         if (turnosInvulneravel > 0) {
             turnosInvulneravel--;
         }
+        aplicarBuffsDeTurno();
     }
 
     public Integer getTurnosInvulneravel() {
@@ -112,6 +113,53 @@ public class Jogador {
             return usado;
         }
     }
+    private static class BuffDuracao implements BiConsumer<Jogador, Carta> {
+        private final BiConsumer<Jogador, Carta> acaoPorTurno;
+        private int turnosRestantes;
+
+        public BuffDuracao(BiConsumer<Jogador, Carta> acaoPorTurno, int turnos) {
+            this.acaoPorTurno = acaoPorTurno;
+            this.turnosRestantes = turnos;
+        }
+
+        @Override
+        public void accept(Jogador jogador, Carta carta) {
+
+        }
+
+        public void aplicarPorTurno(Jogador jogador) {
+            if (turnosRestantes > 0) {
+                acaoPorTurno.accept(jogador, null);
+                turnosRestantes--;
+            }
+        }
+
+        public boolean terminou() {
+            return turnosRestantes <= 0;
+        }
+    }
+
+    public void adicionarBuffDuracao(BiConsumer<Jogador, Carta> acao, int turnos) {
+        buffs.add(new BuffDuracao(acao, turnos));
+    }
+
+    public void aplicarBuffsDeTurno() {
+        List<BuffDuracao> buffsTurno = new ArrayList<>();
+
+        for (BiConsumer<Jogador, Carta> buff : buffs) {
+            if (buff instanceof BuffDuracao) {
+                buffsTurno.add((BuffDuracao) buff);
+            }
+        }
+
+        for (BuffDuracao buff : buffsTurno) {
+            buff.aplicarPorTurno(this);
+        }
+
+        // Remove buffs expirados
+        buffs.removeIf(buff -> buff instanceof BuffDuracao && ((BuffDuracao) buff).terminou());
+    }
+
     public void adicionarBuff(BiConsumer<Jogador, Carta> buff) {
         buffs.add(buff);
     }

@@ -213,6 +213,9 @@ public class TelaBatalha implements Screen {
                 batch.draw(main.instance.brancofundo, x - 2, y - 2 , tamanhoIcone + 4, tamanhoIcone + 4);
                 batch.draw(inimigo.getEscolhido().getIcone(), x, y , tamanhoIcone, tamanhoIcone);
             }
+            if (inimigo.getDano() != 0){
+                font.draw(batch, "Dano extra do inimigo"+ inimigo.getDano(), x, y);
+            }
 
         batch.end();
     }

@@ -70,7 +70,7 @@ public class Efeito {
             return new Efeito((j, i) -> i.setHPInimigo(i.getHPInimigo() + quantia));
         }
     public static Efeito danoExtraIn(int quantia){
-        return new Efeito((j, i) -> i.setDano(1));
+        return new Efeito((j, i) -> i.setDano(i.getDano()+1));
     }
     public static Efeito manaExtra(int quantia){
         return new Efeito(((j, i) -> j.setMana(j.getMana()+1)));
@@ -113,4 +113,13 @@ public class Efeito {
             }
         });
     }
+    public static Efeito forcaCrescente(int bonus, int turnos) {
+        return new Efeito((j, i) -> {
+            j.adicionarBuffDuracao((jogador, carta) -> {
+                jogador.setDanoEXATK(jogador.getDanoEXATK() + bonus);
+                System.out.println("Força crescente: +" + bonus + " danoEXATK (restando " + turnos + " turnos)");
+            }, turnos);
+        });
+    }
+
 }

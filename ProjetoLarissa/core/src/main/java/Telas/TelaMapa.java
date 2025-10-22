@@ -24,18 +24,16 @@ public class TelaMapa implements Screen {
     private ShapeRenderer shapeRenderer;
     private List<Nodo> nodes;
     private Nodo currentNode;
-    private ArrayList<Efeito> efeitosIn = new ArrayList<>();
+    private ArrayList<Efeito> efeitos = new ArrayList<>(), efeitosSlime = new ArrayList<>(), efeitosCom = new ArrayList<>(), efeitosCmd = new ArrayList<>();
     private ArrayList<Inimigo> inimigosNivel = new ArrayList<>();
     private Texture nodeTexture;
 
     public TelaMapa(Game game, Main main) {
         this.game = game;
         this.main = main;
-
-        efeitosIn.add(Efeito.danoJogador(10));
-        efeitosIn.add(Efeito.curaIn(4));
-        efeitosIn.add(Efeito.danoExtraIn(1));
-
+        efeitos.add(Efeito.curaIn(4));
+        efeitos.add(Efeito.danoExtraIn(1));
+        efeitos.add(Efeito.danoJogador(10));
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         nodes = new ArrayList<>();
@@ -43,9 +41,9 @@ public class TelaMapa implements Screen {
         nodeTexture = new Texture("node.png");
 
         // Exemplo de inimigos
-        inimigosNivel.add(new Inimigo(55, 55, 10, main.inimigo, main.inimigoHit, main.inimigo, 0f, 0f, efeitosIn));
-        inimigosNivel.add(new Inimigo(70, 70, 5, main.inimigo1, main.inimigo1Hit, main.inimigo1, 0f, 0f, efeitosIn));
-        inimigosNivel.add(new Inimigo(30, 30, 10, main.inimigo2, main.inimigo2Hit, main.inimigo2, 0f, 0f, efeitosIn));
+        inimigosNivel.add(new Inimigo(55, 55, 0, main.inimigo, main.inimigoHit, main.inimigo, 0f, 0f, efeitos));
+        inimigosNivel.add(new Inimigo(70, 70, 0, main.inimigo1, main.inimigo1Hit, main.inimigo1, 0f, 0f, efeitos));
+        inimigosNivel.add(new Inimigo(30, 30, 0, main.inimigo2, main.inimigo2Hit, main.inimigo2, 0f, 0f, efeitos));
 
         gerarMapaFixo();
     }
@@ -72,7 +70,6 @@ public class TelaMapa implements Screen {
         a1.connect(a2);
         a2.connect(a3);
         a3.connect(boss);
-
         b1.connect(b2);
         b2.connect(b3);
         b3.connect(boss);

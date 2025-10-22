@@ -32,7 +32,7 @@ public class FactoryCartas implements CartaFactory{
             return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.duplicarProxima());
         }
         if (nome.equalsIgnoreCase("wraith")){
-            return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.danoExtra(2));
+            return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.forcaCrescente(1, 2));
         }
         if(nome.equalsIgnoreCase("code_injection")){
             return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.cavarCartas(2)).adicionarEfeito(Efeito.dano(2));
