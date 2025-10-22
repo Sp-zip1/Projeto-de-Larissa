@@ -15,6 +15,7 @@ import java.util.function.BiConsumer;
 public class Efeito {
     public BiConsumer<Jogador, Inimigo> acao;
     public static  Random random = new Random();
+    public int dano;
     public Texture icone;
     public Efeito(BiConsumer<Jogador, Inimigo> acao) {
         this.acao = acao;
@@ -131,8 +132,8 @@ public class Efeito {
         });
     }
     public static Efeito danoContinuoJogador(int danoI, int turnos) {
-        AtomicInteger danoAtual = new AtomicInteger(danoI);
         return new Efeito((j, i) -> {
+            AtomicInteger danoAtual = new AtomicInteger(danoI);
             i.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
                 int dano = danoAtual.getAndDecrement();
                 jogador.setHPPlayer(jogador.getHPPlayer() - dano);

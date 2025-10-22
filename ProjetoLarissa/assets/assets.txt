@@ -1,7 +1,9 @@
 Background.png
+Plasma.png
 Player.png
 PlayerMorto.png
 PlayerdAMA.png
+Recurvidade.png
 Sons/MENU.mp3
 Sons/SomTemp.mp3
 Sons/analog-texture.mp3

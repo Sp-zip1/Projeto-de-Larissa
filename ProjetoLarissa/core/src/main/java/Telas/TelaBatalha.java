@@ -68,6 +68,8 @@ public class TelaBatalha implements Screen {
     public ShapeRenderer shapeRaios;
     public ArrayList<EfeitoVisual> efeitoVisuals = new ArrayList<>();
     ArrayList<Efeito> efeitos;
+    private Carta cartaHover = null;
+    private float hoverX = 0, hoverY = 0;
     // === CONSTRUTOR ===
     public TelaBatalha(Game game, TelaMapa telaMapa, ArrayList<Inimigo> inimigos, Main main) {
         this.game = game;
@@ -151,6 +153,16 @@ public class TelaBatalha implements Screen {
             if (tremorTimerP > 0) {
                 desenharRaiosSobreJogador();
             }
+        }
+        if (cartaHover != null && bakcroungVisivel) {
+            batch.begin();
+            batch.draw(cartaHover.getImagem(), hoverX - 100, hoverY, 300, 450);
+            font.getData().setScale(0.8f);
+            font.setColor(Color.WHITE);
+            font.draw(batch, cartaHover.getNome(), hoverX - 80, hoverY + 480);
+            font.draw(batch, "Custo: " + cartaHover.getCusto(), hoverX - 80, hoverY + 460);
+            font.getData().setScale(0.5f);
+            batch.end();
         }
         // Desenha jogador e inimigo
         stage.act(delta);
@@ -290,6 +302,20 @@ public class TelaBatalha implements Screen {
             TextureRegionDrawable drawable = new TextureRegionDrawable(carta.getImagem());
             ImageButton button = new ImageButton(drawable);
             button.setSize(100, 150);
+            button.addListener(new com.badlogic.gdx.scenes.scene2d.InputListener() {
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    cartaHover = carta;
+                    hoverX = button.getX();
+                    hoverY = button.getY() + 200;
+                }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    cartaHover = null;
+                }
+            });
+
             dragAndDrop.addSource(new Source(button) {
                 @Override
                 public Payload dragStart(InputEvent event, float x, float y, int pointer) {
@@ -472,12 +498,13 @@ public class TelaBatalha implements Screen {
             System.out.println(cartaFinal.nome);
             TextureRegionDrawable drawable = new TextureRegionDrawable(cartaFinal.getImagem());
             ImageButton botaoCarta = new ImageButton(drawable);
-            botaoCarta.setSize(150, 200);
+            botaoCarta.setSize(200, 275);
             botaoCarta.setPosition(400 + i * 200, 400);
             botaoCarta.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     System.out.println("=== ESCOLHENDO RECOMPENSA ===");
+                    Main.getInstance().jogador.deckPlayer.removeIf(c -> c.tipoC == TipoC.CUR);
                     System.out.println("Antes - Deck: " + main.jogador.deckPlayer.size() + " | Descarte: " + main.jogador.descarte.size() + " | Mão: " + main.jogador.mãoPlayer.size());
                     // Retorna todas as cartas para o deck antes de sair
                     Main.getInstance().jogador.loopInicioBatalha();

@@ -77,8 +77,8 @@ public class Main extends Game {
     public void dispose(){
     }
     private void carregarTexturasESons() {
-        slice = new Texture(Gdx.files.internal("slice.png"));
-        burst = new Texture(Gdx.files.internal("burst.png"));
+        slice = new Texture(Gdx.files.internal("Plasma.png"));
+        burst = new Texture(Gdx.files.internal("Recurvidade.png"));
         wraith = new Texture(Gdx.files.internal("wraith.png"));
         endTurnTex = new Texture(Gdx.files.internal("slice.png"));
         backGround = new Texture(Gdx.files.internal("Background.png"));
