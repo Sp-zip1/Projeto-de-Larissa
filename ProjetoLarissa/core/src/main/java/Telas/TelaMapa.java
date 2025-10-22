@@ -34,6 +34,9 @@ public class TelaMapa implements Screen {
         efeitos.add(Efeito.curaIn(4));
         efeitos.add(Efeito.danoExtraIn(1));
         efeitos.add(Efeito.danoJogador(10));
+        efeitosCom.add(Efeito.addCurse());
+        efeitosCom.add(Efeito.danoContinuoJogador(7, 7));
+        efeitosCom.add(Efeito.curaError(4));
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         nodes = new ArrayList<>();
@@ -41,7 +44,7 @@ public class TelaMapa implements Screen {
         nodeTexture = new Texture("node.png");
 
         // Exemplo de inimigos
-        inimigosNivel.add(new Inimigo(55, 55, 0, main.inimigo, main.inimigoHit, main.inimigo, 0f, 0f, efeitos));
+        inimigosNivel.add(new Inimigo(55, 55, 0, main.inimigo, main.inimigoHit, main.inimigo, 0f, 0f, efeitosCom));
         inimigosNivel.add(new Inimigo(70, 70, 0, main.inimigo1, main.inimigo1Hit, main.inimigo1, 0f, 0f, efeitos));
         inimigosNivel.add(new Inimigo(30, 30, 0, main.inimigo2, main.inimigo2Hit, main.inimigo2, 0f, 0f, efeitos));
 

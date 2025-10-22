@@ -311,6 +311,7 @@ public class TelaBatalha implements Screen {
                     if(inimigoSorteado.getHPInimigo() > 0) {
                         // Executa ataque
                         Carta cartaSolta = (Carta) payload.getObject();
+                        if(cartaSolta.tipoC == TipoC.CUR) return;
                         if (cartaSolta.efeitos != null && !cartaSolta.efeitos.isEmpty()) {
                             efeitos.clear();
                             efeitos.addAll(cartaSolta.efeitos);

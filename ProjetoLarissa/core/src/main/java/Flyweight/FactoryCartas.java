@@ -55,6 +55,9 @@ public class FactoryCartas implements CartaFactory{
         if(nome.equalsIgnoreCase("adaptiveai")){
             return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getSomC(), fly.getTipoC()).adicionarEfeito(Efeito.adaptiveAI());
         }
+        if(nome.equalsIgnoreCase("erro404")){
+            return new Carta(fly.getCusto(), fly.getNome(), fly.getImagem(), fly.getSomC(), fly.getTipoC());
+        }
         else {
             return null;
         }

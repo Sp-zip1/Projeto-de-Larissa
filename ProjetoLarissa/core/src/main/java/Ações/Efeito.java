@@ -3,11 +3,13 @@ package Ações;
 import Atores.Inimigo;
 import Atores.Jogador;
 import Entidades.Carta;
+import Entidades.TipoC;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.some_example_name.Main;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 
 public class Efeito {
@@ -43,7 +45,7 @@ public class Efeito {
     }
     public static Efeito duplicarProxima() {
         return new Efeito((j, i) -> {
-            j.adicionarBuffTemporario((jogador, carta) -> {
+            j.getBuffManager().adicionarBuffTemp((jogador, carta) -> {
                 carta.executarEfeitosDireto(jogador, i);
             });
         }).setIcone(Main.instance.iconduplication);
@@ -113,13 +115,37 @@ public class Efeito {
             }
         });
     }
-    public static Efeito forcaCrescente(int bonus, int turnos) {
+    public static Efeito forcaCrescente(int bonusInicial, int incremento, int turnos) {
         return new Efeito((j, i) -> {
-            j.adicionarBuffDuracao((jogador, carta) -> {
-                jogador.setDanoEXATK(jogador.getDanoEXATK() + bonus);
-                System.out.println("Força crescente: +" + bonus + " danoEXATK (restando " + turnos + " turnos)");
+            final int[] bonusAtual = {bonusInicial};
+            j.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
+                jogador.setDanoEXATK(jogador.getDanoEXATK() + bonusAtual[0]);
+                System.out.println("Força crescente: +" + bonusAtual[0] + " dano");
+                bonusAtual[0] += incremento;
             }, turnos);
         });
     }
-
+    public static Efeito addCurse(){
+        return new Efeito((j, i)->{
+            j.deckPlayer.add(Main.getInstance().fabricasCartas.get("erro404").criarCarta());
+        });
+    }
+    public static Efeito danoContinuoJogador(int danoI, int turnos) {
+        AtomicInteger danoAtual = new AtomicInteger(danoI);
+        return new Efeito((j, i) -> {
+            i.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
+                int dano = danoAtual.getAndDecrement();
+                jogador.setHPPlayer(jogador.getHPPlayer() - dano);
+            }, turnos);
+        });
+    }
+    public static Efeito curaError(int cura){
+        return new Efeito((j, i)->{
+            for (Carta c: Main.getInstance().jogador.deckPlayer){
+                if (c.tipoC == TipoC.CUR){
+                    i.setHPInimigo(i.getHPInimigo()+cura);
+                }
+            }
+        });
+    }
 }

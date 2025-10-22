@@ -91,7 +91,7 @@ public class Carta {
 
     public void executarEfeitos(Jogador jogador, Inimigo inimigo) {
         //Evita stackoverflow dessa maneira
-        jogador.executarBuffs(this);
+        jogador.getBuffManager().executarBuffTemp(jogador, this);
         executarEfeitosDireto(jogador, inimigo);
     }
 
