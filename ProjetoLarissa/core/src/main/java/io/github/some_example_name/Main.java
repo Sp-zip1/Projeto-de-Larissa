@@ -37,17 +37,17 @@ public class Main extends Game {
     public SpriteBatch batch;
     public Texture iconduplication, attackicon, regenicon, nohitico;
     public Texture slice, burst, wraith, code_injection, garbage_colector, root_acess, nullpointerslash, overclock, safemode, adaptiveai, erro404, trojan, ping;
-    public Texture inimigoBossHit, inimigoBoss;
+    public Texture inimigoBossHit, inimigoBoss, inimigoBossattack;
     public Texture endTurnTex, backGround, soundA, soundD, menuFundo;
     public Texture TextJog, playerDanTex, playerAtkTex, playerMorteText;
     public Music backgroundMusic, MenuMusic;
     public Jogador jogador;
-    public Texture restore, inirar, inirarHit, dot;
+    public Texture restore, inirar, inirarHit, dot, inifox, inifoxHit, inifoxattack, inirarattack;
     public Sound somHitJ;
     public TelaMenu telaMenu;
     public Texture brancofundo;
     public BitmapFont fontGrande, fontPequena;
-    public Texture inimigo, inimigoHit, inimigo1, inimigo1Hit, inimigo2, inimigo2Hit;
+    public Texture inimigo, inimigoHit, inimigo1, inimigo1Hit, inimigo2, inimigo2Hit, inimigoattack, inimigo1attack, inimigo2attack;
     public static Main instance;
     public Sound somAtaque, somHabilidade;
 
@@ -96,10 +96,13 @@ public class Main extends Game {
         MenuMusic = Gdx.audio.newMusic(Gdx.files.internal("Sons/MENU.mp3"));
         inimigo = new Texture("compiler-monster.png");
         inimigoHit = new Texture("compiler-monster-hit.png");
+        inimigoattack = new Texture("compiler-attack.png");
         inimigo1 = new Texture("binary-slime.png");
         inimigo1Hit = new Texture("binary-slime-hit.png");
+        inimigo1attack = new Texture("slime-attack.png");
         inimigo2 = new Texture("beast-cmd.png");
         inimigo2Hit = new Texture("cmd-hit.png");
+        inimigo2attack = new Texture("cmd-attack.png");
         code_injection = new Texture("code_injection.png");
         garbage_colector = new Texture("garbage_colector.png");
         root_acess = new Texture("root_acess.png");
@@ -121,6 +124,10 @@ public class Main extends Game {
         restore = new Texture("restore.png");
         inirar = new Texture("beast-rar.png");
         inirarHit = new Texture("rar-hit.png");
+        inirarattack = new Texture("rar-attack.png");
+        inifox = new Texture("Firefox.png");
+        inifoxHit = new Texture("Firefox-hit.png");
+        inifoxattack = new Texture("FireFox-attack.png");
         regenicon = new Texture("regenicon.png");
         nohitico = new Texture("ivulneravel.png");
         dot = new Texture("poison.png");
