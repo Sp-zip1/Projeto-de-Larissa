@@ -36,7 +36,7 @@ public class Main extends Game {
     public TelaMapa telaMapa;
     public ArrayList<Inimigo> todosInimigos = new ArrayList<>();
     public SpriteBatch batch;
-    public Texture iconduplication, attackicon;
+    public Texture iconduplication, attackicon, regenicon, nohitico;
     public Texture slice, burst, wraith, code_injection, garbage_colector, root_acess, nullpointerslash, overclock, safemode, adaptiveai, erro404, trojan, ping;
     public Texture inimigoBossHit, inimigoBoss;
     public Texture endTurnTex, backGround, soundA, soundD, menuFundo;
@@ -117,6 +117,8 @@ public class Main extends Game {
         restore = new Texture("restore.png");
         inirar = new Texture("beast-rar.png");
         inirarHit = new Texture("rar-hit.png");
+        regenicon = new Texture("regenicon.png");
+        nohitico = new Texture("ivulneravel.png");
     }
     private void fabricaCarta() {
         fabricasCartas = new HashMap<>();

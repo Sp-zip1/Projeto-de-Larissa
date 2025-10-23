@@ -1,5 +1,5 @@
 package Atores;
-//TENHO QUE ORGANIZAR ESSE CODIGO ESTA  MUITO CONFUSO
+
 import Ações.BuffManager;
 import Entidades.Carta;
 import com.badlogic.gdx.audio.Sound;
@@ -35,15 +35,19 @@ public class Jogador {
         this.ImgPlayer = imgPlayer;
         this.som = som;
     }
+    public void receberDano(int dano) {
+        if (turnosInvulneravel > 0) {
+            System.out.println("Jogador invulnerável! Dano bloqueado: " + dano);
+            return;
+        }
+        setHPPlayer(this.HPPlayer - dano);
+    }
 
     public Integer getHPPlayer() {
         return HPPlayer;
     }
-
     public void setHPPlayer(Integer HPPlayer) {
-        if (turnosInvulneravel == 0) {
-            this.HPPlayer = Math.min(Math.max(HPPlayer, 0), 100);
-        }
+        this.HPPlayer = Math.min(Math.max(HPPlayer, 0), 100);
     }
 
     public Integer getDanoEXATK() {
@@ -88,19 +92,24 @@ public class Jogador {
     public void atualizarTurno(Inimigo inimigo) {
         if (turnosInvulneravel > 0) {
             turnosInvulneravel--;
+            System.out.println("Turnos de invulnerabilidade restantes (Jogador): " + turnosInvulneravel);
         }
         buffManager.aplicarBuffsDeTurno(this, inimigo);
     }
+
     public void executarBuffTemp(Carta carta){
         buffManager.executarBuffTemp(this, carta);
     }
+
     public Integer getTurnosInvulneravel() {
         return turnosInvulneravel;
     }
 
     public void setTurnosInvulneravel(Integer turnosInvulneravel) {
         this.turnosInvulneravel = turnosInvulneravel;
+        System.out.println("Jogador ficou invulnerável por " + turnosInvulneravel + " turnos");
     }
+
     public ArrayList<Carta> puxarCartasDoDeck(int quantidade) {
         ArrayList<Carta> resultado = new ArrayList<>();
         while (resultado.size() < quantidade) {
@@ -116,6 +125,7 @@ public class Jogador {
         }
         return resultado;
     }
+
     public void loopInicioBatalha(){
         if (!exaustas.isEmpty()) {
             System.out.println("Restaurando " + exaustas.size() + " cartas exaustas para o deck");
@@ -132,4 +142,3 @@ public class Jogador {
         buffManager.limparBuffs();
     }
 }
-

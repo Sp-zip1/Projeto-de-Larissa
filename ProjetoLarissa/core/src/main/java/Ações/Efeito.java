@@ -32,8 +32,7 @@ public class Efeito {
     }
     public static Efeito dano(int quantia) {
         return new Efeito((j, i) -> {
-            int novoHP = i.getHPInimigo() - (quantia + j.getDanoEXATK());
-            i.setHPInimigo(novoHP); // já limita a 0 dentro do setter
+            i.receberDano(quantia + j.getDanoEXATK());
         });
     }
 
@@ -48,7 +47,7 @@ public class Efeito {
         return new Efeito((j, i) -> {
             j.getBuffManager().adicionarBuffTemp((jogador, carta) -> {
                 carta.executarEfeitosDireto(jogador, i);
-            });
+            }, Main.getInstance().iconduplication);
         }).setIcone(Main.instance.iconduplication);
     }
     public static Efeito cavarCartas(int quantia){
@@ -58,7 +57,7 @@ public class Efeito {
         });
     }
     public static Efeito danoJogador(int quantia){
-        return new Efeito(((j, i) -> j.setHPPlayer(j.getHPPlayer() - (quantia+i.getDano())))).setIcone(Main.getInstance().attackicon);
+        return new Efeito((j,i)-> j.receberDano(quantia+i.getDano()));
     }
     public static Efeito removerMão() {
         return new Efeito((j, i) -> {
@@ -94,15 +93,19 @@ public class Efeito {
             j.setDanoEXATK(j.getDanoEXATK()+(j.getDanoEXATK()*2));
         });
     }
-    public static Efeito imunedano(int quantia){
-        return new Efeito((j, i)->{
-           i.setTurnosInvuneravel(quantia);
-        });
-    }
     public static Efeito imunedanoJ(int quantia){
         return new Efeito((j, i)->{
+            j.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
+            }, quantia, Main.getInstance().nohitico);
             j.setTurnosInvulneravel(quantia);
-        });
+        }).setIcone(Main.getInstance().nohitico);
+    }
+    public static Efeito imunedano(int quantia){
+        return new Efeito((j, i)->{
+            i.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
+            }, quantia, Main.getInstance().nohitico);
+            i.setTurnosInvuneravel(2);
+        }).setIcone(Main.getInstance().nohitico);
     }
     public static Efeito adaptiveAI() {
         return new Efeito((j, i) -> {
@@ -123,7 +126,7 @@ public class Efeito {
                 jogador.setDanoEXATK(jogador.getDanoEXATK() + bonusAtual[0]);
                 System.out.println("Força crescente: +" + bonusAtual[0] + " dano");
                 bonusAtual[0] += incremento;
-            }, turnos);
+            },turnos, Main.getInstance().attackicon);
         });
     }
     public static Efeito addCurse(){
@@ -137,7 +140,7 @@ public class Efeito {
             i.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
                 int dano = danoAtual.getAndDecrement();
                 jogador.setHPPlayer(jogador.getHPPlayer() - dano);
-            }, turnos);
+            }, turnos, Main.getInstance().ping);
         });
     }
     public static Efeito curaError(int cura){
@@ -155,7 +158,7 @@ public class Efeito {
             j.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
                 int dano = danoAtual.getAndIncrement();
                i.setHPInimigo(i.getHPInimigo() - dano);
-            }, turnos);
+            }, turnos, Main.getInstance().ping);
         });
     }
     public static Efeito pingOfDeath() {
@@ -173,8 +176,8 @@ public class Efeito {
         return new Efeito((j, i) -> {
             j.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
                 jogador.setHPPlayer(j.getHPPlayer()+curaPorTurno);
-            }, turnos);
-        });
+            }, turnos, Main.getInstance().regenicon);
+        }).setIcone(Main.getInstance().regenicon);
     }
    public static Efeito systemCorruption() {
         return new Efeito((j, i) -> {
@@ -186,7 +189,7 @@ public  static Efeito overclockProtocol() {
             i.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
                 inimigo.setDano(inimigo.getDano() * 2);
                 Efeito.dano(5);
-            }, 2);
+            }, 2, Main.getInstance().overclock);
         });
     }
     public  static Efeito CompressDan() {

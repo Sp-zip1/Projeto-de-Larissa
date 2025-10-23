@@ -148,7 +148,10 @@ public class Inimigo {
     public BuffManager getBuffManager() {
         return buffManager;
     }
-
+    public void receberDano(int dano) {
+        if (turnosInvuneravel > 0) return;
+        setHPInimigo(this.HPInimigo - dano);
+    }
     public void setTurnosInvuneravel(Integer turnosInvuneravel) {
         this.turnosInvuneravel = turnosInvuneravel;
     }

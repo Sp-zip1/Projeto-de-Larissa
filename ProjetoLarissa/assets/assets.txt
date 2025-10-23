@@ -29,13 +29,16 @@ fonte/fontejogo.fnt
 fonte/fontejogo1.png
 fonte/fontejogo2.png
 garbage_colector.png
+ivulneravel.png
 libgdx.png
 node.png
 nullpointer.png
 overclock.png
 ping.png
 player-hit.png
+poison.png
 rar-hit.png
+regenicon.png
 restore.png
 root_acess.png
 safemode.png

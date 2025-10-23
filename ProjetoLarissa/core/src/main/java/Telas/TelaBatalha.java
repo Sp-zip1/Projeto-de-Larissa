@@ -2,6 +2,7 @@ package Telas;
 
 import Atores.Inimigo;
 import Atores.Jogador;
+import Ações.BuffManager;
 import Ações.Efeito;
 import Ações.EfeitoVisual;
 import Entidades.Carta;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
 import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop.Payload;
@@ -191,43 +193,62 @@ public class TelaBatalha implements Screen {
         }
     }
     private void desenharBarraStatus() {
-        if (efeitos.isEmpty()) return;
+        List<BuffManager.BuffBase> buffs = main.jogador.getBuffManager().getBuffs();
+        if (buffs.isEmpty()) return;
         batch.begin();
-        float baseX = 200; // mesma posição X da barra de vida do jogador
-        float baseY = 350; // logo abaixo da barra de vida
+        float baseX = 200;
+        float baseY = 350;
         float tamanhoIcone = 32;
         float espacamento = 5;
 
-        for (int i = 0; i < efeitos.size(); i++) {
-            Efeito efeito = efeitos.get(i);
-            float x = baseX + i * (tamanhoIcone + espacamento);
-            float y = baseY;
-            //batch.setColor(0.2f, 0.2f, 0.2f, 0.8f);
-            if (efeito.getIcone() != null) {
+        int index = 0;
+        for (BuffManager.BuffBase buff : buffs) {
+            if (buff.getIcone() != null) {
+                float x = baseX + index * (tamanhoIcone + espacamento);
+                float y = baseY;
                 batch.setColor(Color.WHITE);
-                batch.draw(main.instance.brancofundo, x - 2, y - 2 + escalaRespiracao, tamanhoIcone + 4, tamanhoIcone + 4);
-                batch.draw(efeito.getIcone(), x, y + escalaRespiracao, tamanhoIcone, tamanhoIcone);
+                batch.draw(main.instance.brancofundo, x - 2, y - 2 + escalaRespiracao,
+                        tamanhoIcone + 4, tamanhoIcone + 4);
+                batch.draw(buff.getIcone(), x, y + escalaRespiracao, tamanhoIcone, tamanhoIcone);
+                if (buff instanceof BuffManager.BuffDuracao) {
+                    int turnos = ((BuffManager.BuffDuracao) buff).getTurnosRestantes();
+                    font.getData().setScale(0.4f);
+                    font.setColor(Color.BLACK);
+                    font.draw(batch, String.valueOf(turnos), x + tamanhoIcone - 8, y + 10 + escalaRespiracao);
+                    font.getData().setScale(0.5f);
+                }
+                index++;
             }
         }
         batch.end();
     }
     private void desenharBarraStatusI() {
         batch.begin();
-        float baseX = 700; // mesma posição X da barra de vida do jogador
-        float baseY = 350; // logo abaixo da barra de vida
+        float baseX = 700;
+        float baseY = 350;
         float tamanhoIcone = 32;
         float espacamento = 5;
-            float x = baseX +  (tamanhoIcone + espacamento);
-            float y = baseY;
-            //batch.setColor(0.2f, 0.2f, 0.2f, 0.8f);
-            if (inimigo.getEscolhido() != null && inimigo.getEscolhido().getIcone() != null) {
+        int index = 0;
+        List<BuffManager.BuffBase> buffsInimigo = inimigo.getBuffManager().getBuffs();
+        for (BuffManager.BuffBase buff : buffsInimigo) {
+            if (buff.getIcone() != null) {
+                float x = baseX + index * (tamanhoIcone + espacamento);
+                float y = baseY;
                 batch.setColor(Color.WHITE);
-                batch.draw(main.instance.brancofundo, x - 2, y - 2 , tamanhoIcone + 4, tamanhoIcone + 4);
-                batch.draw(inimigo.getEscolhido().getIcone(), x, y , tamanhoIcone, tamanhoIcone);
+                batch.draw(main.instance.brancofundo, x - 2, y - 2, tamanhoIcone + 4, tamanhoIcone + 4);
+                batch.draw(buff.getIcone(), x, y, tamanhoIcone, tamanhoIcone);
+                if (buff instanceof BuffManager.BuffDuracao) {
+                    int turnos = ((BuffManager.BuffDuracao) buff).getTurnosRestantes();
+                    font.getData().setScale(0.4f);
+                    font.setColor(Color.YELLOW); // Cor diferente para buffs do inimigo
+                    font.draw(batch, String.valueOf(turnos), x + tamanhoIcone - 8, y + 10);
+                    font.getData().setScale(0.5f);
+                    font.setColor(Color.WHITE);
+                }
+
+                index++;
             }
-            if (inimigo.getDano() != 0){
-                font.draw(batch, "Dano extra do inimigo"+ inimigo.getDano(), x, y);
-            }
+        }
 
         batch.end();
     }
@@ -340,8 +361,11 @@ public class TelaBatalha implements Screen {
                         if(cartaSolta.tipoC == TipoC.CUR) return;
                         Main.getInstance().jogador.jogadasNoTurno++;
                         if (cartaSolta.efeitos != null && !cartaSolta.efeitos.isEmpty()) {
-                            efeitos.clear();
-                            efeitos.addAll(cartaSolta.efeitos);
+                            for (Efeito e : cartaSolta.efeitos) {
+                                if (!efeitos.contains(e)) {
+                                    efeitos.add(e);
+                                }
+                            }
                         }
                         main.jogador.mana -= cartaSolta.custo;
                         main.jogador.mãoPlayer.remove(cartaSolta);

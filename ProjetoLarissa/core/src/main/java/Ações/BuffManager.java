@@ -3,6 +3,8 @@ package Ações;
 import Atores.Inimigo;
 import Atores.Jogador;
 import Entidades.Carta;
+import com.badlogic.gdx.graphics.Texture;
+import io.github.some_example_name.Main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +12,24 @@ import java.util.function.BiConsumer;
 
 public class BuffManager {
     private final List<BuffBase> buffs = new ArrayList<>();
-    public static class BuffBase{}
+    public static class BuffBase{
+        protected Texture icone;
+
+        public Texture getIcone() {
+            return icone;
+        }
+
+        public void setIcone(Texture icone) {
+            this.icone = icone;
+        }
+    }
     public static class BuffTemporario extends BuffBase {
         private final BiConsumer<Jogador, Carta> acao;
         private boolean usado = false;
-
-        public BuffTemporario(BiConsumer<Jogador, Carta> acao) {
+        public BuffTemporario(BiConsumer<Jogador, Carta> acao, Texture icone) {
             this.acao = acao;
+            this.icone = icone;
         }
-
         public void aplicar(Jogador jogador, Carta carta) {
             if (!usado) {
                 acao.accept(jogador, carta);
@@ -33,11 +44,20 @@ public class BuffManager {
     public static class BuffDuracao extends BuffBase {
         private final BiConsumer<Jogador, Inimigo> acaoPorTurno;
         private int turnosRestantes;
-
-        public BuffDuracao(BiConsumer<Jogador, Inimigo> acaoPorTurno, int turnos) {
+        public BuffDuracao(BiConsumer<Jogador, Inimigo> acaoPorTurno, int turnos, Texture icone) {
             this.acaoPorTurno = acaoPorTurno;
             this.turnosRestantes = turnos;
+            this.icone = icone;
         }
+
+        public Texture getIcone() {
+            return icone;
+        }
+
+        public void setIcone(Texture icone) {
+            this.icone = icone;
+        }
+
         public void aplicarPorTurno(Jogador jogador, Inimigo inimigo) {
             if (turnosRestantes > 0) {
                 acaoPorTurno.accept(jogador, inimigo);
@@ -51,11 +71,11 @@ public class BuffManager {
             return turnosRestantes;
         }
     }
-public void adicionarBuffTemp(BiConsumer<Jogador, Carta> acao){
-    buffs.add(new BuffTemporario(acao));
+public void adicionarBuffTemp(BiConsumer<Jogador, Carta> acao, Texture icone){
+    buffs.add(new BuffTemporario(acao, icone));
 }
-    public void adicionarBuffDuracao(BiConsumer<Jogador, Inimigo> acaoPorTurno, int turnos) {
-        buffs.add(new BuffDuracao(acaoPorTurno, turnos));
+    public void adicionarBuffDuracao(BiConsumer<Jogador, Inimigo> acaoPorTurno, int turnos, Texture icone) {
+        buffs.add(new BuffDuracao(acaoPorTurno, turnos, icone));
     }
 public void executarBuffTemp(Jogador j, Carta c){
     List<BuffBase> ativos = new ArrayList<>(buffs);
