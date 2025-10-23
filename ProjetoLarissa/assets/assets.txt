@@ -1,4 +1,5 @@
 Background.png
+FundoMenu.png
 Plasma.png
 Player.png
 PlayerMorto.png
@@ -32,6 +33,7 @@ libgdx.png
 node.png
 nullpointer.png
 overclock.png
+ping.png
 player-hit.png
 rar-hit.png
 root_acess.png
@@ -39,6 +41,8 @@ safemode.png
 slice.png
 tangled-wires-hit.png
 tangled-wires.png
+testFundo.png
+trojan.png
 volume_mute.png
 volume_on.png
 wraith.png

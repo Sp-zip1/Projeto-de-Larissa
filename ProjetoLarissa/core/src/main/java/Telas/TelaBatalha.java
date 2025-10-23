@@ -156,7 +156,7 @@ public class TelaBatalha implements Screen {
         }
         if (cartaHover != null && bakcroungVisivel) {
             batch.begin();
-            batch.draw(cartaHover.getImagem(), hoverX - 100, hoverY, 300, 450);
+            batch.draw(cartaHover.getImagem(), hoverX - 100, hoverY, cartaHover.getImagem().getWidth()/5f, cartaHover.getImagem().getHeight()/5f);
             font.getData().setScale(0.8f);
             font.setColor(Color.WHITE);
             font.draw(batch, cartaHover.getNome(), hoverX - 80, hoverY + 480);
@@ -338,6 +338,7 @@ public class TelaBatalha implements Screen {
                         // Executa ataque
                         Carta cartaSolta = (Carta) payload.getObject();
                         if(cartaSolta.tipoC == TipoC.CUR) return;
+                        Main.getInstance().jogador.jogadasNoTurno++;
                         if (cartaSolta.efeitos != null && !cartaSolta.efeitos.isEmpty()) {
                             efeitos.clear();
                             efeitos.addAll(cartaSolta.efeitos);
@@ -466,6 +467,7 @@ public class TelaBatalha implements Screen {
         inimigo.atualizarTurno(Main.getInstance().jogador);
         turnoJogador = true;
         main.jogador.mana = 3;
+        Main.getInstance().jogador.jogadasNoTurno =0;
         inimigo.Escolheração();
         puxarNovasCartas();
     }
@@ -482,18 +484,8 @@ public class TelaBatalha implements Screen {
         System.out.println("Main.getInstance(): " + Main.getInstance());
         if (!botoesRecompensa.isEmpty()) return;
         ArrayList<Carta> opcoes = new ArrayList<>();
-        Random random = new Random();
-        for (int i = 0; i < 7; i++) {
-            int tipo = random.nextInt(7);
-            if (tipo == 0) opcoes.add(Main.getInstance().fabricasCartas.get("root_acess").criarCarta());
-            else if (tipo == 1) opcoes.add(Main.getInstance().fabricasCartas.get("garbage_colector").criarCarta());
-            else if(tipo == 2) opcoes.add(Main.getInstance().fabricasCartas.get("safemode").criarCarta());
-            else if(tipo == 3) opcoes.add(Main.getInstance().fabricasCartas.get("null_pointer_slash").criarCarta());
-            else if(tipo == 4) opcoes.add(Main.getInstance().fabricasCartas.get("systemoverclock").criarCarta());
-            else if(tipo == 5) opcoes.add(Main.getInstance().fabricasCartas.get("adaptiveai").criarCarta());
-            else opcoes.add(Main.getInstance().fabricasCartas.get("code_injection").criarCarta());
-        }
-        for (int i = 0; i < 3; i++) {
+        opcoes = FactoryCartas.gerarRecompensasAleatorias(3);
+        for (int i = 0; i < opcoes.size(); i++) {
             final Carta cartaFinal = opcoes.get(i);
             System.out.println(cartaFinal.nome);
             TextureRegionDrawable drawable = new TextureRegionDrawable(cartaFinal.getImagem());

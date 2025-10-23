@@ -37,12 +37,13 @@ public class Main extends Game {
     public ArrayList<Inimigo> todosInimigos = new ArrayList<>();
     public SpriteBatch batch;
     public Texture iconduplication, attackicon;
-    public Texture slice, burst, wraith, code_injection, garbage_colector, root_acess, nullpointerslash, overclock, safemode, adaptiveai, erro404;
+    public Texture slice, burst, wraith, code_injection, garbage_colector, root_acess, nullpointerslash, overclock, safemode, adaptiveai, erro404, trojan, ping;
     public Texture inimigoBossHit, inimigoBoss;
     public Texture endTurnTex, backGround, soundA, soundD, menuFundo;
     public Texture TextJog, playerDanTex, playerAtkTex, playerMorteText;
     public Music backgroundMusic, MenuMusic;
     public Jogador jogador;
+    public Texture restore;
     public Sound somHitJ;
     public TelaMenu telaMenu;
     public Texture brancofundo;
@@ -111,6 +112,9 @@ public class Main extends Game {
         safemode = new Texture("safemode.png");
         adaptiveai = new Texture("adaptiveai.png");
         erro404 = new Texture("erro404.png");
+        trojan = new Texture("trojan.png");
+        ping = new Texture("ping.png");
+        restore = new Texture("restore.png");
     }
     private void fabricaCarta() {
         fabricasCartas = new HashMap<>();
@@ -125,6 +129,9 @@ public class Main extends Game {
         adicionarFactory("safemode", 2, safemode, TipoC.POD, "Sons/card-woosh.mp3");
         adicionarFactory("adaptiveai", 3, adaptiveai, TipoC.HAB, "Sons/card-woosh.mp3");
         adicionarFactory("erro404", 0, erro404, TipoC.CUR, "Sons/card-woosh.mp3");
+        adicionarFactory("trojan", 2, trojan, TipoC.HAB, "Sons/card-woosh.mp3");
+        adicionarFactory("ping", 1,ping, TipoC.ATK, "Sons/slap-hurt-pain-sound-effect.mp3");
+        adicionarFactory("restore", 1, restore, TipoC.POD,"Sons/card-woosh.mp3");
     }
     private void criardeck() {
         for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabricasCartas.get("golpe").criarCarta());

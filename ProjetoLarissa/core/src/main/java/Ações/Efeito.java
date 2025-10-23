@@ -149,4 +149,31 @@ public class Efeito {
             }
         });
     }
+    public static Efeito danoContinuoInimigo(int danoI, int turnos) {
+        return new Efeito((j, i) -> {
+            AtomicInteger danoAtual = new AtomicInteger(danoI);
+            j.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
+                int dano = danoAtual.getAndIncrement();
+               i.setHPInimigo(i.getHPInimigo() - dano);
+            }, turnos);
+        });
+    }
+    public static Efeito pingOfDeath() {
+        return new Efeito((j, i) -> {
+            int dano = 5 + j.getDanoEXATK();
+            int hpAntes = i.getHPInimigo();
+            i.setHPInimigo(i.getHPInimigo() - dano);
+
+            if(i.getHPInimigo() <= 0 && hpAntes > 0) {
+                j.setHPPlayer(j.getHPPlayer() + 10);
+            }
+        });
+}
+    public static Efeito regeneracao(int curaPorTurno, int turnos) {
+        return new Efeito((j, i) -> {
+            j.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
+                jogador.setHPPlayer(j.getHPPlayer()+curaPorTurno);
+            }, turnos);
+        });
+    }
 }

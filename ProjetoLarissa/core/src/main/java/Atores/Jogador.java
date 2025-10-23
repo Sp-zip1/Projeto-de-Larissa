@@ -25,6 +25,7 @@ public class Jogador {
     private final List<BiConsumer<Jogador, Carta>> buffs = new ArrayList<>();
     private final BuffManager buffManager = new BuffManager();
     public Integer turnosInvulneravel = 0;
+    public int jogadasNoTurno;
 
     public Jogador(Integer HPPlayer, Integer danoEXATK, Integer defesaEXPlayer, Integer mana, Texture imgPlayer, Sound som) {
         this.HPPlayer = HPPlayer;
