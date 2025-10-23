@@ -3,6 +3,7 @@ package Entidades;
 import Atores.Inimigo;
 import Atores.Jogador;
 import Ações.Efeito;
+import Flyweight.CartaFlyweight;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,20 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Carta {
-    //Acho que posso remover sublcasses e usar ENUM
+    private final CartaFlyweight carta;
+    public List<Efeito> efeitos = new ArrayList<>();
     public Integer custo;
     public String nome;
     public Texture imagem;
     public Sound somc;
     public TipoC tipoC;
-    public List<Efeito> efeitos = new ArrayList<>();
 
-    public Carta(Integer custo, String nome, Texture imagem, Sound somc, TipoC tipoC) {
-        this.custo = custo;
-        this.nome = nome;
-        this.imagem = imagem;
-        this.somc = somc;
-        this.tipoC = tipoC;
+    public Carta(CartaFlyweight carta) {
+    this.carta = carta;
+        this.custo = carta.getCustoBase();
+        this.nome = carta.getNome();
+        this.imagem = carta.getImagem();
+        this.somc = carta.getSom();
+        this.tipoC = carta.getTipo();
     }
 
 

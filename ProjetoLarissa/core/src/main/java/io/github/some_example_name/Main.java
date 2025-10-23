@@ -4,8 +4,7 @@ import Atores.Inimigo;
 import Atores.Jogador;
 import Entidades.Carta;
 import Entidades.TipoC;
-import Flyweight.CartaFactory;
-import Flyweight.FactoryCartas;
+import Flyweight.*;
 import Telas.TelaMapa;
 import Telas.TelaMenu;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -43,18 +42,20 @@ public class Main extends Game {
     public Texture TextJog, playerDanTex, playerAtkTex, playerMorteText;
     public Music backgroundMusic, MenuMusic;
     public Jogador jogador;
-    public Texture restore, inirar, inirarHit;
+    public Texture restore, inirar, inirarHit, dot;
     public Sound somHitJ;
     public TelaMenu telaMenu;
     public Texture brancofundo;
     public BitmapFont fontGrande, fontPequena;
-    public Map<String, FactoryCartas> fabricasCartas;
-    public Texture inimigo,inimigoHit, inimigo1, inimigo1Hit, inimigo2, inimigo2Hit;
+    public Texture inimigo, inimigoHit, inimigo1, inimigo1Hit, inimigo2, inimigo2Hit;
     public static Main instance;
+    public Sound somAtaque, somHabilidade;
+
     //OQ ESTAVA NO MAIN AGORA VAI PARA TELA BATALHA
     public static Main getInstance() {
         return instance;
     }
+
     @Override
     public void create() {
         instance = this;
@@ -62,7 +63,7 @@ public class Main extends Game {
         carregarTexturasESons();
         System.out.println("Main.instance: " + (instance != null ? "OK" : "NULL"));
         System.out.println("iconduplication: " + (iconduplication != null ? "OK" : "NULL"));
-        jogador = new Jogador(100, 0, 0, 3,TextJog, somHitJ);
+        jogador = new Jogador(100, 0, 0, 3, TextJog, somHitJ);
         fabricaCarta();
         criardeck();
         telaMapa = new TelaMapa(this, this);
@@ -70,18 +71,21 @@ public class Main extends Game {
         //setScreen(new TelaMenu(this, this));
         setScreen(telaMenu);
     }
+
     @Override
-    public void render(){
+    public void render() {
         super.render();
     }
+
     @Override
-    public void dispose(){
+    public void dispose() {
     }
+
     private void carregarTexturasESons() {
         slice = new Texture(Gdx.files.internal("Plasma.png"));
         burst = new Texture(Gdx.files.internal("Recurvidade.png"));
         wraith = new Texture(Gdx.files.internal("wraith.png"));
-        endTurnTex = new Texture(Gdx.files.internal("slice.png"));
+        endTurnTex = new Texture(Gdx.files.internal("node.png"));
         backGround = new Texture(Gdx.files.internal("testFundo.png"));
         menuFundo = new Texture(Gdx.files.internal("FundoMenu.png"));
         TextJog = new Texture(Gdx.files.internal("Player.png"));
@@ -119,34 +123,48 @@ public class Main extends Game {
         inirarHit = new Texture("rar-hit.png");
         regenicon = new Texture("regenicon.png");
         nohitico = new Texture("ivulneravel.png");
-    }
-    private void fabricaCarta() {
-        fabricasCartas = new HashMap<>();
-        adicionarFactory("golpe", 0, slice, TipoC.ATK, "Sons/slap-hurt-pain-sound-effect.mp3");
-        adicionarFactory("burst", 1, burst, TipoC.HAB, "Sons/card-woosh.mp3");
-        adicionarFactory("wraith", 2, wraith, TipoC.POD, "Sons/card-woosh.mp3");
-        adicionarFactory("code_injection", 1, code_injection, TipoC.ATK, "Sons/slap-hurt-pain-sound-effect.mp3");
-        adicionarFactory("garbage_colector", 0, garbage_colector, TipoC.HAB, "Sons/card-woosh.mp3");
-        adicionarFactory("root_acess", 0, root_acess, TipoC.POD,"Sons/card-woosh.mp3");
-        adicionarFactory("null_pointer_slash", 0, nullpointerslash, TipoC.ATK, "Sons/slap-hurt-pain-sound-effect.mp3");
-        adicionarFactory("systemoverclock", 3, overclock,TipoC.HAB, "Sons/card-woosh.mp3");
-        adicionarFactory("safemode", 2, safemode, TipoC.POD, "Sons/card-woosh.mp3");
-        adicionarFactory("adaptiveai", 3, adaptiveai, TipoC.HAB, "Sons/card-woosh.mp3");
-        adicionarFactory("erro404", 0, erro404, TipoC.CUR, "Sons/card-woosh.mp3");
-        adicionarFactory("trojan", 2, trojan, TipoC.HAB, "Sons/card-woosh.mp3");
-        adicionarFactory("ping", 1,ping, TipoC.ATK, "Sons/slap-hurt-pain-sound-effect.mp3");
-        adicionarFactory("restore", 1, restore, TipoC.POD,"Sons/card-woosh.mp3");
-    }
-    private void criardeck() {
-        for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabricasCartas.get("golpe").criarCarta());
-        for (int i = 0; i < 6; i++) jogador.deckPlayer.add(fabricasCartas.get("burst").criarCarta());
-        for (int i = 0; i < 2; i++) jogador.deckPlayer.add(fabricasCartas.get("wraith").criarCarta());
-        Collections.shuffle(jogador.deckPlayer, new Random());
-    }
-    private void adicionarFactory(String nome, int custo, Texture img, TipoC tipo, String somPath) {
-        Sound som = Gdx.audio.newSound(Gdx.files.internal(somPath));
-        FactoryCartas factory = new FactoryCartas(custo, nome, img, tipo, som);
-        fabricasCartas.put(nome.toLowerCase(), factory);
+        dot = new Texture("poison.png");
+        somAtaque = Gdx.audio.newSound(Gdx.files.internal("Sons/slap-hurt-pain-sound-effect.mp3"));
+        somHabilidade = Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3"));
     }
 
+    private void fabricaCarta() {
+        CartaFactoryRegistry.registrar("golpe",
+                new GolpeFactory(slice, somAtaque));
+        CartaFactoryRegistry.registrar("burst",
+                new BurstFactory(burst, somHabilidade));
+        CartaFactoryRegistry.registrar("wraith",
+                new WraithFactory(wraith, somHabilidade));
+        CartaFactoryRegistry.registrar("code_injection",
+                new CodeInjectionFactory(code_injection, somAtaque));
+        CartaFactoryRegistry.registrar("garbage_colector",
+                new GarbageCollectorFactory(garbage_colector, somHabilidade));
+        CartaFactoryRegistry.registrar("root_acess",
+                new RootAccessFactory(root_acess, somHabilidade));
+        CartaFactoryRegistry.registrar("null_pointer_slash",
+                new NullPointerSlashFactory(nullpointerslash, somAtaque));
+        CartaFactoryRegistry.registrar("systemoverclock",
+                new SystemOverclockFactory(overclock, somHabilidade));
+        CartaFactoryRegistry.registrar("safemode",
+                new SafeModeFactory(safemode, somHabilidade));
+        CartaFactoryRegistry.registrar("adaptiveai",
+                new AdaptiveAIFactory(adaptiveai, somHabilidade));
+        CartaFactoryRegistry.registrar("erro404",
+                new Erro404Factory(erro404, somHabilidade));
+        CartaFactoryRegistry.registrar("trojan",
+                new TrojanFactory(trojan, somHabilidade));
+        CartaFactoryRegistry.registrar("ping",
+                new PingFactory(ping, somAtaque));
+        CartaFactoryRegistry.registrar("restore",
+                new RestoreFactory(restore, somHabilidade));
+        System.out.println("Cartas registradas: " + CartaFactoryRegistry.tamanho());
+        System.out.println("Flyweights criados: " + CartaFlyweight.getTamanhoPool());
+    }
+
+    private void criardeck() {
+        for (int i = 0; i < 6; i++) jogador.deckPlayer.add(CartaFactoryRegistry.criar("golpe"));
+        for (int i = 0; i < 6; i++) jogador.deckPlayer.add(CartaFactoryRegistry.criar("burst"));
+        for (int i = 0; i < 2; i++) jogador.deckPlayer.add(CartaFactoryRegistry.criar("wraith"));
+        Collections.shuffle(jogador.deckPlayer, new Random());
+    }
 }

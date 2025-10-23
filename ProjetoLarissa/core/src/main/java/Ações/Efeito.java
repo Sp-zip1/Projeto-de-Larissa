@@ -4,6 +4,7 @@ import Atores.Inimigo;
 import Atores.Jogador;
 import Entidades.Carta;
 import Entidades.TipoC;
+import Flyweight.CartaFactoryRegistry;
 import com.badlogic.gdx.graphics.Texture;
 import io.github.some_example_name.Main;
 
@@ -131,7 +132,7 @@ public class Efeito {
     }
     public static Efeito addCurse(){
         return new Efeito((j, i)->{
-            j.deckPlayer.add(Main.getInstance().fabricasCartas.get("erro404").criarCarta());
+            j.deckPlayer.add(CartaFactoryRegistry.criar("erro404"));
         });
     }
     public static Efeito danoContinuoJogador(int danoI, int turnos) {
@@ -140,7 +141,7 @@ public class Efeito {
             i.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
                 int dano = danoAtual.getAndDecrement();
                 jogador.setHPPlayer(jogador.getHPPlayer() - dano);
-            }, turnos, Main.getInstance().ping);
+            }, turnos, Main.getInstance().dot);
         });
     }
     public static Efeito curaError(int cura){
@@ -158,7 +159,7 @@ public class Efeito {
             j.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
                 int dano = danoAtual.getAndIncrement();
                i.setHPInimigo(i.getHPInimigo() - dano);
-            }, turnos, Main.getInstance().ping);
+            }, turnos, Main.getInstance().dot);
         });
     }
     public static Efeito pingOfDeath() {

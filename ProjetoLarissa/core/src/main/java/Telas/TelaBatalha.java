@@ -8,7 +8,7 @@ import Ações.EfeitoVisual;
 import Entidades.Carta;
 import Entidades.TipoC;
 import Flyweight.CartaFactory;
-import Flyweight.FactoryCartas;
+import Flyweight.CartaFactoryRegistry;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -507,8 +507,7 @@ public class TelaBatalha implements Screen {
         System.out.println("Main dentro da TelaBatalha: " + main);
         System.out.println("Main.getInstance(): " + Main.getInstance());
         if (!botoesRecompensa.isEmpty()) return;
-        ArrayList<Carta> opcoes = new ArrayList<>();
-        opcoes = FactoryCartas.gerarRecompensasAleatorias(3);
+        ArrayList<Carta> opcoes = CartaFactoryRegistry.gerarRecompensasAleatorias(3);
         for (int i = 0; i < opcoes.size(); i++) {
             final Carta cartaFinal = opcoes.get(i);
             System.out.println(cartaFinal.nome);

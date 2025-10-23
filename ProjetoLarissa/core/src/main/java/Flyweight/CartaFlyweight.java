@@ -3,20 +3,46 @@ package Flyweight;
 import Entidades.TipoC;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import java.util.HashMap;
+import java.util.Map;
 
+/**
+ * Flyweight que armazena dados IMUTÁVEIS compartilhados entre cartas do mesmo tipo.
+ * Cada carta única (ex: "golpe") tem apenas UM objeto CartaFlyweight na memória.
+ *
+ * PADRÃO FLYWEIGHT CORRETO:
+ * - Pool estático gerencia instâncias únicas
+ * - Construtor privado impede criação externa
+ * - Método obter() garante compartilhamento
+ */
 public class CartaFlyweight {
+    private static final Map<String, CartaFlyweight> pool = new HashMap<>();
+
     private final String nome;
     private final Texture imagem;
-    private final int custo;
-    private final Sound somC;
-    private final TipoC tipoC;
+    private final int custoBase;
+    private final Sound som;
+    private final TipoC tipo;
 
-    public CartaFlyweight(String nome, Texture imagem, int custo, Sound somC, TipoC tipoC) {
+    private CartaFlyweight(String nome, Texture imagem, int custoBase, Sound som, TipoC tipo) {
         this.nome = nome;
         this.imagem = imagem;
-        this.custo = custo;
-        this.somC = somC;
-        this.tipoC = tipoC;
+        this.custoBase = custoBase;
+        this.som = som;
+        this.tipo = tipo;
+    }
+
+    /**
+     * Obtém ou cria um Flyweight para a carta.*/
+    public static CartaFlyweight obter(String nome, Texture imagem, int custoBase, Sound som, TipoC tipo) {
+        String chave = nome.toLowerCase();
+
+        if (!pool.containsKey(chave)) {
+            pool.put(chave, new CartaFlyweight(nome, imagem, custoBase, som, tipo));
+            System.out.println("Flyweight criado para: " + nome);
+        }
+
+        return pool.get(chave);
     }
 
     public String getNome() {
@@ -27,16 +53,23 @@ public class CartaFlyweight {
         return imagem;
     }
 
-    public int getCusto() {
-        return custo;
+    public int getCustoBase() {
+        return custoBase;
     }
 
-    public Sound getSomC() {
-        return somC;
+    public Sound getSom() {
+        return som;
     }
 
-    public TipoC getTipoC() {
-        return tipoC;
+    public TipoC getTipo() {
+        return tipo;
+    }
+
+    public static int getTamanhoPool() {
+        return pool.size();
+    }
+
+    public static void limparPool() {
+        pool.clear();
     }
 }
-

@@ -1,4 +1,5 @@
 Background.png
+DOT.png
 FundoMenu.png
 Plasma.png
 Player.png
