@@ -119,27 +119,50 @@ public class TelaMenu implements Screen {
         });
         stage.addActor(sairButton);
 
-        if (main.endTurnTex != null) {
-            TextureRegionDrawable volumeDrawable = new TextureRegionDrawable(main.soundA);
-            volumeButton = new ImageButton(volumeDrawable);
-            volumeButton.setSize(60, 60);
-            volumeButton.setPosition(Gdx.graphics.getWidth() - 80, Gdx.graphics.getHeight() - 80);
-            volumeButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    musicEnabled = !musicEnabled;
-                    if (main.MenuMusic != null) {
-                        if (musicEnabled) {
-                            main.MenuMusic.play();
-                        } else {
-                            main.MenuMusic.pause();
-                        }
+
+    if (main.soundA != null && main.soundD != null) {
+        TextureRegionDrawable volumeOnDrawable = new TextureRegionDrawable(main.soundA);
+        TextureRegionDrawable volumeOffDrawable = new TextureRegionDrawable(main.soundD);
+        
+        ImageButton.ImageButtonStyle volumeButtonStyle = new ImageButton.ImageButtonStyle();
+        volumeButtonStyle.up = volumeOnDrawable;        
+        volumeButtonStyle.down = volumeOnDrawable;      
+        volumeButtonStyle.checked = volumeOffDrawable;  
+        
+        volumeButton = new ImageButton(volumeButtonStyle);
+        volumeButton.setSize(60, 60);
+        volumeButton.setPosition(Gdx.graphics.getWidth() - 80, Gdx.graphics.getHeight() - 80);
+        volumeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                musicEnabled = !musicEnabled;
+                
+                volumeButton.setChecked(!musicEnabled);
+                
+                if (main.MenuMusic != null) {
+                    if (musicEnabled) {
+                        main.MenuMusic.play();
+                    } else {
+                        main.MenuMusic.pause();
                     }
                 }
-            });
-            stage.addActor(volumeButton);
-        }
+              
+                volumeButton.setScale(0.8f);
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(100);
+                        Gdx.app.postRunnable(() -> volumeButton.setScale(1f));
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }).start();
+            }
+        });
+        stage.addActor(volumeButton);
+    } else {
+        System.out.println("Texturas de volume não encontradas! soundA ou soundD está nulo.");
     }
+}
 
     @Override
     public void show() {
