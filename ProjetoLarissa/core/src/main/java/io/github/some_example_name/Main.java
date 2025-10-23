@@ -43,7 +43,7 @@ public class Main extends Game {
     public Texture TextJog, playerDanTex, playerAtkTex, playerMorteText;
     public Music backgroundMusic, MenuMusic;
     public Jogador jogador;
-    public Texture restore;
+    public Texture restore, inirar, inirarHit;
     public Sound somHitJ;
     public TelaMenu telaMenu;
     public Texture brancofundo;
@@ -115,6 +115,8 @@ public class Main extends Game {
         trojan = new Texture("trojan.png");
         ping = new Texture("ping.png");
         restore = new Texture("restore.png");
+        inirar = new Texture("beast-rar.png");
+        inirarHit = new Texture("rar-hit.png");
     }
     private void fabricaCarta() {
         fabricasCartas = new HashMap<>();

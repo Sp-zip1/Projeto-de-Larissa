@@ -176,4 +176,23 @@ public class Efeito {
             }, turnos);
         });
     }
+   public static Efeito systemCorruption() {
+        return new Efeito((j, i) -> {
+            j.setMana(j.getMana()-1);
+        });
+    }
+public  static Efeito overclockProtocol() {
+        return new Efeito((j, i) -> {
+            i.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
+                inimigo.setDano(inimigo.getDano() * 2);
+                Efeito.dano(5);
+            }, 2);
+        });
+    }
+    public  static Efeito CompressDan() {
+        return new Efeito((j, i) -> {
+           Efeito.dano(2 + j.deckPlayer.size());
+           System.out.println("efeitodano");
+        });
+    }
 }

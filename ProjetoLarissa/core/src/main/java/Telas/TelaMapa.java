@@ -24,7 +24,7 @@ public class TelaMapa implements Screen {
     private ShapeRenderer shapeRenderer;
     private List<Nodo> nodes;
     private Nodo currentNode;
-    private ArrayList<Efeito> efeitos = new ArrayList<>(), efeitosSlime = new ArrayList<>(), efeitosCom = new ArrayList<>(), efeitosCmd = new ArrayList<>();
+    private ArrayList<Efeito> efeitos = new ArrayList<>(), efeitosSlime = new ArrayList<>(), efeitosCom = new ArrayList<>(), efeitosCmd = new ArrayList<>(), efeitosRar = new ArrayList<>();
     private ArrayList<Inimigo> inimigosNivel = new ArrayList<>();
     private Texture nodeTexture;
 
@@ -37,6 +37,15 @@ public class TelaMapa implements Screen {
         efeitosCom.add(Efeito.addCurse());
         efeitosCom.add(Efeito.danoContinuoJogador(7, 7));
         efeitosCom.add(Efeito.curaError(4));
+        efeitosSlime.add(Efeito.imunedano(2));
+        efeitosSlime.add(Efeito.danoExtraIn(2));
+        efeitosSlime.add(Efeito.danoJogador(3));
+        efeitosCmd.add(Efeito.systemCorruption());
+        efeitosCmd.add(Efeito.danoExtraIn(1));
+        efeitosCmd.add(Efeito.overclockProtocol());
+        efeitosCmd.add(Efeito.danoJogador(5));
+        efeitosRar.add(Efeito.removerMão());
+        efeitosRar.add(Efeito.CompressDan());
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         nodes = new ArrayList<>();
@@ -45,8 +54,9 @@ public class TelaMapa implements Screen {
 
         // Exemplo de inimigos
         inimigosNivel.add(new Inimigo(55, 55, 0, main.inimigo, main.inimigoHit, main.inimigo, 0f, 0f, efeitosCom));
-        inimigosNivel.add(new Inimigo(70, 70, 0, main.inimigo1, main.inimigo1Hit, main.inimigo1, 0f, 0f, efeitos));
-        inimigosNivel.add(new Inimigo(30, 30, 0, main.inimigo2, main.inimigo2Hit, main.inimigo2, 0f, 0f, efeitos));
+        inimigosNivel.add(new Inimigo(70, 70, 0, main.inimigo1, main.inimigo1Hit, main.inimigo1, 0f, 0f, efeitosSlime));
+        inimigosNivel.add(new Inimigo(30, 30, 0, main.inimigo2, main.inimigo2Hit, main.inimigo2, 0f, 0f, efeitosCmd));
+        inimigosNivel.add(new Inimigo(30, 30, 0, Main.getInstance().inirar, Main.getInstance().inirarHit, Main.getInstance().inirar, 0f, 0f, efeitosRar));
 
         gerarMapaFixo();
     }
