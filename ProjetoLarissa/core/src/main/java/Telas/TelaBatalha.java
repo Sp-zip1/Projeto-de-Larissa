@@ -189,8 +189,8 @@ public class TelaBatalha implements Screen {
             batch.draw(cartaHover.getImagem(), hoverX - 100, hoverY, cartaHover.getImagem().getWidth()/5f, cartaHover.getImagem().getHeight()/5f);
             font.getData().setScale(0.8f);
             font.setColor(Color.WHITE);
-            font.draw(batch, cartaHover.getNome(), hoverX - 80, hoverY + 480);
-            font.draw(batch, "Custo: " + cartaHover.getCusto(), hoverX - 80, hoverY + 460);
+            font.draw(batch, cartaHover.getNome(), hoverX - 80, hoverY + 350);
+            font.draw(batch, "Custo: " + cartaHover.getCusto(), hoverX - 80, hoverY + 300);
             font.getData().setScale(0.5f);
             batch.end();
         }
@@ -777,16 +777,35 @@ public class TelaBatalha implements Screen {
         reposicionarCartas();
     }
     private void desenharInimigoComAnimacao(SpriteBatch batch) {
-        float baseX = 800 + inimigo.getOffsetX();
-        float baseY = 200 + inimigo.getOffsetY();
-        float tamanho = 200;
-        float animOffsetX = inimigo.getAnimacaoOffsetX();
-        float animOffsetY = inimigo.getAnimacaoOffsetY();
-        float escala = inimigo.getAnimacaoEscala();
-        float rotacao = inimigo.getAnimacaoRotacao();
-        float alpha = inimigo.getAnimacaoAlpha();
+        float baseX;
+        float baseY ;
+        float tamanho;
+        float animOffsetX;
+        float animOffsetY;
+        float escala;
+        float rotacao;
+        float alpha;
 
-        // Aplicar transparência
+        if(inimigo.getInimigoImg() == main.getInstance().inimigoBoss){
+            baseX = 800 + inimigo.getOffsetX();
+            baseY = 200 + inimigo.getOffsetY();
+            tamanho = 400;
+            animOffsetX = inimigo.getAnimacaoOffsetX();
+            animOffsetY = inimigo.getAnimacaoOffsetY();
+            escala = inimigo.getAnimacaoEscala();
+            rotacao = inimigo.getAnimacaoRotacao();
+            alpha = inimigo.getAnimacaoAlpha();
+        } else{
+            baseX = 800 + inimigo.getOffsetX();
+            baseY = 200 + inimigo.getOffsetY();
+            tamanho = 200;
+            animOffsetX = inimigo.getAnimacaoOffsetX();
+            animOffsetY = inimigo.getAnimacaoOffsetY();
+            escala = inimigo.getAnimacaoEscala();
+            rotacao = inimigo.getAnimacaoRotacao();
+            alpha = inimigo.getAnimacaoAlpha();
+        }
+            // Aplicar transparência
         Color corOriginal = batch.getColor().cpy();
         batch.setColor(corOriginal.r, corOriginal.g, corOriginal.b, alpha);
         batch.draw(inimigo.getInimigoImg(),
@@ -804,5 +823,8 @@ public class TelaBatalha implements Screen {
                 inimigo.getInimigoImg().getHeight(),
                 false, false);                 // flip x, y
         batch.setColor(corOriginal);
+
+        
+
 }
 }
