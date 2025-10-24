@@ -26,7 +26,9 @@ public class TelaMapa implements Screen {
     private Nodo currentNode;
     private ArrayList<Efeito> efeitos = new ArrayList<>(), efeitosSlime = new ArrayList<>(), efeitosCom = new ArrayList<>(), efeitosCmd = new ArrayList<>(), efeitosRar = new ArrayList<>();
     private ArrayList<Inimigo> inimigosNivel = new ArrayList<>();
+    ArrayList<Inimigo> boss = new ArrayList<>();
     private Texture nodeTexture;
+    public Nodo bossnode;
 
     public TelaMapa(Game game, Main main) {
         this.game = game;
@@ -49,7 +51,6 @@ public class TelaMapa implements Screen {
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
         nodes = new ArrayList<>();
-
         nodeTexture = new Texture("node.png");
 
         // Exemplo de inimigos
@@ -57,6 +58,7 @@ public class TelaMapa implements Screen {
         inimigosNivel.add(new Inimigo(70, 70, 0, main.inimigo1, main.inimigo1Hit, main.inimigo1, 0f, 0f, efeitosSlime));
         inimigosNivel.add(new Inimigo(30, 30, 0, main.inimigo2, main.inimigo2Hit, main.inimigo2, 0f, 0f, efeitosCmd));
         inimigosNivel.add(new Inimigo(30, 30, 0, Main.getInstance().inirar, Main.getInstance().inirarHit, Main.getInstance().inirar, 0f, 0f, efeitosRar));
+        boss.add(new Inimigo(300, 300,  2, Main.getInstance().inimigoBoss, Main.getInstance().inimigoBossHit, Main.getInstance().inimigoBoss, 0f, 0f, efeitos));
 
         gerarMapaFixo();
     }
@@ -76,21 +78,21 @@ public class TelaMapa implements Screen {
         Nodo b1 = new Nodo(startX + stepX, baseY - offsetY, nodeTexture);
         Nodo b2 = new Nodo(startX + stepX * 2, baseY - offsetY, nodeTexture);
         Nodo b3 = new Nodo(startX + stepX * 3, baseY - offsetY, nodeTexture);
-        Nodo boss = new Nodo(startX + stepX * 4, baseY, nodeTexture);
+        bossnode = new Nodo(startX + stepX * 4, baseY, nodeTexture);
         start.connect(a1);
         start.connect(b1);
 
         a1.connect(a2);
         a2.connect(a3);
-        a3.connect(boss);
+        a3.connect(bossnode);
         b1.connect(b2);
         b2.connect(b3);
-        b3.connect(boss);
+        b3.connect(bossnode);
 
         nodes.add(start);
         nodes.add(a1); nodes.add(a2); nodes.add(a3);
         nodes.add(b1); nodes.add(b2); nodes.add(b3);
-        nodes.add(boss);
+        nodes.add(bossnode);
 
         currentNode = start;
     }
@@ -117,7 +119,10 @@ public class TelaMapa implements Screen {
                 batch.setColor(Color.WHITE);
             else
                 batch.setColor(Color.DARK_GRAY);
-
+            if (n == bossnode && n.unlocked) {
+                float pulso = 1f + 0.1f * (float)Math.sin(System.currentTimeMillis() / 200.0);
+                batch.setColor(Color.RED.r * pulso, Color.RED.g * pulso, Color.RED.b * pulso, 1f);
+            }
             n.draw(batch);
         }
         batch.end();
@@ -135,7 +140,12 @@ public class TelaMapa implements Screen {
                     for (Nodo c : n.connectedNodes) {
                         c.unlocked = true;
                     }
+                    if(n ==bossnode){
+                        game.setScreen(new TelaBatalha(game, this, boss, main));
+                    }
+                    else {
                     game.setScreen(new TelaBatalha(game, this, inimigosNivel, main));
+                    }
                     return;
                 }
             }

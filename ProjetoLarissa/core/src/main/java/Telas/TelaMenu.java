@@ -37,11 +37,11 @@ public class TelaMenu implements Screen {
     private float tempoAnimacao = 0f;
     private float pulsoTitulo = 1f;
     private boolean musicEnabled = true;
-
     public TelaMenu(Game game, Main main) {
         this.game = game;
         this.main = main;
-
+        Main.getInstance().jogador.setHPPlayer(100);
+        Main.getInstance().jogador.loopInicioBatalha();
         batch = new SpriteBatch();
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -94,19 +94,6 @@ public class TelaMenu implements Screen {
             }
         });
         stage.addActor(jogarButton);
-
-        // Botão CONFIGURAÇÕES
-        configButton = new TextButton("CONFIGURACOES", buttonStyle);
-        configButton.setSize(buttonWidth, buttonHeight);
-        configButton.setPosition(centerX - buttonWidth / 2, startY - spacing);
-        configButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // game.setScreen(new TelaConfig(game, main));
-            }
-        });
-        stage.addActor(configButton);
-
         // Botão SAIR
         sairButton = new TextButton("SAIR", buttonStyle);
         sairButton.setSize(buttonWidth, buttonHeight);
@@ -210,13 +197,6 @@ public class TelaMenu implements Screen {
         } else {
             jogarButton.setScale(1f);
         }
-
-        if (configButton.hit(mouseX - configButton.getX(), mouseY - configButton.getY(), false) != null) {
-            configButton.setScale(1.05f);
-        } else {
-            configButton.setScale(1f);
-        }
-
         if (sairButton.hit(mouseX - sairButton.getX(), mouseY - sairButton.getY(), false) != null) {
             sairButton.setScale(1.05f);
         } else {
@@ -234,9 +214,7 @@ public class TelaMenu implements Screen {
         float startY = 350;
 
         jogarButton.setPosition(centerX - buttonWidth / 2, startY);
-        configButton.setPosition(centerX - buttonWidth / 2, startY - spacing);
         sairButton.setPosition(centerX - buttonWidth / 2, startY - spacing * 2);
-
         if (volumeButton != null) {
             volumeButton.setPosition(width - 80, height - 80);
         }

@@ -670,6 +670,8 @@ public class TelaBatalha implements Screen {
                 main.jogador.setImgPlayer(main.playerMorteText);
                 if (main.backgroundMusic != null) {
                     main.backgroundMusic.stop();
+                    Main.getInstance().jogador.setHPPlayer(100);
+                    Main.getInstance().jogador.loopInicioBatalha();
                 }
             }
             Gdx.app.postRunnable(() -> {
@@ -681,10 +683,19 @@ public class TelaBatalha implements Screen {
             });
             return;
         }
-        if (inimigo.getHPInimigo() <= 0 && !mostrandoRecompensa) {
-            entrarEstadoRecompensa();
+        if (inimigo.getHPInimigo() <= 0) {
+            // Se for o boss, vai direto pra tela de vitória
+            if (inimigo == telaMapa.boss.get(0)) {
+                game.setScreen(new TelaVitoria(game));
+                dispose();
+                return;
+            }
+            if (!mostrandoRecompensa) {
+                entrarEstadoRecompensa();
+            }
         }
     }
+
     //Depois vou mudar isso para que todas cartas sem criadas por essa função
     private void criarBotaoParaCarta(Carta carta) {
         TextureRegionDrawable drawable = new TextureRegionDrawable(carta.getImagem());

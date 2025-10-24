@@ -62,6 +62,9 @@ public class Efeito {
     }
     public static Efeito removerMão() {
         return new Efeito((j, i) -> {
+            if (j.mãoPlayer.isEmpty()) {
+                return;
+            }
             int index = random.nextInt(j.mãoPlayer.size());
             Carta cartaRemovida = j.mãoPlayer.get(index);
             j.mãoPlayer.remove(index);
