@@ -70,9 +70,9 @@ public class TelaMenu implements Screen {
     private void criarBotoes() {
         float centerX = Gdx.graphics.getWidth() / 2f;
         float buttonWidth = 300;
-        float buttonHeight = 70;
+        float buttonHeight = 90;
         float spacing = 90;
-        float startY = 350;
+        float startY = 300;
 
         TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
         buttonStyle.font = buttonFont;
