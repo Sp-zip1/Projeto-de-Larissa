@@ -35,7 +35,7 @@ public class TelaMapa implements Screen {
         this.main = main;
         efeitos.add(Efeito.imunedano(3));
         efeitos.add(Efeito.danoExtraIn(2));
-        efeitos.add(Efeito.danoJogador(2));
+        efeitos.add(Efeito.danoJogador(5));
         efeitosCom.add(Efeito.addCurse());
         efeitosCom.add(Efeito.danoContinuoJogador(7, 7));
         efeitosCom.add(Efeito.curaError(4));

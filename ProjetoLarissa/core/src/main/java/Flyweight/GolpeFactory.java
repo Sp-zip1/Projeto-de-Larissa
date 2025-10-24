@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class GolpeFactory extends CartaFactory {
     public GolpeFactory(Texture img, Sound som) {
-        super("Golpe", img, 0, som, TipoC.ATK);
+        super("Golpe", img, 1, som, TipoC.ATK);
     }
     @Override
     public Carta criarCarta() {
