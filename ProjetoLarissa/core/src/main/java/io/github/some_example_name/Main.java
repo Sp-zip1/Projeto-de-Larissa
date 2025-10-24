@@ -90,7 +90,7 @@ public class Main extends Game {
         menuFundo = new Texture(Gdx.files.internal("FundoMenu.png"));
         TextJog = new Texture(Gdx.files.internal("Player.png"));
         playerDanTex = new Texture(Gdx.files.internal("player-hit.png"));
-        inimigoBoss = new Texture(Gdx.files.internal("tangled-wires.png"));
+        inimigoBoss = new Texture(Gdx.files.internal("boss-attack.png"));
         inimigoBossHit = new Texture(Gdx.files.internal("tangled-wires-hit.png"));
         inimigoBossattack = new Texture(Gdx.files.internal("boss-attack.png"));
         backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("Sons/analog-texture.mp3"));

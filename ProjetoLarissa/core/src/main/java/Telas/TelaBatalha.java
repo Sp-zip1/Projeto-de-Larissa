@@ -161,7 +161,13 @@ public class TelaBatalha implements Screen {
                 font.setColor(Color.WHITE);
             }
             batch.end();
-            criarBarraHPIn(760, 400+ inimigo.getAnimacaoOffsetY(), 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
+            if((inimigo.getInimigoImg() == main.getInstance().inimigoBoss) || (inimigo.getInimigoImg() == main.getInstance().inimigoBossHit)) {
+                // Barra para o BOSS
+                criarBarraHPIn(760, 550 + inimigo.getAnimacaoOffsetY(), 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
+            } else {
+                // Barra para inimigos normais
+                criarBarraHPIn(760, 400 + inimigo.getAnimacaoOffsetY(), 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
+            }
             criarBarraHPIn(200, 400+escalaRespiracao, 200, 30, main.jogador.getHPPlayer(), 100);
             desenharBarraStatus();
             desenharBarraStatusI();
@@ -786,7 +792,7 @@ public class TelaBatalha implements Screen {
         float rotacao;
         float alpha;
 
-        if(inimigo.getInimigoImg() == main.getInstance().inimigoBoss){
+        if((inimigo.getInimigoImg() == main.getInstance().inimigoBoss) || (inimigo.getInimigoImg() == main.getInstance().inimigoBossHit)){
             baseX = 800 + inimigo.getOffsetX();
             baseY = 200 + inimigo.getOffsetY();
             tamanho = 400;
