@@ -40,6 +40,7 @@ libgdx.png
 node.png
 nullpointer.png
 overclock.png
+overicon.png
 ping.png
 player-hit.png
 poison.png

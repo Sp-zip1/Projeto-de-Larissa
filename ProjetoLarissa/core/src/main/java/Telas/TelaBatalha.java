@@ -150,14 +150,39 @@ public class TelaBatalha implements Screen {
                 d.desenhar(batch, fontDano);
             }
             font.draw(batch, "Mana: " + main.jogador.getMana(), 270, 100);
+            if (main.jogador.getDanoEXATK() > 0) {
+                font.setColor(Color.ORANGE);
+                font.draw(batch, "ATK: +" + main.jogador.getDanoEXATK(), 270, 80);
+                font.setColor(Color.WHITE);
+            }
+            if (inimigo.getDano() > 0) {
+                font.setColor(Color.RED);
+                font.draw(batch, "ATK: +" + inimigo.getDano(), 830+inimigo.getAnimacao().getOffsetX(), 380+inimigo.getAnimacao().getOffsetY());
+                font.setColor(Color.WHITE);
+            }
             batch.end();
-            criarBarraHPIn(760, 400, 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
+            criarBarraHPIn(760, 400+ inimigo.getAnimacaoOffsetY(), 200, 30, inimigo.getHPInimigo(), inimigo.getMaxHP());
             criarBarraHPIn(200, 400+escalaRespiracao, 200, 30, main.jogador.getHPPlayer(), 100);
             desenharBarraStatus();
             desenharBarraStatusI();
             if (tremorTimerP > 0) {
                 desenharRaiosSobreJogador();
             }
+        }
+        if (mostrandoRecompensa) {
+            batch.begin();
+            batch.setColor(0, 0, 0, 0.7f);
+            batch.draw(main.brancofundo, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            batch.setColor(1, 1, 1, 1);
+            String textoRecompensa = "ESCOLHA 1 DE 3 CARTAS PARA SER ADICIONADA AO DECK";
+            font.getData().setScale(0.8f);
+            font.setColor(Color.GOLD);
+            float textoX = Gdx.graphics.getWidth() / 2f - 280;
+            float textoY = Gdx.graphics.getHeight() - 100;
+            font.draw(batch, textoRecompensa, textoX, textoY);
+            font.getData().setScale(0.5f);
+            font.setColor(Color.WHITE);
+            batch.end();
         }
         if (cartaHover != null && bakcroungVisivel) {
             batch.begin();
@@ -524,9 +549,6 @@ public class TelaBatalha implements Screen {
                     System.out.println("=== ESCOLHENDO RECOMPENSA ===");
                     Main.getInstance().jogador.deckPlayer.removeIf(c -> c.tipoC == TipoC.CUR);
                     System.out.println("Antes - Deck: " + main.jogador.deckPlayer.size() + " | Descarte: " + main.jogador.descarte.size() + " | Mão: " + main.jogador.mãoPlayer.size());
-                    // Retorna todas as cartas para o deck antes de sair
-                    Main.getInstance().jogador.loopInicioBatalha();
-                    // Adiciona a carta de recompensa
                     main.jogador.deckPlayer.add(cartaFinal);
 
                     System.out.println("Depois - Total no deck: " + main.jogador.deckPlayer.size());
@@ -758,8 +780,6 @@ public class TelaBatalha implements Screen {
         float baseX = 800 + inimigo.getOffsetX();
         float baseY = 200 + inimigo.getOffsetY();
         float tamanho = 200;
-
-        // Obter valores da animação
         float animOffsetX = inimigo.getAnimacaoOffsetX();
         float animOffsetY = inimigo.getAnimacaoOffsetY();
         float escala = inimigo.getAnimacaoEscala();
@@ -767,11 +787,8 @@ public class TelaBatalha implements Screen {
         float alpha = inimigo.getAnimacaoAlpha();
 
         // Aplicar transparência
-        Color corOriginal = batch.getColor();
+        Color corOriginal = batch.getColor().cpy();
         batch.setColor(corOriginal.r, corOriginal.g, corOriginal.b, alpha);
-
-        // Desenhar com todas as transformações
-        // Parâmetros: textura, x, y, originX, originY, largura, altura, scaleX, scaleY, rotacao
         batch.draw(inimigo.getInimigoImg(),
                 baseX + animOffsetX,           // posição X
                 baseY + animOffsetY,           // posição Y
@@ -786,8 +803,6 @@ public class TelaBatalha implements Screen {
                 inimigo.getInimigoImg().getWidth(),
                 inimigo.getInimigoImg().getHeight(),
                 false, false);                 // flip x, y
-
-        // Restaurar cor original
         batch.setColor(corOriginal);
 }
 }

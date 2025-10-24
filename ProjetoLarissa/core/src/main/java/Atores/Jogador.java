@@ -2,6 +2,7 @@ package Atores;
 
 import Ações.BuffManager;
 import Entidades.Carta;
+import Entidades.TipoC;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -136,6 +137,7 @@ public class Jogador {
         deckPlayer.addAll(mãoPlayer);
         descarte.clear();
         mãoPlayer.clear();
+        deckPlayer.removeIf(c -> c.tipoC == TipoC.CUR);
         mana = 3;
         danoEXATK = 0;
         turnosInvulneravel = 0;

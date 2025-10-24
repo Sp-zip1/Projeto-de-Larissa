@@ -45,7 +45,7 @@ public class Main extends Game {
     public Texture restore, inirar, inirarHit, dot, inifox, inifoxHit, inifoxattack, inirarattack;
     public Sound somHitJ;
     public TelaMenu telaMenu;
-    public Texture brancofundo;
+    public Texture brancofundo, overclockicon;
     public BitmapFont fontGrande, fontPequena;
     public Texture inimigo, inimigoHit, inimigo1, inimigo1Hit, inimigo2, inimigo2Hit, inimigoattack, inimigo1attack, inimigo2attack;
     public static Main instance;
@@ -132,6 +132,7 @@ public class Main extends Game {
         regenicon = new Texture("regenicon.png");
         nohitico = new Texture("ivulneravel.png");
         dot = new Texture("poison.png");
+        overclockicon = new Texture("overicon.png");
         somAtaque = Gdx.audio.newSound(Gdx.files.internal("Sons/slap-hurt-pain-sound-effect.mp3"));
         somHabilidade = Gdx.audio.newSound(Gdx.files.internal("Sons/card-woosh.mp3"));
     }

@@ -193,7 +193,7 @@ public  static Efeito overclockProtocol() {
             i.getBuffManager().adicionarBuffDuracao((jogador, inimigo) -> {
                 inimigo.setDano(inimigo.getDano() * 2);
                 Efeito.dano(5);
-            }, 2, Main.getInstance().overclock);
+            }, 2, Main.getInstance().overclockicon);
         });
     }
     public  static Efeito CompressDan() {

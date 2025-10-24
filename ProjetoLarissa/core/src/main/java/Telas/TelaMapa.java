@@ -1,8 +1,6 @@
 package Telas;
 
-import Atores.AnimacaoBalancar;
-import Atores.AnimacaoFlutuar;
-import Atores.Inimigo;
+import Atores.*;
 import Ações.Efeito;
 import Entidades.Nodo;
 import com.badlogic.gdx.Gdx;
@@ -35,9 +33,9 @@ public class TelaMapa implements Screen {
     public TelaMapa(Game game, Main main) {
         this.game = game;
         this.main = main;
-        efeitos.add(Efeito.curaIn(4));
-        efeitos.add(Efeito.danoExtraIn(1));
-        efeitos.add(Efeito.danoJogador(10));
+        efeitos.add(Efeito.imunedano(3));
+        efeitos.add(Efeito.danoExtraIn(2));
+        efeitos.add(Efeito.danoJogador(2));
         efeitosCom.add(Efeito.addCurse());
         efeitosCom.add(Efeito.danoContinuoJogador(7, 7));
         efeitosCom.add(Efeito.curaError(4));
@@ -56,10 +54,10 @@ public class TelaMapa implements Screen {
         nodeTexture = new Texture("node.png");
 
         // Exemplo de inimigos
-        inimigosNivel.add(new Inimigo(55, 55, 0, main.inimigo, main.inimigoHit, main.inimigo, 0f, 0f, efeitosCom, new AnimacaoBalancar()));
-        inimigosNivel.add(new Inimigo(70, 70, 0, main.inimigo1, main.inimigo1Hit, main.inimigo1, 0f, 0f, efeitosSlime, new AnimacaoBalancar()));
-        inimigosNivel.add(new Inimigo(30, 30, 0, main.inimigo2, main.inimigo2Hit, main.inimigo2, 0f, 0f, efeitosCmd, new AnimacaoBalancar()));
-        inimigosNivel.add(new Inimigo(30, 30, 0, Main.getInstance().inirar, Main.getInstance().inirarHit, Main.getInstance().inirar, 0f, 0f, efeitosRar, new AnimacaoBalancar()));
+        inimigosNivel.add(new Inimigo(120, 120, 0, main.inimigo, main.inimigoHit, main.inimigo, 0f, 0f, efeitosCom, new AnimacaoVibrar()));
+        inimigosNivel.add(new Inimigo(150, 150, 0, main.inimigo1, main.inimigo1Hit, main.inimigo1, 0f, 0f, efeitosSlime, new AnimacaoFantasma()));
+        inimigosNivel.add(new Inimigo(80, 80, 0, main.inimigo2, main.inimigo2Hit, main.inimigo2, 0f, 0f, efeitosCmd, new AnimacaoBalancar()));
+        inimigosNivel.add(new Inimigo(80, 80, 0, Main.getInstance().inirar, Main.getInstance().inirarHit, Main.getInstance().inirar, 0f, 0f, efeitosRar, new AnimacaoBalancar()));
         boss.add(new Inimigo(300, 300,  2, Main.getInstance().inimigoBoss, Main.getInstance().inimigoBossHit, Main.getInstance().inimigoBoss, 0f, 0f, efeitos, new AnimacaoBalancar()));
 
         gerarMapaFixo();
