@@ -22,7 +22,7 @@ public class EfeitoVisual {
 
     public boolean atualizar(float delta) {
         tempo += delta;
-        y += 40 * delta; // sobe lentamente
+        y += 50 * delta; // sobe lentamente
         return tempo >= duracao;
     }
 
