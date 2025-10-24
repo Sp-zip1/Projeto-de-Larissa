@@ -58,18 +58,29 @@ public class TelaVitoria implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+            Gdx.gl.glClearColor(0, 0, 0, 1);
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        batch.begin();
-        if (fundoVitoria != null)
-            batch.draw(fundoVitoria, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.draw(vitoria, 100, 100);
-        font.draw(batch, "VOCÊ VENCEU!", Gdx.graphics.getWidth()/2f - 150, Gdx.graphics.getHeight()/2f + 100);
-        batch.end();
+            batch.begin();
+            if (fundoVitoria != null)
+                batch.draw(fundoVitoria, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            float screenWidth = Gdx.graphics.getWidth();
+            float screenHeight = Gdx.graphics.getHeight();
+            String textoVitoria = "VOCÊ VENCEU!";
+            float textoY = screenHeight - 150; // 150px do topo
+            float textoX = screenWidth/2f - 150;
+            font.draw(batch, textoVitoria, textoX, textoY);
+            float botaoY = 150;
+            float espacoDisponivel = textoY - botaoY;
+            float imagemLargura = vitoria.getWidth();
+            float imagemAltura = vitoria.getHeight();
+            float imagemY = botaoY + (espacoDisponivel - imagemAltura) / 2f;
+            float imagemX = (screenWidth - imagemLargura) / 2f;
+            batch.draw(vitoria, imagemX, imagemY);
+            batch.end();
 
-        stage.act(delta);
-        stage.draw();
+            stage.act(delta);
+            stage.draw();
     }
 
     @Override public void resize(int width, int height) { stage.getViewport().update(width, height, true); }

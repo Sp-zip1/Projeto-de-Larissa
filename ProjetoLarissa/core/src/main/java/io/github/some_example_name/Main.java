@@ -175,4 +175,19 @@ public class Main extends Game {
         for (int i = 0; i < 2; i++) jogador.deckPlayer.add(CartaFactoryRegistry.criar("wraith"));
         Collections.shuffle(jogador.deckPlayer, new Random());
     }
+    public void resetarJogo() {
+        jogador.setHPPlayer(100);
+        jogador.setMana(3);
+        jogador.setDanoEXATK(0);
+        jogador.setDefesaEXPlayer(0);
+        jogador.setTurnosInvulneravel(0);
+        jogador.jogadasNoTurno = 0;
+        jogador.mãoPlayer.clear();
+        jogador.descarte.clear();
+        jogador.exaustas.clear();
+        jogador.getBuffManager().limparBuffs();
+        jogador.setImgPlayer(TextJog);
+        telaMapa = new TelaMapa(this, this);
+        criardeck();
+    }
 }

@@ -670,9 +670,8 @@ public class TelaBatalha implements Screen {
                 main.jogador.setImgPlayer(main.playerMorteText);
                 if (main.backgroundMusic != null) {
                     main.backgroundMusic.stop();
-                    Main.getInstance().jogador.setHPPlayer(100);
-                    Main.getInstance().jogador.loopInicioBatalha();
                 }
+                Main.getInstance().resetarJogo();
             }
             Gdx.app.postRunnable(() -> {
                 try {

@@ -6,15 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Flyweight que armazena dados IMUTÁVEIS compartilhados entre cartas do mesmo tipo.
- * Cada carta única (ex: "golpe") tem apenas UM objeto CartaFlyweight na memória.
- *
- * PADRÃO FLYWEIGHT CORRETO:
- * - Pool estático gerencia instâncias únicas
- * - Construtor privado impede criação externa
- * - Método obter() garante compartilhamento
- */
 public class CartaFlyweight {
     private static final Map<String, CartaFlyweight> pool = new HashMap<>();
 
