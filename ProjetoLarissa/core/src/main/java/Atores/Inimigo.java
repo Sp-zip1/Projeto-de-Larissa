@@ -20,7 +20,8 @@ public class Inimigo {
     Integer turnosInvuneravel=0;
     Integer ultimDano = 0;
     Integer ultimaCura = 0;
-    public Inimigo(Integer HPInimigo, Integer maxHP, Integer dano, Texture inimigoImg, Texture inimigoDan, Texture inimigoIdle, Float offsetX, Float offsetY, ArrayList<Efeito> efeitosIn) {
+    private AnimacaoInimigo animacao;
+    public Inimigo(Integer HPInimigo, Integer maxHP, Integer dano, Texture inimigoImg, Texture inimigoDan, Texture inimigoIdle, Float offsetX, Float offsetY, ArrayList<Efeito> efeitosIn, AnimacaoInimigo animacao) {
         this.HPInimigo = HPInimigo;
         this.maxHP = maxHP;
         Dano = dano;
@@ -30,6 +31,34 @@ public class Inimigo {
         OffsetX = offsetX;
         OffsetY = offsetY;
         this.efeitosIn = efeitosIn;
+        this.animacao = animacao;
+    }
+    public float getAnimacaoOffsetX() {
+        return animacao != null ? animacao.getOffsetX() : 0f;
+    }
+
+    public float getAnimacaoOffsetY() {
+        return animacao != null ? animacao.getOffsetY() : 0f;
+    }
+
+    public float getAnimacaoEscala() {
+        return animacao != null ? animacao.getEscala() : 1f;
+    }
+
+    public float getAnimacaoRotacao() {
+        return animacao != null ? animacao.getRotacao() : 0f;
+    }
+
+    public float getAnimacaoAlpha() {
+        return animacao != null ? animacao.getAlpha() : 1f;
+    }
+
+    public void setAnimacao(AnimacaoInimigo animacao) {
+        this.animacao = animacao;
+    }
+
+    public AnimacaoInimigo getAnimacao() {
+        return animacao;
     }
 
     public Integer getHPInimigo() {
@@ -151,6 +180,11 @@ public class Inimigo {
     public void receberDano(int dano) {
         if (turnosInvuneravel > 0) return;
         setHPInimigo(this.HPInimigo - dano);
+    }
+    public void atualizarAnimacao(float delta) {
+        if (animacao != null) {
+            animacao.atualizar(delta);
+        }
     }
     public void setTurnosInvuneravel(Integer turnosInvuneravel) {
         this.turnosInvuneravel = turnosInvuneravel;

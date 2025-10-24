@@ -1,5 +1,7 @@
 package Telas;
 
+import Atores.AnimacaoBalancar;
+import Atores.AnimacaoFlutuar;
 import Atores.Inimigo;
 import Ações.Efeito;
 import Entidades.Nodo;
@@ -54,11 +56,11 @@ public class TelaMapa implements Screen {
         nodeTexture = new Texture("node.png");
 
         // Exemplo de inimigos
-        inimigosNivel.add(new Inimigo(55, 55, 0, main.inimigo, main.inimigoHit, main.inimigo, 0f, 0f, efeitosCom));
-        inimigosNivel.add(new Inimigo(70, 70, 0, main.inimigo1, main.inimigo1Hit, main.inimigo1, 0f, 0f, efeitosSlime));
-        inimigosNivel.add(new Inimigo(30, 30, 0, main.inimigo2, main.inimigo2Hit, main.inimigo2, 0f, 0f, efeitosCmd));
-        inimigosNivel.add(new Inimigo(30, 30, 0, Main.getInstance().inirar, Main.getInstance().inirarHit, Main.getInstance().inirar, 0f, 0f, efeitosRar));
-        boss.add(new Inimigo(300, 300,  2, Main.getInstance().inimigoBoss, Main.getInstance().inimigoBossHit, Main.getInstance().inimigoBoss, 0f, 0f, efeitos));
+        inimigosNivel.add(new Inimigo(55, 55, 0, main.inimigo, main.inimigoHit, main.inimigo, 0f, 0f, efeitosCom, new AnimacaoBalancar()));
+        inimigosNivel.add(new Inimigo(70, 70, 0, main.inimigo1, main.inimigo1Hit, main.inimigo1, 0f, 0f, efeitosSlime, new AnimacaoBalancar()));
+        inimigosNivel.add(new Inimigo(30, 30, 0, main.inimigo2, main.inimigo2Hit, main.inimigo2, 0f, 0f, efeitosCmd, new AnimacaoBalancar()));
+        inimigosNivel.add(new Inimigo(30, 30, 0, Main.getInstance().inirar, Main.getInstance().inirarHit, Main.getInstance().inirar, 0f, 0f, efeitosRar, new AnimacaoBalancar()));
+        boss.add(new Inimigo(300, 300,  2, Main.getInstance().inimigoBoss, Main.getInstance().inimigoBossHit, Main.getInstance().inimigoBoss, 0f, 0f, efeitos, new AnimacaoBalancar()));
 
         gerarMapaFixo();
     }

@@ -116,6 +116,9 @@ public class TelaBatalha implements Screen {
                 efeitoVisuals.remove(i);
             }
         }
+        if (inimigo != null) {
+            inimigo.atualizarAnimacao(delta);
+        }
         tempoRespiracao += delta;
         escalaRespiracao = 15f * (float)Math.sin(tempoRespiracao * 0.8f);
         float largura = 200;
@@ -142,7 +145,7 @@ public class TelaBatalha implements Screen {
                     200 + playerOffsetY + escalaRespiracao,
                     largura,
                     altura);
-            batch.draw(inimigo.getInimigoImg(), 800 + inimigo.getOffsetX(), 200 + inimigo.getOffsetY(), 200, 200);
+            desenharInimigoComAnimacao(batch);
             for (EfeitoVisual d : efeitoVisuals) {
                 d.desenhar(batch, fontDano);
             }
@@ -751,4 +754,40 @@ public class TelaBatalha implements Screen {
         }
         reposicionarCartas();
     }
+    private void desenharInimigoComAnimacao(SpriteBatch batch) {
+        float baseX = 800 + inimigo.getOffsetX();
+        float baseY = 200 + inimigo.getOffsetY();
+        float tamanho = 200;
+
+        // Obter valores da animação
+        float animOffsetX = inimigo.getAnimacaoOffsetX();
+        float animOffsetY = inimigo.getAnimacaoOffsetY();
+        float escala = inimigo.getAnimacaoEscala();
+        float rotacao = inimigo.getAnimacaoRotacao();
+        float alpha = inimigo.getAnimacaoAlpha();
+
+        // Aplicar transparência
+        Color corOriginal = batch.getColor();
+        batch.setColor(corOriginal.r, corOriginal.g, corOriginal.b, alpha);
+
+        // Desenhar com todas as transformações
+        // Parâmetros: textura, x, y, originX, originY, largura, altura, scaleX, scaleY, rotacao
+        batch.draw(inimigo.getInimigoImg(),
+                baseX + animOffsetX,           // posição X
+                baseY + animOffsetY,           // posição Y
+                tamanho / 2,                   // origem X (centro)
+                tamanho / 2,                   // origem Y (centro)
+                tamanho,                       // largura
+                tamanho,                       // altura
+                escala,                        // escala X
+                escala,                        // escala Y
+                rotacao,                       // rotação em graus
+                0, 0,                          // source x, y
+                inimigo.getInimigoImg().getWidth(),
+                inimigo.getInimigoImg().getHeight(),
+                false, false);                 // flip x, y
+
+        // Restaurar cor original
+        batch.setColor(corOriginal);
+}
 }
