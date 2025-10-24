@@ -26,8 +26,8 @@ allprojects {
 
 configure(subprojects) {
   apply plugin: 'java-library'
-  sourceCompatibility = 8
-
+  sourceCompatibility = 17
+  targetCompatibility = 17
   // From https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/
   // The article can be helpful when using assets.txt in your project.
   tasks.register('generateAssetList') {
@@ -67,5 +67,4 @@ subprojects {
     maven { url 'https://jitpack.io' }
   }
 }
-
 eclipse.project.name = 'jogo' + '-parent'

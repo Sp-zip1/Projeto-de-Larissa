@@ -3,6 +3,7 @@ FireFox-hit.png
 FireFox.png
 Firefox-attack.png
 FundoMenu.png
+META-INF/MANIFEST.MF
 Plasma.png
 Player.png
 PlayerMorto.png

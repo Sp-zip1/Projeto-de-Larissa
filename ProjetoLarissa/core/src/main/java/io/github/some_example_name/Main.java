@@ -126,9 +126,9 @@ public class Main extends Game {
         inirar = new Texture("beast-rar.png");
         inirarHit = new Texture("rar-hit.png");
         inirarattack = new Texture("rar-attack.png");
-        inifox = new Texture("Firefox.png");
-        inifoxHit = new Texture("Firefox-hit.png");
-        inifoxattack = new Texture("FireFox-attack.png");
+        //inifox = new Texture("Firefox.png");
+        //inifoxHit = new Texture("Firefox-hit.png");
+        //inifoxattack = new Texture("FireFox-attack.png");
         regenicon = new Texture("regenicon.png");
         nohitico = new Texture("ivulneravel.png");
         dot = new Texture("poison.png");
