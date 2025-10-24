@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class WraithFactory extends CartaFactory {
     public WraithFactory(Texture img, Sound som) {
-        super("Wraith", img, 2, som, TipoC.POD);
+        super("Reforçar", img, 2, som, TipoC.POD);
     }
 
     @Override
